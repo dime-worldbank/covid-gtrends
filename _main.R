@@ -27,6 +27,13 @@ if(Sys.info()[["user"]] == "robmarty"){
   paper_figures     <- "~/Dropbox/Apps/Overleaf/COVID-19 and Google Trends Paper/figures"
 }
 
+if(Sys.info()[["user"]] == "WB521633"){ 
+  dropbox_file_path <- "C:/Users/wb521633/Dropbox/World Bank/Side Work/COVID Google Trends"
+  github_file_path  <- "C:/Users/wb521633/Documents/Github/covid-gtrends"
+  #paper_tables      <- "~/Dropbox/Apps/Overleaf/COVID-19 and Google Trends Paper/tables"
+  #paper_figures     <- "~/Dropbox/Apps/Overleaf/COVID-19 and Google Trends Paper/figures"
+}
+
 #### Paths from root
 ## Data
 data_dir      <- file.path(dropbox_file_path, "Data")
