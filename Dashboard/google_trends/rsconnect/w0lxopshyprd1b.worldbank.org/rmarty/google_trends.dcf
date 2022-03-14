@@ -1,0 +1,12 @@
+name: google_trends
+title: google_trends
+username: rmarty
+account: rmarty
+server: w0lxopshyprd1b.worldbank.org
+hostUrl: http://w0lxopshyprd1b.worldbank.org:3939/__api__
+appId: 648
+bundleId: 14729
+url: http://w0lxopshyprd1b.worldbank.org:3939/content/648/
+when: 1602214597.39093
+asMultiple: FALSE
+asStatic: FALSE
