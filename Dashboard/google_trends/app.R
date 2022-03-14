@@ -56,7 +56,8 @@ library(lubridate)
 library(geosphere)
 library(hrbrthemes)
 #hrbrthemes::import_roboto_condensed()
-shinyOptions(cache = diskCache("./cache"))
+#shinyOptions(cache = diskCache("./cache"))
+shinyOptions(cache = cachem::cache_disk("./cache"))
 
 # Functions --------------------------------------------------------------------
 as.character.htmlwidget <- function(x, ...) {
