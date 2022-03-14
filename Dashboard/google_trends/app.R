@@ -448,11 +448,11 @@ ui <- fluidPage(
                                       htmlOutput("map_text")
                                )
                              ),
-                             fluidRow(
-                               column(12, align = "center",
-                                      HTML(paste0("<em>Trends shown from February 1 - ", END_DATE_TEXT, "</em>"))
-                               )
-                             ),
+                             #fluidRow(
+                            #   column(12, align = "center",
+                            #          HTML(paste0("<em>Trends shown from February 1 - ", END_DATE_TEXT, "</em>"))
+                            #   )
+                            # ),
                              
                              br(),
                              
@@ -474,11 +474,11 @@ ui <- fluidPage(
                                       htmlOutput("global_table_title")
                                )
                              ),
-                             fluidRow(
-                               column(12, align = "center",
-                                      HTML(paste0("<em>Trends shown from February 1 - ", END_DATE_TEXT, "</em>"))
-                               )
-                             ),
+                             #fluidRow(
+                            #   column(12, align = "center",
+                            #          HTML(paste0("<em>Trends shown from February 1 - ", END_DATE_TEXT, "</em>"))
+                            #   )
+                            # ),
                              
                              br(),
                              
@@ -541,7 +541,7 @@ ui <- fluidPage(
                  HTML(paste0("<h4>When we fall ill, 
                  <a href='https://blog.google/technology/health/using-symptoms-search-trends-inform-covid-19-research/'>many of us turn to Google</a>
                  to understand our symptoms and treatment options.
-                    Using data from February 1 - ",END_DATE_TEXT,", this dashboard illustrates how search interest for specific symptoms
+                    Using data from January 1, 2020 - ",END_DATE_TEXT,", this dashboard illustrates how search interest for specific symptoms
                     strongly matches - and often preceeds - trends in COVID-19 cases.</h4>")),
                  br(),
                  
