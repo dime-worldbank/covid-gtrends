@@ -13,7 +13,8 @@ gtrends_df$cases_new <- gtrends_df$cases_new_ma7
 gtrends_df <- gtrends_df %>%
   ungroup() %>%
   dplyr::filter(keyword_en %in% c("loss of smell",
-                                  "fever")) %>%
+                                  "fever",
+                                  "covid symptoms")) %>%
   dplyr::filter(date >= ymd("2020-06-01")) %>%
   group_by(geo, keyword_en) %>%
   mutate(hits_ma7 = hits_ma7 / max(hits_ma7, na.rm=T),
@@ -32,9 +33,10 @@ gtrends_df <- gtrends_df %>%
 
 # Figure: Top Countries --------------------------------------------------------
 gtrends_sub_df <- gtrends_df %>%
-  dplyr::filter(geo %in% c("US", "GB", "ZA", "FR", "IT", "DK", "NO", "AU"),
+  dplyr::filter(geo %in% c("US", "GB", "ZA", "FR", "IT", "CA", "KE", "AU"),
                 keyword_en %in% c("fever",
-                                  "loss of smell")) 
+                                  "loss of smell",
+                                  "covid symptoms")) 
 
 p_omicron <- ggplot() +
   geom_col(data = gtrends_sub_df,
@@ -57,15 +59,18 @@ p_omicron <- ggplot() +
   labs(x = "",
        y = "",
        title ="<span style='font-size:18pt'><span style='color:#000000;'>Trends in (1) Google Search Interest in</span> 
-               <span style='color:#3AA959;'>'Loss of Smell'</span> 
+               <span style='color:#3AA959;'>'Loss of Smell',</span> 
+               <span style='color:#BD0000;'>'Fever',</span> 
+               <br>
                <span style='color:#000000;'>and</span>
-               <span style='color:#BD0000;'>'Fever'</span> 
+               <span style='color:#3399FF;'>'COVID Symptoms'</span> 
                <span style='color:#000000;'>and (2) </span>
     <span style='color:#ff9900;'>COVID-19 Cases</span>
     <br>
     </span>",
        subtitle = "June 1, 2020 - December 31, 2021") +
-  scale_color_manual(values = c("#BD0000",
+  scale_color_manual(values = c("#3399FF",
+                                "#BD0000",
                                 "#3AA959")) +
   theme_minimal() +
   theme(axis.text.y = element_blank(),
@@ -83,5 +88,6 @@ p_omicron <- ggplot() +
              ncol = 2,
              scales = "free") 
 
+#p_omicron
 ggsave(p_omicron, filename = file.path(paper_figures, "cases_vs_loss_of_smell_trends_omicron.png"),
        heigh = 12, width=12)
