@@ -1,5 +1,5 @@
 # The Evolution of the COVID-19 Pandemic Through the Lens of Google Searches
-# Master Script
+# Main Script
 
 # Parameters -------------------------------------------------------------------
 RUN_CODE <- F
@@ -27,13 +27,6 @@ if(Sys.info()[["user"]] == "robmarty"){
   paper_figures     <- "~/Dropbox/Apps/Overleaf/COVID-19 and Google Trends Paper/figures"
 }
 
-if(Sys.info()[["user"]] == "WB521633"){ 
-  dropbox_file_path <- "C:/Users/wb521633/Dropbox/World Bank/Side Work/COVID Google Trends"
-  github_file_path  <- "C:/Users/wb521633/Documents/Github/covid-gtrends"
-  #paper_tables      <- "~/Dropbox/Apps/Overleaf/COVID-19 and Google Trends Paper/tables"
-  #paper_figures     <- "~/Dropbox/Apps/Overleaf/COVID-19 and Google Trends Paper/figures"
-}
-
 #### Paths from root
 ## Data
 data_dir      <- file.path(dropbox_file_path, "Data")
@@ -50,6 +43,7 @@ datawork_dir <- file.path(github_file_path, "DataWork")
 
 # Google API Key ---------------------------------------------------------------
 # Load Google API key where the Google Translate API is enabled.
+# "api_key" should be a character with the Google API key
 if(TRANSLATE_GOOGLE_KEYWORDS){
   api_key <- read_csv(file.path("~", "Dropbox", "World Bank", "Webscraping", 
                                 "Files for Server", 

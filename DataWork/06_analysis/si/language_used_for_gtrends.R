@@ -1,4 +1,5 @@
 # Figure illustrating creating a consistent time series
+# NOTE: Run with R version 3.6; issues in text encoding with R version 4.
 
 # Load data --------------------------------------------------------------------
 df_best <- readRDS(file.path(dropbox_file_path, 
@@ -81,6 +82,8 @@ df_best <- df_best %>%
 
 sink(file.path(paper_tables, "language_most_sa.tex"))
 cat("\\begin{longtable}{lc | c | c | c | c | c} \n ")
+cat("\\caption{Google search activity across countries and languages} \n")
+cat("\\label{tab:sa_language_table} \\\\ \n")
 cat("\\hline \n ")
 cat(" Country & Language with     & \\multicolumn{5}{c}{Language and Search Activity (S.A.)} \\\\ \n ")
 cat(" \\cline{3-7} \n ")
@@ -89,7 +92,7 @@ cat("\\hline \n ")
 
 for(i in 1:nrow(df_best)) cat(df_best$tex[i])
 
-cat("\\hline \n ")
+cat(" \\hline \n ")
 cat("\\end{longtable} ")
 sink()
 
