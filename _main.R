@@ -21,7 +21,7 @@ START_TIME <- Sys.time()
 # Filepaths --------------------------------------------------------------------
 #### Root Paths
 if(Sys.info()[["user"]] == "robmarty"){ 
-  dropbox_file_path <- "~/Dropbox/World Bank/Side Work/COVID Google Trends"
+  dropbox_file_path <- "~/Dropbox/World Bank/Replication Packages/COVID Google Trends"
   github_file_path  <- "~/Documents/Github/covid-gtrends"
   paper_tables      <- "~/Dropbox/Apps/Overleaf/COVID-19 and Google Trends Paper/tables"
   paper_figures     <- "~/Dropbox/Apps/Overleaf/COVID-19 and Google Trends Paper/figures"

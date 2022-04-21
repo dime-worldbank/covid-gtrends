@@ -17,12 +17,6 @@ cor_2_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "Final
                               "correlations_gtrends_since2021-01-01_until2021-12-31_symptoms.Rds")) %>%
   dplyr::mutate(timespan = "2021")
 
-# cor_3_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
-#                               "gtrends_full_timeseries",
-#                               "correlation_datasets",
-#                               "correlations_gtrends_since2020-01-01_until2021-12-31_symptoms.Rds")) %>%
-#   dplyr::mutate(timespan = "2020 - 2021")
-
 cor_df <- bind_rows(cor_1_df,
                     cor_2_df) %>%
   dplyr::filter(type %in% "Cases") %>%
@@ -42,8 +36,6 @@ cor_df <- bind_rows(cor_1_df,
 cor_df$keyword_en <- factor(cor_df$keyword_en, 
                             levels=unique(cor_df$keyword_en[order(cor_df$cor_sort_all)]), 
                             ordered=TRUE)
-
-#cor_df$date_since <- cor_df$date_since %>% as.factor() %>% fct_rev
 
 #### Order Keywords
 cor_avg_df <- cor_df %>%
@@ -112,7 +104,7 @@ p <- cor_long_df %>%
   dplyr::mutate(name_full = case_when(
     name == "cor_nolag" ~ "A. Correlation",
     #name == "cor" ~ "B. Correlation using best lag",
-    name == "lag" ~ "B. Lag with best correlation"
+    name == "lag" ~ "B. Lag with best correlation (days)"
   )) %>%
   make_boxplot(fill_var = "timespan",
                facet_var = "name_full")
