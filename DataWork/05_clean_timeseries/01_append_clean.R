@@ -74,6 +74,32 @@ for(keyword_type in c("symptoms", "contain", "vaccine")){
     clean_google_data(keyword_type_vec = keyword_type_vec) %>%
     dplyr::rename(hits_tp3 = hits) 
   
+  gtrends_p4_df <- file.path(dropbox_file_path, "Data", "google_trends", "RawData", "timeseries") %>%
+    list.files(pattern = "gtrends_date2021-10-01 2022-06-27*", full.names = T) %>%
+    map_df(readRDS) %>%
+    clean_google_data(keyword_type_vec = keyword_type_vec) %>%
+    dplyr::rename(hits_tp4 = hits) 
+  
+  gtrends_p5_df <- file.path(dropbox_file_path, "Data", "google_trends", "RawData", "timeseries") %>%
+    list.files(pattern = "gtrends_date2022-04-06 2022-12-31*", full.names = T) %>%
+    map_df(readRDS) %>%
+    clean_google_data(keyword_type_vec = keyword_type_vec) %>%
+    dplyr::rename(hits_tp5 = hits) 
+  
+  # gtrends_p3_df %>%
+  #   dplyr::filter(geo == "GB",
+  #                 keyword_en == "loss of smell") %>%
+  #   dplyr::mutate(date = date %>% ymd()) %>%
+  #   ggplot() +
+  #   geom_line(aes(x = date, y = hits_tp3))
+  # 
+  # gtrends_p4_df %>%
+  #   dplyr::filter(geo == "GB",
+  #                 keyword_en == "loss of smell") %>%
+  #   dplyr::mutate(date = date %>% ymd()) %>%
+  #   ggplot() +
+  #   geom_line(aes(x = date, y = hits_tp4))
+  
   # Merge ------------------------------------------------------------------------
   gtrends_df <- gtrends_0_df %>%
     full_join(gtrends_m3_df, by = c("date", "keyword_en", "geo", "language")) %>%
@@ -81,7 +107,9 @@ for(keyword_type in c("symptoms", "contain", "vaccine")){
     full_join(gtrends_m1_df, by = c("date", "keyword_en", "geo", "language")) %>%
     full_join(gtrends_p1_df, by = c("date", "keyword_en", "geo", "language")) %>%
     full_join(gtrends_p2_df, by = c("date", "keyword_en", "geo", "language")) %>%
-    full_join(gtrends_p3_df, by = c("date", "keyword_en", "geo", "language"))
+    full_join(gtrends_p3_df, by = c("date", "keyword_en", "geo", "language")) %>%
+    full_join(gtrends_p4_df, by = c("date", "keyword_en", "geo", "language")) %>%
+    full_join(gtrends_p5_df, by = c("date", "keyword_en", "geo", "language"))
   
   # Blend hits -------------------------------------------------------------------
   # https://stats.stackexchange.com/questions/281162/scale-a-number-between-a-range
@@ -167,14 +195,16 @@ for(keyword_type in c("symptoms", "contain", "vaccine")){
   gtrends_df <- make_consistent_hits_var(gtrends_df, "hits_tm3_adj", "hits_tp1", "hits_tp1_adj")
   gtrends_df <- make_consistent_hits_var(gtrends_df, "hits_tp1_adj", "hits_tp2", "hits_tp2_adj")
   gtrends_df <- make_consistent_hits_var(gtrends_df, "hits_tp2_adj", "hits_tp3", "hits_tp3_adj")
+  gtrends_df <- make_consistent_hits_var(gtrends_df, "hits_tp3_adj", "hits_tp4", "hits_tp4_adj")
+  gtrends_df <- make_consistent_hits_var(gtrends_df, "hits_tp4_adj", "hits_tp5", "hits_tp5_adj")
   
   # Cleanup ----------------------------------------------------------------------
   gtrends_df <- gtrends_df %>%
     dplyr::select(keyword_en, geo, date, language,
-                  hits_tm1, hits_tm2, hits_tm3, hits_tp1, hits_tp2, hits_tp3, hits_t0,
-                  hits_tp3_adj) %>%
+                  hits_tm1, hits_tm2, hits_tm3, hits_tp1, hits_tp2, hits_tp3, hits_tp4, hits_tp5, hits_t0,
+                  hits_tp5_adj) %>%
     dplyr::mutate(date = date %>% as.Date()) %>%
-    dplyr::rename(hits = hits_tp3_adj) 
+    dplyr::rename(hits = hits_tp5_adj) 
   
   gtrends_df$hits[is.na(gtrends_df$hits)] <- 0
   

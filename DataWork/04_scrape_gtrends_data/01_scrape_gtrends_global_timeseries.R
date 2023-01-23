@@ -10,7 +10,7 @@
 
 # Setup ------------------------------------------------------------------------
 ## Parameters
-SLEEP_TIME      <- 0 # number of seconds to pause after each scrape
+SLEEP_TIME      <- 5 # number of seconds to pause after each scrape
 overwrite_files <- F # overwrite data?
 rev_language_codes <- T
 LANGUAGE_SUBSET <- "all" # "all", "en_only", "no_en"
@@ -29,12 +29,8 @@ GTRENDS_TO_SCRAPE <- c("timeseries_2018-09-01_2019-05-28",
                        "timeseries_2020-07-05_2021-03-31",
                        "timeseries_2021-01-04_2021-09-30",
                        "timeseries_2021-04-06_2021-12-31",
-                       
-                       #"timeseries_regions_2020-12-01_2021-05-31",
-                       #"timeseries_regions_2021-03-01_2021-05-31",
-                       
-                       #"timeseries_regions_2021-03-01_2021-09-30",
-                       #"timeseries_regions_2020-12-01_2021-09-30",
+                       "timeseries_2021-10-01_2022-06-27", 
+                       "timeseries_2022-04-06_2022-12-31",
                        "timeseries_regions_2020-12-01_2021-12-31") %>%
   rev()
 
@@ -150,6 +146,8 @@ for(GTRENDS_TO_SCRAPE_i in GTRENDS_TO_SCRAPE){
     onlyInterest <- T
   }
   
+  ALL_TERMS <- F # TO DELETE!!
+  
   start_end_date <- GTRENDS_TO_SCRAPE_i %>% 
     str_replace_all("timeseries_regions_", "") %>% 
     str_replace_all("timeseriesALL_", "") %>%
@@ -159,13 +157,30 @@ for(GTRENDS_TO_SCRAPE_i in GTRENDS_TO_SCRAPE){
   if(ALL_TERMS){
     keywords_sub_df <- keywords_df[keywords_df$keyword_en %in% keywords_en_timeseries,]
   } else{
-
+    
+    # keywords_sub_df <- keywords_df %>%
+    #   dplyr::filter(category %in% c("coronavirus general",
+    #                                 "treatment",
+    #                                 "vaccine", 
+    #                                 "missinformation",
+    #                                 "vaccine misinformation"))
+    
     keywords_sub_df <- keywords_df %>%
-      dplyr::filter(category %in% c("coronavirus general",
-                                    "treatment",
-                                    "vaccine", 
-                                    "missinformation",
-                                    "vaccine misinformation"))
+      dplyr::filter(keyword_en %in% c("loss of smell",
+                                      "loss of taste",
+                                      "covid symptoms",
+                                      "i can't smell",
+                                      "anosmia",
+                                      "ageusia",
+                                      "covid-19",
+                                      "i can't taste",
+                                      "shortness of breath",
+                                      "fever",
+                                      "pneumonia",
+                                      "how to treat coronavirus",
+                                      "cough",
+                                      "coronavirus"))
+    
   }
   
   ## Check if root folder exists; if not, create

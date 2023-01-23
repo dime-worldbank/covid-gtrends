@@ -13,65 +13,24 @@
 # https://gist.github.com/drsimonj/2038ff9f9c67063f384f10fac95de566
 
 begin_day <- c("2020-01-01",
-               #"2020-02-01",
-               #"2020-03-01",
-               #"2020-04-01",
-               #"2020-05-01",
-               "2020-06-01",
-               #"2020-07-01",
-               #"2020-08-01",
-               #"2020-09-01",
-               #"2020-10-01",
-               #"2020-11-01",
-               #"2020-12-01",
                "2021-01-01",
-               #"2021-02-01",
-               #"2021-03-01",
-               #"2021-04-01",
-               #"2021-05-01",
-               "2021-06-01",
-               #"2021-07-01",
-               #"2021-08-01",
-               #"2021-09-01",
-               #"2021-10-01",
-               #"2021-11-01",
-               "2021-12-01")
+               "2022-01-01")
 
-end_day <- c("2020-01-31",
-             #"2020-02-29",
-             #"2020-03-31",
-             #"2020-04-30",
-             #"2020-05-31",
-             "2020-06-30",
-             #"2020-07-31",
-             #"2020-08-31",
-             #"2020-09-30",
-             #"2020-10-31",
-             #"2020-11-30",
-             "2020-12-31",
-             #"2021-01-31",
-             #"2021-02-28",
-             #"2021-03-31",
-             #"2021-04-30",
-             #"2021-05-31",
-             "2021-06-30",
-             #"2021-07-31",
-             #"2021-08-31",
-             #"2021-09-30",
-             #"2021-10-31",
-             #"2021-11-30",
-             "2021-12-31")
+end_day <- c("2020-12-31",
+             "2021-12-31",
+             "2022-12-31")
 
-#end_day <- c("2020-12-31", 
-#             "2021-12-31")
+OVERWRITE_DATA <- T
 
-OVERWRITE_DATA <- F
+keyword_type = "symptoms"
+begin_day_i = "2021-01-01"
+end_day_i = "2022-12-31"
 
 for(keyword_type in c("symptoms", "contain", "vaccine")){
   for(begin_day_i in begin_day){
     for(end_day_i in end_day){
       
-      if(end_day_i < begin_day) next
+      if(end_day_i < begin_day_i) next
       
       #### Check if processed
       OUT_PATH_1 <- file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
@@ -81,7 +40,7 @@ for(keyword_type in c("symptoms", "contain", "vaccine")){
       
       if(!file.exists(OUT_PATH_1) | OVERWRITE_DATA){
         
-        if(end_day_i < begin_day) next
+        if(end_day_i < begin_day_i) next
         
         print(paste(keyword_type, begin_day_i, end_day_i, "===================="))
         
@@ -151,6 +110,7 @@ for(keyword_type in c("symptoms", "contain", "vaccine")){
                              cor_cases_hitsMA7 = cor(cases_new, hits_ma7_leadlag),
                              cor_death_hitsMA7 = cor(death_new, hits_ma7_leadlag),
                              cor_cases_hits = cor(cases_new, hits_leadlag)) %>%
+            ungroup() %>%
             dplyr::mutate(leadlag = leadlag)
           
           return(gtrends_cor_df_i)
@@ -160,7 +120,8 @@ for(keyword_type in c("symptoms", "contain", "vaccine")){
         
         #### Summarize to geo/keyword level
         gtrends_cor_df <- gtrends_cor_long_df %>%
-          group_by(geo, keyword_en) %>%
+          ungroup() %>%
+          dplyr::group_by(geo, keyword_en) %>%
           dplyr::summarise(cor_casesMA7_hitsMA7_nolag = cor_casesMA7_hitsMA7[leadlag == 0][1],
                            cor_deathMA7_hitsMA7_nolag = cor_deathMA7_hitsMA7[leadlag == 0][1],
                            
@@ -173,13 +134,32 @@ for(keyword_type in c("symptoms", "contain", "vaccine")){
                            cor_casesMA7_hitsMA7_sd = sd(cor_casesMA7_hitsMA7, na.rm=T),
                            cor_deathMA7_hitsMA7_sd = sd(cor_deathMA7_hitsMA7, na.rm=T),
                            
-                           cor_casesMA7_hitsMA7_lag = leadlag[which.max(cor_casesMA7_hitsMA7)],
-                           cor_deathMA7_hitsMA7_lag = leadlag[which.max(cor_deathMA7_hitsMA7)]) %>%
-          mutate(cor_casesMA7_hitsMA7_zscore = (cor_casesMA7_hitsMA7_max - cor_casesMA7_hitsMA7_mean) / cor_casesMA7_hitsMA7_sd,
-                 cor_deathMA7_hitsMA7_zscore = (cor_deathMA7_hitsMA7_max - cor_deathMA7_hitsMA7_mean) / cor_deathMA7_hitsMA7_sd,
-                 
-                 cor_casesMA7_hitsMA7_nolag_zscore = (cor_casesMA7_hitsMA7_nolag - cor_casesMA7_hitsMA7_mean) / cor_casesMA7_hitsMA7_sd,
-                 cor_deathMA7_hitsMA7_nolag_zscore = (cor_deathMA7_hitsMA7_nolag - cor_deathMA7_hitsMA7_mean) / cor_deathMA7_hitsMA7_sd)
+                           cor_casesMA7_hitsMA7_lag = leadlag[cor_casesMA7_hitsMA7 %in% max(cor_casesMA7_hitsMA7)][1],
+                           cor_deathMA7_hitsMA7_lag = leadlag[cor_deathMA7_hitsMA7 %in% max(cor_deathMA7_hitsMA7)][1]) %>%
+          ungroup() %>%
+          dplyr::mutate(cor_casesMA7_hitsMA7_zscore = (cor_casesMA7_hitsMA7_max - cor_casesMA7_hitsMA7_mean) / cor_casesMA7_hitsMA7_sd,
+                        cor_deathMA7_hitsMA7_zscore = (cor_deathMA7_hitsMA7_max - cor_deathMA7_hitsMA7_mean) / cor_deathMA7_hitsMA7_sd,
+                        
+                        cor_casesMA7_hitsMA7_nolag_zscore = (cor_casesMA7_hitsMA7_nolag - cor_casesMA7_hitsMA7_mean) / cor_casesMA7_hitsMA7_sd,
+                        cor_deathMA7_hitsMA7_nolag_zscore = (cor_deathMA7_hitsMA7_nolag - cor_deathMA7_hitsMA7_mean) / cor_deathMA7_hitsMA7_sd) 
+        
+        gtrends_cor_df <- gtrends_cor_df %>%
+          dplyr::filter(!is.na(cor_casesMA7_hitsMA7_nolag))
+        
+        
+        # gtrends_cor_df$cor_casesMA7_hitsMA7_nolag %>% is.na %>% table()
+        # 
+        # a <- gtrends_cor_df %>%
+        #   dplyr::filter(!is.na(cor_casesMA7_hitsMA7_nolag))
+        # a$cor_casesMA7_hitsMA7_max %>% summary()
+        # a$cor_casesMA7_hitsMA7_lag %>% summary()
+        # 
+        # 
+        # 
+        # gtrends_cor_df$cor_casesMA7_hitsMA7_nolag %>% summary()
+        # gtrends_cor_df$cor_deathMA7_hitsMA7_max   %>% summary()
+        # gtrends_cor_df$cor_deathMA7_hitsMA7_mean  %>% summary()
+        
         
         #### Stack Cases/Deaths together
         cor_max_df <- bind_rows(gtrends_cor_df %>%
@@ -216,7 +196,8 @@ for(keyword_type in c("symptoms", "contain", "vaccine")){
         gtrends_otherdata_sum <- gtrends_full_df %>%
           group_by(geo) %>%
           dplyr::summarise(h2_testing_policy_max = max(h2_testing_policy, na.rm=T),
-                           h2_testing_policy_median = median(h2_testing_policy, na.rm=T))
+                           h2_testing_policy_median = median(h2_testing_policy, na.rm=T)) %>%
+          ungroup()
         gtrends_otherdata_sum$h2_testing_policy_max[gtrends_otherdata_sum$h2_testing_policy_max %in% -Inf] <- NA
         gtrends_otherdata_sum$h2_testing_policy_median[gtrends_otherdata_sum$h2_testing_policy_median %in% -Inf] <- NA
         

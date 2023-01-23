@@ -37,6 +37,7 @@ oxpol_dir     <- file.path(data_dir, "oxford_covid_policy_tracker")
 prim_lang_dir <- file.path(data_dir, "country_primary_language")
 keywords_dir  <- file.path(data_dir, "google_keywords")
 wdi_dir       <- file.path(data_dir, "wdi")
+ex_mort_dir   <- file.path(data_dir, "excess_mortality")
 
 ## Code
 datawork_dir <- file.path(github_file_path, "DataWork")
@@ -70,7 +71,7 @@ pacman::p_load(gtrendsR, countrycode, parallel, pbmcapply, ggplot2, jsonlite,
                geosphere, data.table, formattable, tidyr, viridis, data.table,
                WDI, scales, rnaturalearth, sp, utf8, ggtext, stargazer, lfe,
                ggrepel, Rfast, tikzDevice, ISOcodes, ggthemes, gghalves,
-               rnaturalearthdata)
+               rnaturalearthdata, janitor, readxl)
 
 ## User defined functions
 source("https://raw.githubusercontent.com/ramarty/r_google_translate/main/r_google_translate.R")

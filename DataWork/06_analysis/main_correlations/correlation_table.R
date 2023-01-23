@@ -36,17 +36,32 @@ cor_2_df <- bind_rows(readRDS(file.path(dropbox_file_path, "Data", "google_trend
 cor_3_df <- bind_rows(readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
                                         "gtrends_full_timeseries",
                                         "correlation_datasets",
-                                        "correlations_gtrends_since2020-01-01_until2021-12-31_symptoms.Rds")),
+                                        "correlations_gtrends_since2022-01-01_until2022-12-31_symptoms.Rds")),
                       readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
                                         "gtrends_full_timeseries",
                                         "correlation_datasets",
-                                        "correlations_gtrends_since2020-01-01_until2021-12-31_contain.Rds")),
+                                        "correlations_gtrends_since2022-01-01_until2022-12-31_contain.Rds")),
                       readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
                                         "gtrends_full_timeseries",
                                         "correlation_datasets",
-                                        "correlations_gtrends_since2020-01-01_until2021-12-31_vaccine.Rds"))
+                                        "correlations_gtrends_since2022-01-01_until2022-12-31_vaccine.Rds"))
 ) %>% 
-  dplyr::mutate(date_since = "2020_2021")
+  dplyr::mutate(date_since = "2022")
+
+# cor_3_df <- bind_rows(readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+#                                         "gtrends_full_timeseries",
+#                                         "correlation_datasets",
+#                                         "correlations_gtrends_since2020-01-01_until2021-12-31_symptoms.Rds")),
+#                       readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+#                                         "gtrends_full_timeseries",
+#                                         "correlation_datasets",
+#                                         "correlations_gtrends_since2020-01-01_until2021-12-31_contain.Rds")),
+#                       readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+#                                         "gtrends_full_timeseries",
+#                                         "correlation_datasets",
+#                                         "correlations_gtrends_since2020-01-01_until2021-12-31_vaccine.Rds"))
+# ) %>% 
+#   dplyr::mutate(date_since = "2020_2021")
 
 # Prep Data --------------------------------------------------------------------
 cor_df <- bind_rows(cor_1_df,
@@ -127,16 +142,21 @@ cor_sum_wide_df <- cor_sum_df %>%
   mutate_if(is.numeric, round, 2)
 
 cor_sum_wide_df <- cor_sum_wide_df %>%
-  dplyr::mutate(tex = paste(keyword_en,
-                            min_2020,
-                            cor_p0_05_2020,
-                            cor_p0_25_2020,
-                            cor_p0_50_2020,
-                            cor_p0_75_2020,
-                            cor_p0_95_2020,
-                            max_2020,
-                            N_2020,
-                            
+  
+  dplyr::mutate(tex_2020 = paste(keyword_en,
+                                 min_2020,
+                                 cor_p0_05_2020,
+                                 cor_p0_25_2020,
+                                 cor_p0_50_2020,
+                                 cor_p0_75_2020,
+                                 cor_p0_95_2020,
+                                 max_2020,
+                                 N_2020,
+                                 
+                                 sep = " & ")) %>%
+  mutate(tex_2020 = paste(tex_2020, " \\\\ \n")) %>%
+  
+  dplyr::mutate(tex_2021 = paste(keyword_en,
                             min_2021,
                             cor_p0_05_2021,
                             cor_p0_25_2021,
@@ -146,7 +166,128 @@ cor_sum_wide_df <- cor_sum_wide_df %>%
                             max_2021,
                             N_2021,
                             sep = " & ")) %>%
-  mutate(tex = paste(tex, " \\\\ \n"))
+  mutate(tex_2021 = paste(tex_2021, " \\\\ \n")) %>%
+  
+  dplyr::mutate(tex_2022 = paste(keyword_en,
+                                 min_2022,
+                                 cor_p0_05_2022,
+                                 cor_p0_25_2022,
+                                 cor_p0_50_2022,
+                                 cor_p0_75_2022,
+                                 cor_p0_95_2022,
+                                 max_2022,
+                                 N_2022,
+                                 sep = " & ")) %>%
+  mutate(tex_2022 = paste(tex_2022, " \\\\ \n"))
+
+# Table: 2020 ------------------------------------------------------------------
+cor_sum_wide_df <- cor_sum_wide_df %>%
+  arrange(keyword_en)
+
+sink(file.path(paper_tables, "cor_lag_table_2020.tex"))
+
+cat("\\begin{tabular}{l llllllll} \n")
+cat("\\hline \n")
+cat("Term & & \\multicolumn{5}{c}{Percentile} &  &  \\\\ \n")
+cat(" & Min & 5th & 25th & 50th & 75th & 95th & Max & N \\\\ \n")
+cat("\\hline \n")
+
+cat("\\multicolumn{9}{l}{{\\bf Correlation}} \\\\ \n")
+cor_sum_wide_df_tmp <- cor_sum_wide_df[cor_sum_wide_df$type %in% "cor_nolag",]
+for(i in 1:nrow(cor_sum_wide_df_tmp)) cat(cor_sum_wide_df_tmp$tex_2020[i])
+
+cat("\\hline \n")
+cat("\\multicolumn{9}{l}{{\\bf Correlation using best lag}} \\\\ \n")
+cor_sum_wide_df_tmp <- cor_sum_wide_df[cor_sum_wide_df$type %in% "cor",]
+for(i in 1:nrow(cor_sum_wide_df_tmp)) cat(cor_sum_wide_df_tmp$tex_2020[i])
+
+cat("\\hline \n")
+cat("\\multicolumn{9}{l}{{\\bf Lag with best correlation}} \\\\ \n")
+cor_sum_wide_df_tmp <- cor_sum_wide_df[cor_sum_wide_df$type %in% "lag",]
+for(i in 1:nrow(cor_sum_wide_df_tmp)) cat(cor_sum_wide_df_tmp$tex_2020[i])
+
+cat("\\hline \n")
+cat("\\end{tabular} ")
+
+sink()
+
+# Table: 2021 ------------------------------------------------------------------
+cor_sum_wide_df <- cor_sum_wide_df %>%
+  arrange(keyword_en)
+
+sink(file.path(paper_tables, "cor_lag_table_2021.tex"))
+
+cat("\\begin{tabular}{l llllllll} \n")
+cat("\\hline \n")
+cat("Term & & \\multicolumn{5}{c}{Percentile} &  &  \\\\ \n")
+cat(" & Min & 5th & 25th & 50th & 75th & 95th & Max & N \\\\ \n")
+cat("\\hline \n")
+
+cat("\\multicolumn{9}{l}{{\\bf Correlation}}  \\\\ \n")
+cor_sum_wide_df_tmp <- cor_sum_wide_df[cor_sum_wide_df$type %in% "cor_nolag",]
+for(i in 1:nrow(cor_sum_wide_df_tmp)) cat(cor_sum_wide_df_tmp$tex_2021[i])
+
+cat("\\hline \n")
+cat("\\multicolumn{9}{l}{{\\bf Correlation using best lag}}  \\\\ \n")
+cor_sum_wide_df_tmp <- cor_sum_wide_df[cor_sum_wide_df$type %in% "cor",]
+for(i in 1:nrow(cor_sum_wide_df_tmp)) cat(cor_sum_wide_df_tmp$tex_2021[i])
+
+cat("\\hline \n")
+cat("\\multicolumn{9}{l}{{\\bf Lag with best correlation}}  \\\\ \n")
+cor_sum_wide_df_tmp <- cor_sum_wide_df[cor_sum_wide_df$type %in% "lag",]
+for(i in 1:nrow(cor_sum_wide_df_tmp)) cat(cor_sum_wide_df_tmp$tex_2021[i])
+
+cat("\\hline \n")
+cat("\\end{tabular} ")
+
+sink()
+
+# Table: 2022 ------------------------------------------------------------------
+cor_sum_wide_df <- cor_sum_wide_df %>%
+  arrange(keyword_en)
+
+sink(file.path(paper_tables, "cor_lag_table_2022.tex"))
+
+cat("\\begin{tabular}{l llllllll} \n")
+cat("\\hline \n")
+cat("Term & & \\multicolumn{5}{c}{Percentile} &  &  \\\\ \n")
+cat(" & Min & 5th & 25th & 50th & 75th & 95th & Max & N \\\\ \n")
+cat("\\hline \n")
+
+cat("\\multicolumn{9}{l}{{\\bf Correlation}} \\\\ \n")
+cor_sum_wide_df_tmp <- cor_sum_wide_df[cor_sum_wide_df$type %in% "cor_nolag",]
+for(i in 1:nrow(cor_sum_wide_df_tmp)) cat(cor_sum_wide_df_tmp$tex_2022[i])
+
+cat("\\hline \n")
+cat("\\multicolumn{9}{l}{{\\bf Correlation using best lag}}  \\\\ \n")
+cor_sum_wide_df_tmp <- cor_sum_wide_df[cor_sum_wide_df$type %in% "cor",]
+for(i in 1:nrow(cor_sum_wide_df_tmp)) cat(cor_sum_wide_df_tmp$tex_2022[i])
+
+cat("\\hline \n")
+cat("\\multicolumn{9}{l}{{\\bf Lag with best correlation}} \\\\ \n")
+cor_sum_wide_df_tmp <- cor_sum_wide_df[cor_sum_wide_df$type %in% "lag",]
+for(i in 1:nrow(cor_sum_wide_df_tmp)) cat(cor_sum_wide_df_tmp$tex_2022[i])
+
+cat("\\hline \n")
+cat("\\end{tabular} ")
+
+sink()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Table ------------------------------------------------------------------------
 cor_sum_wide_df <- cor_sum_wide_df %>%

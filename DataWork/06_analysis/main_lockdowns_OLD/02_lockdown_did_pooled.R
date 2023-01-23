@@ -159,7 +159,7 @@ for(days_thresh in c(30, 60, 90, 120)){
                  data = df[df$keyword_en %in% keyword_i,]) %>%
       lm_post_confint_tidy() %>%
       mutate(type = "Overall")
-    
+ 
     # out2 <- felm(hits_ma7_log ~ pandemic_time + 
     #                days_since_c_policy_yearcurrent_post + 
     #                days_since_c_policy_yearcurrent_post_X_year2020 +
@@ -310,103 +310,6 @@ for(days_thresh in c(30, 60, 90, 120)){
       lm_post_confint_tidy() %>%
       mutate(type = "did_ln_gdp_pc")
     
-    
-    #### By country groups -- wb_region
-    out10 <- felm(hits_ma7_log ~ pandemic_time + 
-                    days_since_c_policy_yearcurrent_post + 
-                    days_since_c_policy_yearcurrent_post_X_year2020  | geo + week | 0 | 0, 
-                  data = df[(df$keyword_en %in% keyword_i) & (df$wb_region %in% "North America"),]) %>%
-      lm_post_confint_tidy() %>%
-      mutate(type = "wb_region",
-             wb_region = "North America")
-    
-    out11 <- felm(hits_ma7_log ~ pandemic_time + 
-                    days_since_c_policy_yearcurrent_post + 
-                    days_since_c_policy_yearcurrent_post_X_year2020  | geo + week | 0 | 0, 
-                  data = df[(df$keyword_en %in% keyword_i) & (df$wb_region %in% "East Asia & Pacific"),]) %>%
-      lm_post_confint_tidy() %>%
-      mutate(type = "wb_region",
-             wb_region = "East Asia & Pacific")
-    
-    out12 <- felm(hits_ma7_log ~ pandemic_time + 
-                    days_since_c_policy_yearcurrent_post + 
-                    days_since_c_policy_yearcurrent_post_X_year2020  | geo + week | 0 | 0, 
-                  data = df[(df$keyword_en %in% keyword_i) & (df$wb_region %in% "Latin America & Caribbean"),]) %>%
-      lm_post_confint_tidy() %>%
-      mutate(type = "wb_region",
-             wb_region = "Latin America & Caribbean")
-    
-    out13 <- felm(hits_ma7_log ~ pandemic_time + 
-                    days_since_c_policy_yearcurrent_post + 
-                    days_since_c_policy_yearcurrent_post_X_year2020  | geo + week | 0 | 0, 
-                  data = df[(df$keyword_en %in% keyword_i) & (df$wb_region %in% "Sub-Saharan Africa"),]) %>%
-      lm_post_confint_tidy() %>%
-      mutate(type = "wb_region",
-             wb_region = "Sub-Saharan Africa")
-    
-    out14 <- felm(hits_ma7_log ~ pandemic_time + 
-                    days_since_c_policy_yearcurrent_post + 
-                    days_since_c_policy_yearcurrent_post_X_year2020  | geo + week | 0 | 0, 
-                  data = df[(df$keyword_en %in% keyword_i) & (df$wb_region %in% "South Asia"),]) %>%
-      lm_post_confint_tidy() %>%
-      mutate(type = "wb_region",
-             wb_region = "South Asia")
-    
-    out15 <- felm(hits_ma7_log ~ pandemic_time + 
-                    days_since_c_policy_yearcurrent_post + 
-                    days_since_c_policy_yearcurrent_post_X_year2020  | geo + week | 0 | 0, 
-                  data = df[(df$keyword_en %in% keyword_i) & (df$wb_region %in% "Europe & Central Asia"),]) %>%
-      lm_post_confint_tidy() %>%
-      mutate(type = "wb_region",
-             wb_region = "Europe & Central Asia")
-    
-    out16 <- felm(hits_ma7_log ~ pandemic_time + 
-                    days_since_c_policy_yearcurrent_post + 
-                    days_since_c_policy_yearcurrent_post_X_year2020  | geo + week | 0 | 0, 
-                  data = df[(df$keyword_en %in% keyword_i) & (df$wb_region %in% "Middle East & North Africa"),]) %>%
-      lm_post_confint_tidy() %>%
-      mutate(type = "wb_region",
-             wb_region = "Middle East & North Africa")
-    
-    #### By country groups -- income
-    check_nrow <- df[(df$keyword_en %in% keyword_i) & (df$income %in% "Low income"),]
-    
-    if(nrow(check_nrow) > 0){
-      out17 <- felm(hits_ma7_log ~ pandemic_time + 
-                      days_since_c_policy_yearcurrent_post + 
-                      days_since_c_policy_yearcurrent_post_X_year2020  | geo + week | 0 | 0, 
-                    data = df[(df$keyword_en %in% keyword_i) & (df$income %in% "Low income"),]) %>%
-        lm_post_confint_tidy() %>%
-        mutate(type = "income",
-               income = "Low income")
-    } else{
-      out17 <- data.frame(NULL)
-    }
-    
-    out18 <- felm(hits_ma7_log ~ pandemic_time + 
-                    days_since_c_policy_yearcurrent_post + 
-                    days_since_c_policy_yearcurrent_post_X_year2020  | geo + week | 0 | 0, 
-                  data = df[(df$keyword_en %in% keyword_i) & (df$income %in% "Lower middle income"),]) %>%
-      lm_post_confint_tidy() %>%
-      mutate(type = "income",
-             income = "Lower middle income")
-    
-    out19 <- felm(hits_ma7_log ~ pandemic_time + 
-                    days_since_c_policy_yearcurrent_post + 
-                    days_since_c_policy_yearcurrent_post_X_year2020  | geo + week | 0 | 0, 
-                  data = df[(df$keyword_en %in% keyword_i) & (df$income %in% "Upper middle income"),]) %>%
-      lm_post_confint_tidy() %>%
-      mutate(type = "income",
-             income = "Upper middle income")
-    
-    out20 <- felm(hits_ma7_log ~ pandemic_time + 
-                    days_since_c_policy_yearcurrent_post + 
-                    days_since_c_policy_yearcurrent_post_X_year2020  | geo + week | 0 | 0, 
-                  data = df[(df$keyword_en %in% keyword_i) & (df$income %in% "High income"),]) %>%
-      lm_post_confint_tidy() %>%
-      mutate(type = "income",
-             income = "High income")
-    
     out_all <- bind_rows(
       out1,
       out2,
@@ -416,18 +319,7 @@ for(days_thresh in c(30, 60, 90, 120)){
       out6,
       out7,
       out8,
-      out9,
-      out10,
-      out11,
-      out12,
-      out13,
-      out14,
-      out15,
-      out16,
-      out17,
-      out18,
-      out19,
-      out20
+      out9
     )
     
     out_all$keyword <- keyword_i
@@ -441,10 +333,6 @@ for(days_thresh in c(30, 60, 90, 120)){
   saveRDS(coef_df,
           file.path(dropbox_file_path, "Data", "google_trends", "FinalData", "results", 
                     paste0("did_pooled_results_",days_thresh,".Rds")))
-  
-  saveRDS(df,
-          file.path(dropbox_file_path, "Data", "google_trends", "FinalData", "results", 
-                    paste0("did_pooled_data_",days_thresh,".Rds")))
   
 }
 

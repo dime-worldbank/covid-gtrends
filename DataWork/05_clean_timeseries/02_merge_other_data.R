@@ -1,5 +1,11 @@
 # Merge Google Trends Data with Other Data Sources
 
+# gtrends_df %>%
+#   dplyr::filter(geo == "GB",
+#                 keyword_en == "loss of smell") %>%
+#   ggplot() +
+#   geom_line(aes(x = date, y = hits))
+
 for(keyword_type in c("symptoms", "contain", "vaccine")){
   print(paste(keyword_type, "================================================"))
   
@@ -42,7 +48,7 @@ for(keyword_type in c("symptoms", "contain", "vaccine")){
   #gtrends_df$death_new[gtrends_df$date %in% as.Date(c("2020-01-01", "2020-01-02"))] <- 0
   #gtrends_df$cases[gtrends_df$date %in% as.Date(c("2020-01-01", "2020-01-02"))] <- 0
   #gtrends_df$death[gtrends_df$date %in% as.Date(c("2020-01-01", "2020-01-02"))] <- 0
-  
+
   # Global Vaccine Dosage Data ---------------------------------------------------
   gvac_df <- read.csv(file.path(dropbox_file_path, "Data", "global_vaccine", "RawData", 
                                 "covid-vaccination-doses-per-capita.csv"),
@@ -167,13 +173,13 @@ for(keyword_type in c("symptoms", "contain", "vaccine")){
   gtrends_df$un_regionsub_name <- gtrends_df$geo %>% countrycode(origin = "iso2c", destination = "un.regionsub.name")
   gtrends_df$wb_region <- gtrends_df$geo %>% countrycode(origin = "iso2c", destination = "region")
   gtrends_df$country <- gtrends_df$geo %>% countrycode(origin = "iso2c", destination = "country.name")
+  gtrends_df$continent <- gtrends_df$geo %>% countrycode(origin = "iso2c", destination = "continent")
   
   # Export -----------------------------------------------------------------------
   saveRDS(gtrends_df,
           file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
                     "gtrends_full_timeseries", 
                     paste0("gtrends_otherdata_complete_",keyword_type,".Rds")))
-  
 }
 
 

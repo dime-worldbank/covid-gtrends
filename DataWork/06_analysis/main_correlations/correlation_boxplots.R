@@ -17,8 +17,16 @@ cor_2_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "Final
                               "correlations_gtrends_since2021-01-01_until2021-12-31_symptoms.Rds")) %>%
   dplyr::mutate(timespan = "2021")
 
+cor_3_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+                              "gtrends_full_timeseries",
+                              "correlation_datasets",
+                              "correlations_gtrends_since2022-01-01_until2022-12-31_symptoms.Rds")) %>%
+  dplyr::mutate(timespan = "2022")
+
 cor_df <- bind_rows(cor_1_df,
-                    cor_2_df) %>%
+                    cor_2_df,
+                    cor_3_df) %>%
+  dplyr::filter(!is.na(cor_nolag)) %>%
   dplyr::filter(type %in% "Cases") %>%
   dplyr::filter(keyword_en %in% keywords_en_use) %>%
   
@@ -31,7 +39,7 @@ cor_df <- bind_rows(cor_1_df,
   mutate(keyword_en = keyword_en %>% 
            tools::toTitleCase() %>% 
            str_replace_all("\\bi\\b", "I"),
-         timespan = timespan %>% factor(levels = c("2021", "2020"))) 
+         timespan = timespan %>% factor(levels = c("2022", "2021", "2020"))) 
 
 cor_df$keyword_en <- factor(cor_df$keyword_en, 
                             levels=unique(cor_df$keyword_en[order(cor_df$cor_sort_all)]), 
@@ -80,7 +88,7 @@ make_boxplot <- function(cor_df, fill_var, facet_var){
                stroke = 0.2, # 0.1
                alpha = 0.75,
                color = "black") +
-    scale_fill_manual(values = c("orange2", "dodgerblue3"),
+    scale_fill_manual(values = c("orange2", "palegreen3", "dodgerblue3"),
                       guide = guide_legend(reverse = TRUE)) +
     labs(fill = "Using\ndata in",
          x = NULL,
@@ -108,7 +116,7 @@ p <- cor_long_df %>%
   )) %>%
   make_boxplot(fill_var = "timespan",
                facet_var = "name_full")
-
+p
 ggsave(p, filename = file.path(paper_figures, "cor_lag_fig.png"),
        height = 7, width = 11)
 
@@ -121,11 +129,12 @@ p <- cor_long_df %>%
   )) %>%
   dplyr::mutate(timespan = case_when(
     timespan == "2020" ~ "A. Using Data in 2020",
-    timespan == "2021" ~ "B. Using Data in 2021")) %>%
+    timespan == "2021" ~ "B. Using Data in 2021",
+    timespan == "2022" ~ "B. Using Data in 2022")) %>%
   make_boxplot(fill_var = "name_full",
                facet_var = "timespan") +
   ggplot2::xlim(c(-1, 1))
 
 ggsave(p, filename = file.path(paper_figures, "cor_corbest_fig.png"),
-       height = 6, width = 11)
+       height = 6.5, width = 11)
 
