@@ -6,7 +6,7 @@ COEF_POINT_SIZE <- 3.25
 COEF_LINE_SIZE <- 1.25
 STRIP_TEXT_SIZE <- 12
 LEGEND_TEXT_SIZE <- 14
-AXIS_X_TITLE_SIZE <- 14
+AXIS_X_TITLE_SIZE <- 12
 PLOT_TITLE_SIZE <- 16
 
 NA_COLOR <- "gray40"
@@ -53,7 +53,7 @@ prep_keywords <- function(df){
                         "panic",
                         "social isolation",
                         "overwhelmed",
-                        "suicide") ~ "Mental Health",
+                        "suicide") ~ "Mental\nHealth",
       
       keyword_en %in% c("debt",
                         "file for unemployment",
@@ -73,10 +73,10 @@ prep_keywords <- function(df){
                         "pregnancy test",
                         "relationship",
                         "tinder",
-                        "wedding") ~ "Relationships\n&Family Planning",
+                        "wedding") ~ "Relationships &\nFamily Planning",
       
       keyword_en %in% c("social distance",
-                        "stay at home") ~ "Social Distancing"
+                        "stay at home") ~ "Social\nDistancing"
     )) %>%
     dplyr::mutate(keyword_en = keyword_en %>% tools::toTitleCase()) %>%
     dplyr::mutate(keyword_en_newline = case_when(
@@ -106,7 +106,18 @@ prep_keywords <- function(df){
 }
 
 # Load/Prep Data [For Trends] --------------------------------------------------
-for(days_thresh in c(30, 60, 90, 120)){
+for(days_thresh in c(30, 60, 90, 120, 180)){
+  
+  # N Countries per keyword
+  n_country_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData", "results", 
+                                    "did_pooled_data.Rds")) %>%
+    dplyr::filter(abs(days_since_c_policy_yearcurrent) <= days_thresh) %>%
+    distinct(keyword_en, geo) %>%
+    group_by(keyword_en) %>%
+    summarise(n_country = n()) %>%
+    ungroup() %>%
+    prep_keywords() %>%
+    dplyr::select(keyword_en, n_country)
   
   df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData", "results", 
                           "did_pooled_data.Rds")) %>%
@@ -132,7 +143,9 @@ for(days_thresh in c(30, 60, 90, 120)){
     dplyr::mutate(pandemic_time = case_when(
       pandemic_time == 1 ~ "Pandemic",
       pandemic_time == 0 ~ "Pre-Pandemic"
-    ))
+    )) %>%
+    left_join(n_country_df, by = "keyword_en") %>%
+    mutate(keyword_en_newline = paste0(keyword_en_newline, "\n[N = ", n_country, "]"))
   
   # Load/Prep Regression Results -------------------------------------------------
   coef_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData", "results", 
@@ -187,7 +200,11 @@ for(days_thresh in c(30, 60, 90, 120)){
                                       "Post Policy X Pandemic X Mobility Reduction",
                                       "Post Policy X Pandemic X Stringency Index",
                                       "Post Policy X Pandemic X GDP (per capita)")) %>% 
-                    fct_rev)
+                    fct_rev) %>%
+    left_join(n_country_df, by = "keyword_en") %>%
+    mutate(keyword_en_smline = paste0(keyword_en, " [N = ", n_country, "]"),
+           keyword_en_nwline = paste0(keyword_en, "\n[N = ", n_country, "]"),
+           keyword_en_newline = paste0(keyword_en_newline, "\n[N = ", n_country, "]"))
   
   # Trends Figure ----------------------------------------------------------------
   p_trends <- df %>%
@@ -215,11 +232,11 @@ for(days_thresh in c(30, 60, 90, 120)){
   # Overall Impact Figure --------------------------------------------------------
   p_overall <- coef_df %>% 
     dplyr::filter(type == "Overall") %>%
-    dplyr::mutate(keyword_en = keyword_en %>% fct_rev()) %>%
+    dplyr::mutate(keyword_en_smline = keyword_en_smline %>% fct_rev()) %>%
     ggplot(aes(xmin = p025,
                xmax = p975,
                x = b,
-               y = keyword_en,
+               y = keyword_en_smline,
                color = keyword_type)) +
     geom_point(size = COEF_POINT_SIZE) +
     geom_linerange(size = COEF_LINE_SIZE) +
@@ -230,16 +247,18 @@ for(days_thresh in c(30, 60, 90, 120)){
          x = "Coefficient (+/- 95% CI)",
          y = NULL,
          title = "B. Diff-in-Diff Results: Impact of Contaiment\nPolicies on Search Interest") +
-    theme(legend.position = "none",
+    theme(legend.position = "bottom",
+          legend.margin = margin(t = 0, unit = "cm"), 
+          legend.box.margin = margin(l = -8, unit = "cm"),
           axis.text.y = element_text(color = "black", size = COEF_AXIS_Y_TEXT_SIZE),
           axis.title.x = element_text(size = AXIS_X_TITLE_SIZE),
           panel.grid.major.y = element_line(color = "gray90", size = 0.5),
-          strip.background = element_blank())
+          strip.background = element_blank()) 
   
   # Impact by Region -----------------------------------------------------------
   p_region <- coef_df %>% 
     dplyr::filter(type == "wb_region") %>%
-    dplyr::mutate(keyword_en = keyword_en %>% fct_rev()) %>%
+    dplyr::mutate(keyword_en_nwline = keyword_en_nwline %>% fct_rev()) %>%
     ggplot(aes(xmin = p025,
                xmax = p975,
                x = b,
@@ -254,7 +273,7 @@ for(days_thresh in c(30, 60, 90, 120)){
          x = "Coefficient (+/- 95% CI)",
          y = NULL,
          title = "A. Results by Geographic Region") +
-    theme(legend.position = "right",
+    theme(legend.position = "bottom",
           legend.text = element_text(size = 14),
           axis.text.y = element_text(color = "black", size = COEF_AXIS_Y_TEXT_SIZE),
           axis.title.x = element_text(size = AXIS_X_TITLE_SIZE),
@@ -263,12 +282,12 @@ for(days_thresh in c(30, 60, 90, 120)){
           plot.title.position = "plot",
           plot.title = element_text(face = "bold", size = 14),
           strip.text = element_text(face = "bold", size = 12)) +
-    facet_wrap(~keyword_en)
-
+    facet_wrap(~keyword_en_nwline)
+  
   # Impact by Income Group -----------------------------------------------------
   p_income <- coef_df %>% 
     dplyr::filter(type == "income") %>%
-    dplyr::mutate(keyword_en = keyword_en %>% fct_rev()) %>%
+    dplyr::mutate(keyword_en_nwline = keyword_en_nwline %>% fct_rev()) %>%
     dplyr::mutate(income = income %>% factor(levels = c("Low income",
                                                         "Lower middle income",
                                                         "Upper middle income",
@@ -287,7 +306,7 @@ for(days_thresh in c(30, 60, 90, 120)){
          x = "Coefficient (+/- 95% CI)",
          y = NULL,
          title = "B. Results by Income Group") +
-    theme(legend.position = "right",
+    theme(legend.position = "bottom",
           legend.text = element_text(size = 14),
           axis.text.y = element_text(color = "black", size = COEF_AXIS_Y_TEXT_SIZE),
           axis.title.x = element_text(size = AXIS_X_TITLE_SIZE),
@@ -296,7 +315,7 @@ for(days_thresh in c(30, 60, 90, 120)){
           plot.title = element_text(face = "bold", size = 14),
           plot.title.position = "plot",
           strip.text = element_text(face = "bold", size = 12)) +
-    facet_wrap(~keyword_en)
+    facet_wrap(~keyword_en_nwline)
   
   # Interaction Figures --------------------------------------------------------
   p_interact <- coef_df %>% 
@@ -445,9 +464,9 @@ for(days_thresh in c(30, 60, 90, 120)){
                        plot.title.position = "plot")
   
   p_overall_trends <- ggarrange(p_trends + title_theme, 
-                         p_overall + title_theme,
-                         nrow = 1,
-                         widths = c(0.6, 0.4))
+                                p_overall + title_theme,
+                                nrow = 1,
+                                widths = c(0.6, 0.4))
   
   ggsave(p_overall_trends, filename = file.path(paper_figures, paste0("did_overall_",days_thresh,".png")),
          height = 8, width = 12)
@@ -461,10 +480,10 @@ for(days_thresh in c(30, 60, 90, 120)){
                                legend = "bottom")
   
   ggsave(p_income + labs(title = NULL), filename = file.path(paper_figures, paste0("did_income_",days_thresh,".png")),
-         height = 6, width = 14)
+         height = 7, width = 14)
   
   ggsave(p_region + labs(title = NULL), filename = file.path(paper_figures, paste0("did_region_",days_thresh,".png")),
-         height = 8, width = 14)
+         height = 8.5, width = 14)
   
   ggsave(p_income_region, filename = file.path(paper_figures, paste0("did_countrygroups_",days_thresh,".png")),
          height = 14, width = 14)
@@ -474,7 +493,7 @@ for(days_thresh in c(30, 60, 90, 120)){
                               p_map,
                               ncol = 1,
                               heights = c(0.6, 0.4))
-
+  
   ggsave(p_interact_map, filename = file.path(paper_figures, paste0("did_interact_map_",days_thresh,".png")),
          height = 15, width = 13)
   

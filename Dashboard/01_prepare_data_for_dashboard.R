@@ -4,45 +4,40 @@
 DASHBOARD_PATH <- file.path(dropbox_file_path, "DashboardData")
 
 begin_day <- c("2020-01-01",
-               "2020-06-01",
                "2021-01-01",
-               "2021-06-01",
-               "2021-12-01")
+               "2022-01-01")
 
-end_day <- c("2020-01-31",
-             "2020-06-30",
-             "2021-01-31",
-             "2021-06-30",
-             "2021-12-31")
-
-begin_day <- c("2020-01-01",
-               "2021-01-01")
+end_day <- c("2020-12-31",
+             "2021-12-31",
+             "2022-12-31")
 
 # Load initial data ------------------------------------------------------------
 #### Example Data
 cor1_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
                              "gtrends_full_timeseries",
                              "correlation_datasets",
-                             paste0("correlations_gtrends_since","2020-01-01","_until2021-12-31_symptoms.Rds")))
+                             paste0("correlations_gtrends_since","2020-01-01","_until2022-12-31_symptoms.Rds")))
 cor2_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
                              "gtrends_full_timeseries",
                              "correlation_datasets",
-                             paste0("correlations_gtrends_since","2020-01-01","_until2021-12-31_contain.Rds")))
+                             paste0("correlations_gtrends_since","2020-01-01","_until2022-12-31_contain.Rds")))
 cor3_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
                              "gtrends_full_timeseries",
                              "correlation_datasets",
-                             paste0("correlations_gtrends_since","2020-01-01","_until2021-12-31_vaccine.Rds")))
+                             paste0("correlations_gtrends_since","2020-01-01","_until2022-12-31_vaccine.Rds")))
 
 cor_df <- bind_rows(cor1_df,
                     cor2_df,
                     cor3_df)
 
-
 keywords <- tolower(KEYWORDS_TIMESERIES_ALL)
 
 #### Load Keywords
 keywords_df <- readRDS(file.path(keywords_dir, "FinalData", 
-                                 "covid_keywords_alllanguages.Rds"))
+                                 "covid_keywords_alllanguages.Rds")) %>%
+  distinct(keyword_en, .keep_all = T)
+
+keywords_df <- keywords_df[keywords_df$keyword_en %in% KEYWORDS_TIMESERIES_ALL,]
 
 keywords_df <- keywords_df %>%
   dplyr::filter(tolower(keyword_en) %in% keywords) %>%
@@ -121,22 +116,24 @@ saveRDS(world_sp, file.path(DASHBOARD_PATH, "world.Rds"))
 for(begin_day_i in begin_day){
   for(end_day_i in end_day){
     
+    if(begin_day_i > end_day_i) next
+    
     print(paste(begin_day_i, "-------------------------------------------------"))
     
     cor1_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
                                  "gtrends_full_timeseries",
                                  "correlation_datasets",
-                                 paste0("correlations_gtrends_since",begin_day_i,"_until2021-12-31_symptoms.Rds")))
+                                 paste0("correlations_gtrends_since",begin_day_i,"_until",end_day_i,"_symptoms.Rds")))
     
     cor2_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
                                  "gtrends_full_timeseries",
                                  "correlation_datasets",
-                                 paste0("correlations_gtrends_since",begin_day_i,"_until2021-12-31_contain.Rds")))
+                                 paste0("correlations_gtrends_since",begin_day_i,"_until",end_day_i,"_contain.Rds")))
     
     cor3_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
                                  "gtrends_full_timeseries",
                                  "correlation_datasets",
-                                 paste0("correlations_gtrends_since",begin_day_i,"_until2021-12-31_vaccine.Rds")))
+                                 paste0("correlations_gtrends_since",begin_day_i,"_until",end_day_i,"_vaccine.Rds")))
     
     cor_df <- bind_rows(cor1_df,
                         cor2_df,
@@ -158,24 +155,17 @@ for(begin_day_i in begin_day){
     gtrends1_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
                                      "gtrends_full_timeseries",
                                      "correlation_datasets",
-                                     paste0("gtrends_since",begin_day_i,"_until2021-12-31_symptoms.Rds")))
+                                     paste0("gtrends_since",begin_day_i,"_until",end_day_i,"_symptoms.Rds")))
     
     gtrends2_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
                                      "gtrends_full_timeseries",
                                      "correlation_datasets",
-                                     paste0("gtrends_since",begin_day_i,"_until2021-12-31_contain.Rds")))
-    
-    gtrends3_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
-                                     "gtrends_full_timeseries",
-                                     "correlation_datasets",
-                                     paste0("gtrends_since",begin_day_i,"_until2021-12-31_vaccine.Rds")))
+                                     paste0("gtrends_since",begin_day_i,"_until",end_day_i,"_contain.Rds")))
     
     gtrends_df <- bind_rows(gtrends1_df,
-                            gtrends2_df,
-                            gtrends3_df)
+                            gtrends2_df)
     rm(gtrends1_df)
     rm(gtrends2_df)
-    rm(gtrends3_df)
     gc(); gc(); gc()
     
     gtrends_df <- gtrends_df[tolower(gtrends_df$keyword_en) %in% keywords,]
@@ -184,7 +174,9 @@ for(begin_day_i in begin_day){
     gtrends_df$keyword_en <- gtrends_df$keyword_en %>% tools::toTitleCase() %>% str_replace_all("\\bi\\b", "I")
     
     #gtrends_df <- gtrends_df[gtrends_df$date >= "2020-02-01",]
-    gtrends_df <- merge(gtrends_df, world_df, by = "geo")
+    gtrends_df <- merge(gtrends_df, 
+                        world_df %>% dplyr::select(-continent), 
+                        by = "geo")
     
     gtrends_df <- gtrends_df %>%
       dplyr::select(keyword_en, keyword, date, hits, hits_ma7, name, geo, continent, cases_new, death_new,

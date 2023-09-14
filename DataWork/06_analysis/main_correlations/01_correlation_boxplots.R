@@ -39,7 +39,19 @@ cor_df <- bind_rows(cor_1_df,
   mutate(keyword_en = keyword_en %>% 
            tools::toTitleCase() %>% 
            str_replace_all("\\bi\\b", "I"),
-         timespan = timespan %>% factor(levels = c("2022", "2021", "2020"))) 
+         timespan = timespan %>% factor(levels = c("2022", "2021", "2020"))) %>%
+  
+  # Add number of countries for each keyword / time
+  group_by(timespan, keyword_en) %>%
+  mutate(n_country = n()) %>%
+  ungroup() %>%
+  
+  group_by(keyword_en) %>%
+  mutate(n_country = max(n_country)) %>%
+  ungroup() %>%
+  
+  mutate(keyword_en = paste0(keyword_en, " [N = ", n_country, "]"))
+
 
 cor_df$keyword_en <- factor(cor_df$keyword_en, 
                             levels=unique(cor_df$keyword_en[order(cor_df$cor_sort_all)]), 
@@ -81,13 +93,13 @@ make_boxplot <- function(cor_df, fill_var, facet_var){
     geom_vline(xintercept = 0, color = "firebrick1") +
     
     geom_boxplot(alpha = 0.7) +
-    geom_point(position = position_jitterdodge(jitter.width=0.3,
-                                               dodge.width = 0.85),
-               pch = 21,
-               size = 0.9, # 0.7
-               stroke = 0.2, # 0.1
-               alpha = 0.75,
-               color = "black") +
+    # geom_point(position = position_jitterdodge(jitter.width=0.3,
+    #                                            dodge.width = 0.85),
+    #            pch = 21,
+    #            size = 0.9, # 0.7
+    #            stroke = 0.2, # 0.1
+    #            alpha = 0.75,
+    #            color = "black") +
     scale_fill_manual(values = c("orange2", "palegreen3", "dodgerblue3"),
                       guide = guide_legend(reverse = TRUE)) +
     labs(fill = "Using\ndata in",

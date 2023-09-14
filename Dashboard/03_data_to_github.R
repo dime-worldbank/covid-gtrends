@@ -3,8 +3,7 @@
 # Move data to github folder ---------------------------------------------------
 IN_PATH <- file.path(dropbox_file_path, "DashboardData")
 
-OUT_PATH <- file.path(github_file_path, "Dashboard", "google_trends", 
-                      "data")
+OUT_PATH <- file.path(github_file_path, "Dashboard", "data")
 
 i <- 1
 temp <- list.files(IN_PATH, pattern = "*.Rds|.*png") %>%
@@ -18,7 +17,7 @@ temp <- list.files(IN_PATH, pattern = "*.Rds|.*png") %>%
   })
 
 # Move correlation gif to github folder ----------------------------------------
-file.copy(file.path(dropbox_file_path, "Data", "google_trends", "Outputs", 
+file.copy(file.path(dropbox_file_path, "Data", "Outputs", 
                     "cor_gif", "cor.gif"),
           file.path(github_file_path, "Dashboard", "google_trends", "www/"),
           overwrite=T)
@@ -52,8 +51,7 @@ languages <- languages %>%
   dplyr::select(Country, Language, language_best, geo) %>%
   arrange(Country)
 
-saveRDS(languages, file.path(github_file_path, "Dashboard", 
-                             "google_trends", "data", "countries_lang.Rds"))
+saveRDS(languages, file.path(github_file_path, "Dashboard", "data", "countries_lang.Rds"))
 
 
 

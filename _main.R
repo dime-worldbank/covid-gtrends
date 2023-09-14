@@ -46,12 +46,7 @@ datawork_dir <- file.path(github_file_path, "DataWork")
 # Load Google API key where the Google Translate API is enabled.
 # "api_key" should be a character with the Google API key
 if(TRANSLATE_GOOGLE_KEYWORDS){
-  api_key <- read_csv(file.path("~", "Dropbox", "World Bank", "Webscraping", 
-                                "Files for Server", 
-                                "api_keys.csv")) %>%
-    filter(Account %in% "robertandrew311@gmail.com",
-           Service %in% "Google Directions API") %>%
-    pull(Key)
+  api_key <- "API-KEY-HERE"
 }
 
 # Packages ---------------------------------------------------------------------
@@ -71,7 +66,7 @@ pacman::p_load(gtrendsR, countrycode, parallel, pbmcapply, ggplot2, jsonlite,
                geosphere, data.table, formattable, tidyr, viridis, data.table,
                WDI, scales, rnaturalearth, sp, utf8, ggtext, stargazer, lfe,
                ggrepel, Rfast, tikzDevice, ISOcodes, ggthemes, gghalves,
-               rnaturalearthdata, janitor, readxl)
+               rnaturalearthdata, janitor, readxl, tsbox)
 
 ## User defined functions
 source("https://raw.githubusercontent.com/ramarty/r_google_translate/main/r_google_translate.R")
@@ -92,55 +87,6 @@ lm_post_confint_tidy <- function(lm){
   lm_confint$pvalue <- summary(lm)$coefficients[,4] %>% as.vector()
   
   return(lm_confint)
-}
-
-make_vax_cat <- function(gtrends_df){
-  # Make vaccine categories
-  
-  gtrends_df <- gtrends_df %>%
-    dplyr::mutate(keyword_cat = case_when(
-      # Searches specifically related to appointments
-      keyword_en %in% c("can i get the covid vaccine",
-                        "covid vaccine appointment",
-                        "vaccine appointment",
-                        "covid vaccine center") ~ "Vaccine Appointment",
-      
-      keyword_en %in% c("covid vaccine",
-                        "covid vaccine priority",
-                        "covid vaccine priority list",
-                        "covid vaccine approved",
-                        "is covid vaccine approved", 
-                        "covid vaccine second dose",
-                        "vaccine near me", 
-                        "where to get covid vaccine",
-                        "vaccine") ~ "Vaccine General",
-      
-      keyword_en %in% c("covid vaccine blood clots",
-                        "covid vaccine safety",
-                        "covid vaccine sick", 
-                        "covid vaccine side effects",
-                        "safety of covid vaccine",
-                        "vaccine allergy",
-                        "long term effects of covid vaccine",
-                        "vaccine reaction",
-                        "covid vaccine reaction",
-                        "fear of needles",
-                        "covid vaccine dangerous",
-                        #"trypanophobia",
-                        "needle phobia") ~ "Side Effects & Safety",
-      
-      keyword_en %in% c("covid microchip",
-                        "covid vaccine microchip",
-                        "covid vaccine cause infertility",
-                        "covid vaccine infertility",
-                        "covid vaccine change dna",
-                        "does covid vaccine change dna",
-                        "is the covid vaccine the mark of the beast",
-                        "covid vaccine mercury",
-                        "ivermectin") ~ "Misinformation"
-    )) 
-  
-  return(gtrends_df)
 }
 
 # Keywords ---------------------------------------------------------------------
@@ -185,45 +131,8 @@ KEYWORDS_SYMTPOMS <- c("loss of smell",
                        "covid-19") %>%
   tolower()
 
-VACCINE_KEYWORDS <- c("covid microchip",
-                      "covid vaccine microchip",
-                      "covid vaccine cause infertility",
-                      "covid vaccine infertility",
-                      "covid vaccine change dna",
-                      "does covid vaccine change dna",
-                      "covid vaccine dangerous",
-                      "is the covid vaccine the mark of the beast",
-                      "covid vaccine mercury",
-                      "ivermectin",
-                      "covid vaccine blood clots",
-                      "covid vaccine safety",
-                      "covid vaccine sick", 
-                      "covid vaccine side effects",
-                      "safety of covid vaccine",
-                      "vaccine allergy",
-                      "long term effects of covid vaccine",
-                      "vaccine reaction",
-                      "covid vaccine reaction",
-                      "fear of needles",
-                      "needle phobia",
-                      "covid vaccine",
-                      "covid vaccine priority",
-                      "covid vaccine priority list",
-                      "covid vaccine approved",
-                      "is covid vaccine approved", 
-                      "covid vaccine second dose",
-                      "vaccine near me", 
-                      "where to get covid vaccine",
-                      "vaccine",
-                      "can i get the covid vaccine",
-                      "covid vaccine appointment",
-                      "vaccine appointment",
-                      "covid vaccine center") %>%
-  tolower()
-
 KEYWORDS_TIMESERIES_ALL <- c(KEYWORDS_CONTAIN_USE, 
-                             KEYWORDS_SYMTPOMS, 
-                             VACCINE_KEYWORDS) 
+                             KEYWORDS_SYMTPOMS) 
 
 # Run Fresh --------------------------------------------------------------------
 # Whether to run code "fresh"; that is, where all figures and processed/final

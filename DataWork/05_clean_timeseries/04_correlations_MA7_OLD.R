@@ -61,9 +61,9 @@ for(keyword_type in c("symptoms", "contain")){
         
         gtrends_df <- gtrends_full_df %>%
           dplyr::select(geo, date, keyword_en,
-                        cases_new_ma7, death_new_ma7,
-                        hits_ma7,
-                        cases_new, death_new, hits) %>%
+                        cases_new_ma7, death_new_ma7, 
+                        cases_new, death_new, 
+                        hits_ma7, hits) %>%
           dplyr::arrange(date)
         
         gc()
@@ -81,8 +81,8 @@ for(keyword_type in c("symptoms", "contain")){
             gtrends_df <- gtrends_df %>%
               dplyr::arrange(date) %>%
               dplyr::group_by(geo, keyword_en) %>%
-              dplyr::mutate(hits_leadlag = dplyr::lag(hits, leadlag_abs),
-                            hits_ma7_leadlag = dplyr::lag(hits_ma7, leadlag_abs)) %>%
+              dplyr::mutate(hits_ma7_leadlag = dplyr::lag(hits_ma7, leadlag_abs),
+                            hits_leadlag = dplyr::lag(hits, leadlag_abs)) %>%
               dplyr::ungroup()
             
           } else if(leadlag > 0){
@@ -90,8 +90,8 @@ for(keyword_type in c("symptoms", "contain")){
             gtrends_df <- gtrends_df %>%
               dplyr::arrange(date) %>%
               dplyr::group_by(geo, keyword_en) %>%
-              dplyr::mutate(hits_leadlag = dplyr::lead(hits, leadlag_abs),
-                            hits_ma7_leadlag = dplyr::lead(hits_ma7, leadlag_abs)) %>%
+              dplyr::mutate(hits_ma7_leadlag = dplyr::lead(hits_ma7, leadlag_abs),
+                            hits_leadlag = dplyr::lead(hits, leadlag_abs)) %>%
               dplyr::ungroup()
             
           } else if(leadlag == 0){
@@ -99,24 +99,23 @@ for(keyword_type in c("symptoms", "contain")){
             gtrends_df <- gtrends_df %>%
               dplyr::arrange(date) %>%
               dplyr::group_by(geo, keyword_en) %>%
-              dplyr::mutate(hits_leadlag = hits,
-                            hits_ma7_leadlag = hits_ma7) %>%
+              dplyr::mutate(hits_ma7_leadlag = hits_ma7,
+                            hits_leadlag = hits) %>%
               dplyr::ungroup()
             
           }
           
           gtrends_cor_df_i <- gtrends_df %>%
             dplyr::arrange(date) %>%
-            dplyr::filter(!is.na(hits_leadlag),
-                          !is.na(hits_ma7_leadlag),
+            dplyr::filter(!is.na(hits_ma7_leadlag),
                           !is.na(cases_new_ma7),
-                          !is.na(cases_new),
-                          !is.na(death_new)) %>%
+                          !is.na(death_new_ma7)) %>%
             group_by(geo, keyword_en) %>%
-            dplyr::summarise(cor_cases_hits = cor(cases_new, hits_leadlag),
-                             cor_death_hits = cor(death_new, hits_leadlag),
-                             cor_casesMA7_hitsMA7 = cor(cases_new_ma7, hits_ma7_leadlag),
-                             cor_deathMA7_hitsMA7 = cor(death_new_ma7, hits_ma7_leadlag)) %>%
+            dplyr::summarise(cor_casesMA7_hitsMA7 = cor(cases_new_ma7, hits_ma7_leadlag),
+                             cor_deathMA7_hitsMA7 = cor(death_new_ma7, hits_ma7_leadlag),
+                             cor_cases_hitsMA7 = cor(cases_new, hits_ma7_leadlag),
+                             cor_death_hitsMA7 = cor(death_new, hits_ma7_leadlag),
+                             cor_cases_hits = cor(cases_new, hits_leadlag)) %>%
             ungroup() %>%
             dplyr::mutate(leadlag = leadlag)
           
@@ -129,54 +128,45 @@ for(keyword_type in c("symptoms", "contain")){
         gtrends_cor_df <- gtrends_cor_long_df %>%
           ungroup() %>%
           dplyr::group_by(geo, keyword_en) %>%
-          dplyr::summarise(cor_cases_hits_nolag = cor_cases_hits[leadlag == 0][1],
-                           cor_death_hits_nolag = cor_death_hits[leadlag == 0][1],
-                           
-                           cor_casesMA7_hitsMA7_nolag = cor_casesMA7_hitsMA7[leadlag == 0][1],
+          dplyr::summarise(cor_casesMA7_hitsMA7_nolag = cor_casesMA7_hitsMA7[leadlag == 0][1],
                            cor_deathMA7_hitsMA7_nolag = cor_deathMA7_hitsMA7[leadlag == 0][1],
                            
                            cor_casesMA7_hitsMA7_max = max(cor_casesMA7_hitsMA7, na.rm=T),
                            cor_deathMA7_hitsMA7_max = max(cor_deathMA7_hitsMA7, na.rm=T),
                            
-                           cor_cases_hits_max = max(cor_cases_hits, na.rm=T),
-                           cor_death_hits_max = max(cor_death_hits, na.rm=T),
+                           cor_casesMA7_hitsMA7_mean = mean(cor_casesMA7_hitsMA7, na.rm=T),
+                           cor_deathMA7_hitsMA7_mean = mean(cor_deathMA7_hitsMA7, na.rm=T),
                            
-                           cor_cases_hits_mean = mean(cor_cases_hits, na.rm=T),
-                           cor_death_hits_mean = mean(cor_death_hits, na.rm=T),
-                           
-                           cor_cases_hits_sd = sd(cor_cases_hits, na.rm=T),
-                           cor_death_hits_sd = sd(cor_death_hits, na.rm=T),
+                           cor_casesMA7_hitsMA7_sd = sd(cor_casesMA7_hitsMA7, na.rm=T),
+                           cor_deathMA7_hitsMA7_sd = sd(cor_deathMA7_hitsMA7, na.rm=T),
                            
                            cor_casesMA7_hitsMA7_lag = leadlag[cor_casesMA7_hitsMA7 %in% max(cor_casesMA7_hitsMA7)][1],
-                           cor_deathMA7_hitsMA7_lag = leadlag[cor_deathMA7_hitsMA7 %in% max(cor_deathMA7_hitsMA7)][1],
-                           
-                           cor_cases_hits_lag = leadlag[cor_cases_hits %in% max(cor_cases_hits)][1],
-                           cor_death_hits_lag = leadlag[cor_death_hits %in% max(cor_death_hits)][1]) %>%
+                           cor_deathMA7_hitsMA7_lag = leadlag[cor_deathMA7_hitsMA7 %in% max(cor_deathMA7_hitsMA7)][1]) %>%
           ungroup() %>%
-          dplyr::mutate(cor_cases_hits_zscore = (cor_cases_hits_max - cor_cases_hits_mean) / cor_cases_hits_sd,
-                        cor_death_hits_zscore = (cor_death_hits_max - cor_death_hits_mean) / cor_death_hits_sd,
+          dplyr::mutate(cor_casesMA7_hitsMA7_zscore = (cor_casesMA7_hitsMA7_max - cor_casesMA7_hitsMA7_mean) / cor_casesMA7_hitsMA7_sd,
+                        cor_deathMA7_hitsMA7_zscore = (cor_deathMA7_hitsMA7_max - cor_deathMA7_hitsMA7_mean) / cor_deathMA7_hitsMA7_sd,
                         
-                        cor_cases_hits_nolag_zscore = (cor_cases_hits_nolag - cor_cases_hits_mean) / cor_cases_hits_sd,
-                        cor_death_hits_nolag_zscore = (cor_death_hits_nolag - cor_death_hits_mean) / cor_death_hits_sd) 
+                        cor_casesMA7_hitsMA7_nolag_zscore = (cor_casesMA7_hitsMA7_nolag - cor_casesMA7_hitsMA7_mean) / cor_casesMA7_hitsMA7_sd,
+                        cor_deathMA7_hitsMA7_nolag_zscore = (cor_deathMA7_hitsMA7_nolag - cor_deathMA7_hitsMA7_mean) / cor_deathMA7_hitsMA7_sd) 
         
         gtrends_cor_df <- gtrends_cor_df %>%
-          dplyr::filter(!is.na(cor_cases_hits_nolag))
+          dplyr::filter(!is.na(cor_casesMA7_hitsMA7_nolag))
         
         #### Stack Cases/Deaths together
         cor_max_df <- bind_rows(gtrends_cor_df %>%
-                                  dplyr::rename(cor_nolag = cor_cases_hits_nolag,
-                                                cor = cor_cases_hits_max,
-                                                lag = cor_cases_hits_lag,
-                                                zscore = cor_cases_hits_zscore,
-                                                zscore_nolag = cor_cases_hits_nolag_zscore) %>%
+                                  dplyr::rename(cor_nolag = cor_casesMA7_hitsMA7_nolag,
+                                                cor = cor_casesMA7_hitsMA7_max,
+                                                lag = cor_casesMA7_hitsMA7_lag,
+                                                zscore = cor_casesMA7_hitsMA7_zscore,
+                                                zscore_nolag = cor_casesMA7_hitsMA7_nolag_zscore) %>%
                                   mutate(type = "Cases"),
                                 
                                 gtrends_cor_df %>%
-                                  dplyr::rename(cor_nolag = cor_death_hits_nolag,
-                                                cor = cor_death_hits_max,
-                                                lag = cor_death_hits_lag,
-                                                zscore = cor_death_hits_zscore,
-                                                zscore_nolag = cor_death_hits_nolag_zscore) %>%
+                                  dplyr::rename(cor_nolag = cor_deathMA7_hitsMA7_nolag,
+                                                cor = cor_deathMA7_hitsMA7_max,
+                                                lag = cor_deathMA7_hitsMA7_lag,
+                                                zscore = cor_deathMA7_hitsMA7_zscore,
+                                                zscore_nolag = cor_deathMA7_hitsMA7_nolag_zscore) %>%
                                   mutate(type = "Deaths")) %>%
           dplyr::select(geo, keyword_en, cor, cor_nolag, lag, zscore, zscore_nolag, type) 
         

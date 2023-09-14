@@ -1,8 +1,5 @@
 # Lockdown Difference-in-Difference Analysis
 
-# TODO: "Kiribati" has NA hits? Not being completed in 2018; no data then,
-#       but should be completed.
-
 # Load Data --------------------------------------------------------------------
 gtrends_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
                                 "gtrends_full_timeseries", "gtrends_otherdata_varclean_complete_contain.Rds"))
@@ -19,6 +16,9 @@ gtrends_df <- gtrends_df %>%
 gtrends_df$hits_ma7_log <- gtrends_df$hits_ma7 + abs(min(gtrends_df$hits_ma7, na.rm=T))
 gtrends_df$hits_ma7_log <- log(gtrends_df$hits_ma7_log+1)
 
+gtrends_df$hits_log <- gtrends_df$hits + abs(min(gtrends_df$hits, na.rm=T))
+gtrends_df$hits_log <- log(gtrends_df$hits_log+1)
+
 ## Subset data -----------------------------------------------------------------
 
 ## Additional filtering
@@ -30,6 +30,7 @@ gtrends_df <- gtrends_df %>%
     # Remove NA hits_ma7 values (MA creates 
     # missing values at beginning of time series)
     !is.na(hits_ma7),
+    !is.na(hits),
     
     # Remove countries with no lockdown data
     !is.na(days_since_c_policy_yearcurrent)
@@ -39,12 +40,12 @@ gtrends_df <- gtrends_df %>%
 gtrends_df <- gtrends_df %>%
   ungroup() %>%
   dplyr::mutate(days_since_c_policy_yearcurrent = as.numeric(days_since_c_policy_yearcurrent)) %>%
-  dplyr::filter(abs(days_since_c_policy_yearcurrent) <= 120)
+  dplyr::filter(abs(days_since_c_policy_yearcurrent) <= 180)
 
 ## Remove country-keyword with no hits (only consider 30 days before/after lockdown)
 gtrends_df <- gtrends_df %>%
   dplyr::mutate(hits_within_X_days = case_when(
-    abs(days_since_c_policy_yearcurrent) <= 120 ~ hits
+    abs(days_since_c_policy_yearcurrent) <= 180 ~ hits
   )) %>%
   group_by(geo, keyword_en) %>%
   dplyr::mutate(N_hits_above_0 = sum(hits_within_X_days > 0, na.rm=T)) %>%

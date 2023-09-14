@@ -12,7 +12,7 @@ max_narm <- function(x){
   return(out)
 }
 
-for(days_thresh in c(30, 60, 90, 120)){
+for(days_thresh in c(30, 60, 90, 120, 180)){
   print(paste(days_thresh, "================================================="))
   
   # Load Data --------------------------------------------------------------------
@@ -132,73 +132,18 @@ for(days_thresh in c(30, 60, 90, 120)){
                   did_gm_avg_min_X_did_EconomicSupportIndex_max_cat = did_gm_avg_min * did_EconomicSupportIndex_max_cat,
                   did_StringencyIndex_max_X_did_EconomicSupportIndex_max_cat = did_StringencyIndex_max * did_EconomicSupportIndex_max_cat)
   
-  # Correlation ----------------------------------------------------------------
-  if(F){
-    df_c <- df %>%
-      distinct(geo, .keep_all = T)
-    
-    cor.test(df_c$EconomicSupportIndex_max,
-             df_c$StringencyIndex_max)
-    
-    cor.test(df_c$EconomicSupportIndex_max,
-             df_c$gm_avg_min)
-    
-    plot(df_c$EconomicSupportIndex_max,
-         df_c$gm_avg_min)
-  }
-  
   # Analysis ---------------------------------------------------------------------
-  keyword_i <- "file for unemployment"
-  
   run_regs <- function(keyword_i, df){
     print(keyword_i)
     
-    out1 <- felm(hits_ma7_log ~ pandemic_time + 
+    out1 <- felm(hits_log ~ pandemic_time + 
                    days_since_c_policy_yearcurrent_post + 
                    days_since_c_policy_yearcurrent_post_X_year2020  | geo + week | 0 | 0, 
                  data = df[df$keyword_en %in% keyword_i,]) %>%
       lm_post_confint_tidy() %>%
       mutate(type = "Overall")
- 
-    # out2 <- felm(hits_ma7_log ~ pandemic_time + 
-    #                days_since_c_policy_yearcurrent_post + 
-    #                days_since_c_policy_yearcurrent_post_X_year2020 +
-    #                did_gm_avg_min +
-    #                did_EconomicSupportIndex_max | geo + week | 0 | 0, 
-    #              data = df[df$keyword_en %in% keyword_i,]) %>%
-    #   lm_post_confint_tidy() %>%
-    #   mutate(type = "did_gm_avg_min_AND_did_EconomicSupportIndex_max")
-    # 
-    # out3 <- felm(hits_ma7_log ~ pandemic_time + 
-    #                days_since_c_policy_yearcurrent_post + 
-    #                days_since_c_policy_yearcurrent_post_X_year2020 +
-    #                did_gm_avg_min +
-    #                did_EconomicSupportIndex_max +
-    #                did_ln_gdp_pc | geo + week | 0 | 0, 
-    #              data = df[df$keyword_en %in% keyword_i,]) %>%
-    #   lm_post_confint_tidy() %>%
-    #   mutate(type = "did_gm_avg_min_AND_did_EconomicSupportIndex_max_gdppc")
-    # 
-    # out4 <- felm(hits_ma7_log ~ pandemic_time + 
-    #                days_since_c_policy_yearcurrent_post + 
-    #                days_since_c_policy_yearcurrent_post_X_year2020 +
-    #                did_StringencyIndex_max +
-    #                did_EconomicSupportIndex_max | geo + week | 0 | 0, 
-    #              data = df[df$keyword_en %in% keyword_i,]) %>%
-    #   lm_post_confint_tidy() %>%
-    #   mutate(type = "did_StringencyIndex_max_AND_did_EconomicSupportIndex_max")
-    # 
-    # out5 <- felm(hits_ma7_log ~ pandemic_time + 
-    #                days_since_c_policy_yearcurrent_post + 
-    #                days_since_c_policy_yearcurrent_post_X_year2020 +
-    #                did_StringencyIndex_max +
-    #                did_EconomicSupportIndex_max +
-    #                did_ln_gdp_pc | geo + week | 0 | 0, 
-    #              data = df[df$keyword_en %in% keyword_i,]) %>%
-    #   lm_post_confint_tidy() %>%
-    #   mutate(type = "did_StringencyIndex_max_AND_did_EconomicSupportIndex_max_gdppc")
     
-    out2 <- felm(hits_ma7_log ~ pandemic_time + 
+    out2 <- felm(hits_log ~ pandemic_time + 
                    days_since_c_policy_yearcurrent_post + 
                    days_since_c_policy_yearcurrent_post_X_year2020 +
                    
@@ -213,7 +158,7 @@ for(days_thresh in c(30, 60, 90, 120)){
       lm_post_confint_tidy() %>%
       mutate(type = "did_gm_avg_min_AND_did_EconomicSupportIndex_max")
     
-    out3 <- felm(hits_ma7_log ~ pandemic_time + 
+    out3 <- felm(hits_log ~ pandemic_time + 
                    days_since_c_policy_yearcurrent_post + 
                    days_since_c_policy_yearcurrent_post_X_year2020 +
                    gm_avg_min*days_since_c_policy_yearcurrent_post +
@@ -231,7 +176,7 @@ for(days_thresh in c(30, 60, 90, 120)){
       lm_post_confint_tidy() %>%
       mutate(type = "did_gm_avg_min_AND_did_EconomicSupportIndex_max_gdppc")
     
-    out4 <- felm(hits_ma7_log ~ pandemic_time + 
+    out4 <- felm(hits_log ~ pandemic_time + 
                    days_since_c_policy_yearcurrent_post + 
                    days_since_c_policy_yearcurrent_post_X_year2020 +
                    
@@ -246,7 +191,7 @@ for(days_thresh in c(30, 60, 90, 120)){
       lm_post_confint_tidy() %>%
       mutate(type = "did_StringencyIndex_max_AND_did_EconomicSupportIndex_max")
     
-    out5 <- felm(hits_ma7_log ~ pandemic_time + 
+    out5 <- felm(hits_log ~ pandemic_time + 
                    days_since_c_policy_yearcurrent_post + 
                    days_since_c_policy_yearcurrent_post_X_year2020 +
                    
@@ -266,7 +211,7 @@ for(days_thresh in c(30, 60, 90, 120)){
       mutate(type = "did_StringencyIndex_max_AND_did_EconomicSupportIndex_max_gdppc")
     
     
-    out6 <- felm(hits_ma7_log ~ pandemic_time + 
+    out6 <- felm(hits_log ~ pandemic_time + 
                    days_since_c_policy_yearcurrent_post + 
                    days_since_c_policy_yearcurrent_post_X_year2020 +
                    
@@ -277,7 +222,7 @@ for(days_thresh in c(30, 60, 90, 120)){
       lm_post_confint_tidy() %>%
       mutate(type = "did_gm_avg_min")
     
-    out7 <- felm(hits_ma7_log ~ pandemic_time + 
+    out7 <- felm(hits_log ~ pandemic_time + 
                    days_since_c_policy_yearcurrent_post + 
                    days_since_c_policy_yearcurrent_post_X_year2020 +
                    
@@ -288,7 +233,7 @@ for(days_thresh in c(30, 60, 90, 120)){
       lm_post_confint_tidy() %>%
       mutate(type = "did_StringencyIndex_max")
     
-    out8 <- felm(hits_ma7_log ~ pandemic_time + 
+    out8 <- felm(hits_log ~ pandemic_time + 
                    days_since_c_policy_yearcurrent_post + 
                    days_since_c_policy_yearcurrent_post_X_year2020 +
                    
@@ -299,7 +244,7 @@ for(days_thresh in c(30, 60, 90, 120)){
       lm_post_confint_tidy() %>%
       mutate(type = "did_EconomicSupportIndex_max")
     
-    out9 <- felm(hits_ma7_log ~ pandemic_time + 
+    out9 <- felm(hits_log ~ pandemic_time + 
                    days_since_c_policy_yearcurrent_post + 
                    days_since_c_policy_yearcurrent_post_X_year2020 +
                    
@@ -310,6 +255,103 @@ for(days_thresh in c(30, 60, 90, 120)){
       lm_post_confint_tidy() %>%
       mutate(type = "did_ln_gdp_pc")
     
+    
+    #### By country groups -- wb_region
+    out10 <- felm(hits_log ~ pandemic_time + 
+                    days_since_c_policy_yearcurrent_post + 
+                    days_since_c_policy_yearcurrent_post_X_year2020  | geo + week | 0 | 0, 
+                  data = df[(df$keyword_en %in% keyword_i) & (df$wb_region %in% "North America"),]) %>%
+      lm_post_confint_tidy() %>%
+      mutate(type = "wb_region",
+             wb_region = "North America")
+    
+    out11 <- felm(hits_log ~ pandemic_time + 
+                    days_since_c_policy_yearcurrent_post + 
+                    days_since_c_policy_yearcurrent_post_X_year2020  | geo + week | 0 | 0, 
+                  data = df[(df$keyword_en %in% keyword_i) & (df$wb_region %in% "East Asia & Pacific"),]) %>%
+      lm_post_confint_tidy() %>%
+      mutate(type = "wb_region",
+             wb_region = "East Asia & Pacific")
+    
+    out12 <- felm(hits_log ~ pandemic_time + 
+                    days_since_c_policy_yearcurrent_post + 
+                    days_since_c_policy_yearcurrent_post_X_year2020  | geo + week | 0 | 0, 
+                  data = df[(df$keyword_en %in% keyword_i) & (df$wb_region %in% "Latin America & Caribbean"),]) %>%
+      lm_post_confint_tidy() %>%
+      mutate(type = "wb_region",
+             wb_region = "Latin America & Caribbean")
+    
+    out13 <- felm(hits_log ~ pandemic_time + 
+                    days_since_c_policy_yearcurrent_post + 
+                    days_since_c_policy_yearcurrent_post_X_year2020  | geo + week | 0 | 0, 
+                  data = df[(df$keyword_en %in% keyword_i) & (df$wb_region %in% "Sub-Saharan Africa"),]) %>%
+      lm_post_confint_tidy() %>%
+      mutate(type = "wb_region",
+             wb_region = "Sub-Saharan Africa")
+    
+    out14 <- felm(hits_log ~ pandemic_time + 
+                    days_since_c_policy_yearcurrent_post + 
+                    days_since_c_policy_yearcurrent_post_X_year2020  | geo + week | 0 | 0, 
+                  data = df[(df$keyword_en %in% keyword_i) & (df$wb_region %in% "South Asia"),]) %>%
+      lm_post_confint_tidy() %>%
+      mutate(type = "wb_region",
+             wb_region = "South Asia")
+    
+    out15 <- felm(hits_log ~ pandemic_time + 
+                    days_since_c_policy_yearcurrent_post + 
+                    days_since_c_policy_yearcurrent_post_X_year2020  | geo + week | 0 | 0, 
+                  data = df[(df$keyword_en %in% keyword_i) & (df$wb_region %in% "Europe & Central Asia"),]) %>%
+      lm_post_confint_tidy() %>%
+      mutate(type = "wb_region",
+             wb_region = "Europe & Central Asia")
+    
+    out16 <- felm(hits_log ~ pandemic_time + 
+                    days_since_c_policy_yearcurrent_post + 
+                    days_since_c_policy_yearcurrent_post_X_year2020  | geo + week | 0 | 0, 
+                  data = df[(df$keyword_en %in% keyword_i) & (df$wb_region %in% "Middle East & North Africa"),]) %>%
+      lm_post_confint_tidy() %>%
+      mutate(type = "wb_region",
+             wb_region = "Middle East & North Africa")
+    
+    #### By country groups -- income
+    check_nrow <- df[(df$keyword_en %in% keyword_i) & (df$income %in% "Low income"),]
+    
+    if(nrow(check_nrow) > 0){
+      out17 <- felm(hits_log ~ pandemic_time + 
+                      days_since_c_policy_yearcurrent_post + 
+                      days_since_c_policy_yearcurrent_post_X_year2020  | geo + week | 0 | 0, 
+                    data = df[(df$keyword_en %in% keyword_i) & (df$income %in% "Low income"),]) %>%
+        lm_post_confint_tidy() %>%
+        mutate(type = "income",
+               income = "Low income")
+    } else{
+      out17 <- data.frame(NULL)
+    }
+    
+    out18 <- felm(hits_log ~ pandemic_time + 
+                    days_since_c_policy_yearcurrent_post + 
+                    days_since_c_policy_yearcurrent_post_X_year2020  | geo + week | 0 | 0, 
+                  data = df[(df$keyword_en %in% keyword_i) & (df$income %in% "Lower middle income"),]) %>%
+      lm_post_confint_tidy() %>%
+      mutate(type = "income",
+             income = "Lower middle income")
+    
+    out19 <- felm(hits_log ~ pandemic_time + 
+                    days_since_c_policy_yearcurrent_post + 
+                    days_since_c_policy_yearcurrent_post_X_year2020  | geo + week | 0 | 0, 
+                  data = df[(df$keyword_en %in% keyword_i) & (df$income %in% "Upper middle income"),]) %>%
+      lm_post_confint_tidy() %>%
+      mutate(type = "income",
+             income = "Upper middle income")
+    
+    out20 <- felm(hits_log ~ pandemic_time + 
+                    days_since_c_policy_yearcurrent_post + 
+                    days_since_c_policy_yearcurrent_post_X_year2020  | geo + week | 0 | 0, 
+                  data = df[(df$keyword_en %in% keyword_i) & (df$income %in% "High income"),]) %>%
+      lm_post_confint_tidy() %>%
+      mutate(type = "income",
+             income = "High income")
+    
     out_all <- bind_rows(
       out1,
       out2,
@@ -319,7 +361,18 @@ for(days_thresh in c(30, 60, 90, 120)){
       out6,
       out7,
       out8,
-      out9
+      out9,
+      out10,
+      out11,
+      out12,
+      out13,
+      out14,
+      out15,
+      out16,
+      out17,
+      out18,
+      out19,
+      out20
     )
     
     out_all$keyword <- keyword_i
@@ -333,6 +386,10 @@ for(days_thresh in c(30, 60, 90, 120)){
   saveRDS(coef_df,
           file.path(dropbox_file_path, "Data", "google_trends", "FinalData", "results", 
                     paste0("did_pooled_results_",days_thresh,".Rds")))
+  
+  saveRDS(df,
+          file.path(dropbox_file_path, "Data", "google_trends", "FinalData", "results", 
+                    paste0("did_pooled_data_",days_thresh,".Rds")))
   
 }
 

@@ -32,9 +32,9 @@ gtrends_df <- gtrends_df %>%
 #### Remove if no hits or policy
 gtrends_df <- gtrends_df %>%
   dplyr::group_by(geo, keyword_en) %>%
-  dplyr::mutate(hits_ma7_SUM = sum(hits_ma7, na.rm = T)) %>%
+  dplyr::mutate(hits_SUM = sum(hits, na.rm = T)) %>%
   ungroup() %>%
-  dplyr::filter(hits_ma7_SUM > 0,
+  dplyr::filter(hits_SUM > 0,
                 !is.na(days_since_c_policy))
 
 # 2. Event Study Figures -------------------------------------------------------
@@ -48,7 +48,7 @@ make_es_data <- function(keyword, df, THRESH){
   
   if(nrow(df) > 0){
     data_lm <- df %>%
-      felm(hits_ma7 ~ days_since_c_policy_fact | geo | 0 | date, data = .) %>%
+      felm(hits ~ days_since_c_policy_fact | geo | 0 | date, data = .) %>%
       lm_post_confint_tidy() %>%
       filter(variable != "(Intercept)") %>%
       mutate(variable = variable %>%

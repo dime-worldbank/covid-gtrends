@@ -2,14 +2,14 @@
 
 # https://shiny.rstudio.com/articles/plot-caching.html
 
-END_DATE_TEXT <- "Jaunary 31, 2021"
-END_DATE <- "2021-01-31"
+END_DATE_TEXT <- "December 31, 2022"
+END_DATE <- "2022-12-31"
 
 # PACKAGES AND SETUP ===========================================================
 
 #### Setting directory so will work locally
 if (Sys.info()[["user"]] == "robmarty") {
-  setwd("~/Documents/Github/covid-gtrends/Dashboard/google_trends")
+  setwd("~/Documents/Github/covid-gtrends/Dashboard")
 }
 
 #### Pacakges
@@ -685,7 +685,7 @@ ui <- fluidPage(
                  h2("Credits", align = "center"),
                  
                  HTML("<h4>The dashboard and analytics were produced by Robert Marty, Manuel Maqueda,
-                 Nausheen Khan, Arndt Reichert and Bibind Vasu of the 
+                 Nausheen Khan and Arndt Reichert of the 
                  
                  <a href='https://www.worldbank.org/en/research/dime'>Development Impact Evaluation (DIME)</a>
                 Group at the World Bank. The research team has published a 

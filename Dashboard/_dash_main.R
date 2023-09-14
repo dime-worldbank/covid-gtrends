@@ -2,7 +2,7 @@
 # Master Script
 
 ## Filepath to code
-CODE_PATH <- file.path(github_file_path, "Dashboard", "google_trends")
+CODE_PATH <- file.path(github_file_path, "Dashboard")
 
 ## Run scripts
 source(file.path(CODE_PATH, "01_prepare_data_for_dashboard.R"))
