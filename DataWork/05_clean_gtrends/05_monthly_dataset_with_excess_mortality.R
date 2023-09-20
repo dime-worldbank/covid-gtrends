@@ -12,7 +12,7 @@ ex_mort_clean_df <- ex_mort_df %>%
   dplyr::rename(excess_expected_mean = expected_mean)
 
 # Make monthly data ------------------------------------------------------------
-df_append <- map_df(c("symptoms", "contain", "vaccine"), function(keyword_type){
+df_append <- map_df(c("symptoms", "contain"), function(keyword_type){
   print(paste(keyword_type, "================================================"))
   
   #### Load data

@@ -1,7 +1,7 @@
 # Applies equation to make hits comparable across time/states using a comparison
 # state
 
-for(keyword_type in c("symptoms", "contain", "vaccine")){
+for(keyword_type in c("symptoms", "contain")){
   print(paste(keyword_type, "================================================"))
   
   # Load Data --------------------------------------------------------------------

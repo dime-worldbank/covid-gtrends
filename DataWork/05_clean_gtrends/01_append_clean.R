@@ -25,7 +25,7 @@ clean_google_data <- function(df, keyword_type_vec){
   return(df)
 }
 
-for(keyword_type in c("symptoms", "contain", "vaccine")){
+for(keyword_type in c("symptoms", "contain")){
   print(paste(keyword_type, "================================================"))
   
   if(keyword_type == "symptoms") keyword_type_vec <- tolower(KEYWORDS_SYMTPOMS)

@@ -6,7 +6,7 @@
 #   ggplot() +
 #   geom_line(aes(x = date, y = hits))
 
-for(keyword_type in c("symptoms", "contain", "vaccine")){
+for(keyword_type in c("symptoms", "contain")){
   print(paste(keyword_type, "================================================"))
   
   # Load Data --------------------------------------------------------------------
@@ -24,9 +24,9 @@ for(keyword_type in c("symptoms", "contain", "vaccine")){
   ox_nat_timeseries_df <- readRDS(file.path(oxpol_dir, "FinalData", "OxCGRT_national_timeseries.Rds"))
   
   ## Oxford Policy - Vaccine
-  vac_earliest_df <- readRDS(file.path(oxpol_dir, "FinalData", "OxCGRT_earliest_vaccine_dates.Rds"))
+  #vac_earliest_df <- readRDS(file.path(oxpol_dir, "FinalData", "OxCGRT_earliest_vaccine_dates.Rds"))
   
-  vac_timeseries_df <- readRDS(file.path(oxpol_dir, "FinalData", "OxCGRT_vaccine_national_timeseries.Rds"))
+  #vac_timeseries_df <- readRDS(file.path(oxpol_dir, "FinalData", "OxCGRT_vaccine_national_timeseries.Rds"))
   
   ## WDI
   wdi_df <- readRDS(file.path(wdi_dir, "FinalData", "wdi_data.Rds"))
@@ -50,43 +50,43 @@ for(keyword_type in c("symptoms", "contain", "vaccine")){
   #gtrends_df$death[gtrends_df$date %in% as.Date(c("2020-01-01", "2020-01-02"))] <- 0
 
   # Global Vaccine Dosage Data ---------------------------------------------------
-  gvac_df <- read.csv(file.path(dropbox_file_path, "Data", "global_vaccine", "RawData", 
-                                "covid-vaccination-doses-per-capita.csv"),
-                      stringsAsFactors = F)
-  
-  ## Add vaccination rate
-  gvac_df <- gvac_df %>%
-    dplyr::filter(!is.na(Code),
-                  Code != "") %>%
-    dplyr::mutate(geo = countrycode(Code, origin = "iso3c", destination = "iso2c")) %>%
-    dplyr::mutate(geo = case_when(
-      Entity %in% "Kosovo" ~ "XK",
-      TRUE ~ geo
-    )) %>%
-    dplyr::filter(!is.na(geo)) %>%
-    dplyr::rename(date = Day) %>%
-    dplyr::select(date, geo, total_vaccinations_per_hundred) %>%
-    dplyr::mutate(date = ymd(date))
-  
-  ## First date of vaccinations
-  gvac_first_df <- gvac_df %>%
-    dplyr::filter(total_vaccinations_per_hundred > 0) %>%
-    arrange(date) %>%
-    distinct(geo, .keep_all = T) %>%
-    dplyr::select(date, geo) %>%
-    dplyr::rename(date_first_vaccine_given = date) 
-  
-  ## Merge
-  gtrends_df <- gtrends_df %>%
-    left_join(gvac_df, by = c("geo", "date"))
-  
-  gtrends_df <- gtrends_df %>%
-    left_join(gvac_first_df, by = "geo")
-  
-  ## Days since first vaccine given
-  gtrends_df <- gtrends_df %>%
-    mutate(days_since_first_vaccine_given = date - date_first_vaccine_given)
-  
+  # gvac_df <- read.csv(file.path(dropbox_file_path, "Data", "global_vaccine", "RawData", 
+  #                               "covid-vaccination-doses-per-capita.csv"),
+  #                     stringsAsFactors = F)
+  # 
+  # ## Add vaccination rate
+  # gvac_df <- gvac_df %>%
+  #   dplyr::filter(!is.na(Code),
+  #                 Code != "") %>%
+  #   dplyr::mutate(geo = countrycode(Code, origin = "iso3c", destination = "iso2c")) %>%
+  #   dplyr::mutate(geo = case_when(
+  #     Entity %in% "Kosovo" ~ "XK",
+  #     TRUE ~ geo
+  #   )) %>%
+  #   dplyr::filter(!is.na(geo)) %>%
+  #   dplyr::rename(date = Day) %>%
+  #   dplyr::select(date, geo, total_vaccinations_per_hundred) %>%
+  #   dplyr::mutate(date = ymd(date))
+  # 
+  # ## First date of vaccinations
+  # gvac_first_df <- gvac_df %>%
+  #   dplyr::filter(total_vaccinations_per_hundred > 0) %>%
+  #   arrange(date) %>%
+  #   distinct(geo, .keep_all = T) %>%
+  #   dplyr::select(date, geo) %>%
+  #   dplyr::rename(date_first_vaccine_given = date) 
+  # 
+  # ## Merge
+  # gtrends_df <- gtrends_df %>%
+  #   left_join(gvac_df, by = c("geo", "date"))
+  # 
+  # gtrends_df <- gtrends_df %>%
+  #   left_join(gvac_first_df, by = "geo")
+  # 
+  # ## Days since first vaccine given
+  # gtrends_df <- gtrends_df %>%
+  #   mutate(days_since_first_vaccine_given = date - date_first_vaccine_given)
+  # 
   # Merge WDI --------------------------------------------------------------------
   gtrends_df <- gtrends_df %>%
     left_join(wdi_df, by = "geo")
@@ -96,25 +96,25 @@ for(keyword_type in c("symptoms", "contain", "vaccine")){
     left_join(ox_nat_timeseries_df, by = c("geo", "date"))
   
   # Merge Oxford Vaccine Timeseries ----------------------------------------------
-  gtrends_df <- gtrends_df %>%
-    left_join(vac_timeseries_df, by = c("geo", "date"))
-  
+  # gtrends_df <- gtrends_df %>%
+  #   left_join(vac_timeseries_df, by = c("geo", "date"))
+  # 
   # Days Since Vaccines ----------------------------------------------------------
-  gtrends_df <- gtrends_df %>%
-    left_join(vac_earliest_df, by = "geo")
+  # gtrends_df <- gtrends_df %>%
+  #   left_join(vac_earliest_df, by = "geo")
   
-  gtrends_df <- gtrends_df %>%
-    mutate(days_since_v1_vaccine_1 = date - v1_vaccine_1_first_date,
-           days_since_v1_vaccine_2 = date - v1_vaccine_2_first_date,
-           days_since_v2_vaccine_1 = date - v2_vaccine_1_first_date,
-           days_since_v2_vaccine_2 = date - v2_vaccine_2_first_date,
-           days_since_v2_vaccine_3 = date - v2_vaccine_3_first_date,) %>%
-    dplyr::select(-c(v1_vaccine_1_first_date,
-                     v1_vaccine_2_first_date,
-                     v2_vaccine_1_first_date,
-                     v2_vaccine_2_first_date,
-                     v2_vaccine_3_first_date))
-  
+  # gtrends_df <- gtrends_df %>%
+  #   mutate(days_since_v1_vaccine_1 = date - v1_vaccine_1_first_date,
+  #          days_since_v1_vaccine_2 = date - v1_vaccine_2_first_date,
+  #          days_since_v2_vaccine_1 = date - v2_vaccine_1_first_date,
+  #          days_since_v2_vaccine_2 = date - v2_vaccine_2_first_date,
+  #          days_since_v2_vaccine_3 = date - v2_vaccine_3_first_date,) %>%
+  #   dplyr::select(-c(v1_vaccine_1_first_date,
+  #                    v1_vaccine_2_first_date,
+  #                    v2_vaccine_1_first_date,
+  #                    v2_vaccine_2_first_date,
+  #                    v2_vaccine_3_first_date))
+  # 
   # Days Since Oxford Policies ---------------------------------------------------
   gtrends_df <- gtrends_df %>%
     left_join(ox_earliest_measure_df, by = "geo")

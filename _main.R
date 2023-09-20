@@ -2,7 +2,7 @@
 # Main Script
 
 # Parameters -------------------------------------------------------------------
-RUN_CODE <- F
+RUN_CODE <- T
 
 # Whether to translate google keywords; requires a Google API key
 TRANSLATE_GOOGLE_KEYWORDS <- F
@@ -10,11 +10,11 @@ TRANSLATE_GOOGLE_KEYWORDS <- F
 # Whether to run code in a "fresh state"; that is deleting all (1) outputs (i.e.,
 # figures and tables) and (2) final data (i.e., data transformed by code). Raw 
 # data, or data manually downloaded, will not be deleted.
-DELETE_OUTPUT    <- F
-DELETE_FINALDATA <- F
+DELETE_OUTPUT    <- T
+DELETE_FINALDATA <- T
 
 # Whether to produce a .txt file that indicates how long it took the code to run.
-EXPORT_TXT_REPORT_CODE_DURATION <- F
+EXPORT_TXT_REPORT_CODE_DURATION <- T
 
 START_TIME <- Sys.time()
 
@@ -183,14 +183,14 @@ if(RUN_CODE){
   source(file.path(process_anc_dir, "01_covid_cases", "01_clean_data.R"))
   
   ## Oxford Policy Data
-  source(file.path(process_anc_dir, "01_oxford_policy", "01_download_data.R"))
+  source(file.path(process_anc_dir, "01_oxford_policy", "01_clean_data.R"))
   source(file.path(process_anc_dir, "01_oxford_policy", "02_create_first_date_lockdown_data.R"))
-  source(file.path(process_anc_dir, "01_oxford_policy", "02_create_first_date_vaccine_avail.R"))
   source(file.path(process_anc_dir, "01_oxford_policy", "02_ox_policy_national_clean.R"))
-  source(file.path(process_anc_dir, "01_oxford_policy", "02_vaccine_clean.R"))
+  #source(file.path(process_anc_dir, "01_oxford_policy", "02_vaccine_clean.R"))
+  #source(file.path(process_anc_dir, "01_oxford_policy", "02_create_first_date_vaccine_avail.R"))
   
   ## WDI
-  source(file.path(process_anc_dir, "01_wdi", "download_wdi_data.R"))
+  source(file.path(process_anc_dir, "01_wdi", "01_download_wdi_data.R"))
   
   ## Country Language Data
   source(file.path(process_anc_dir, "02_countries_language_data", "01_clean_country_language_data.R"))
@@ -208,16 +208,16 @@ if(RUN_CODE){
   source(file.path(datawork_dir, "04_scrape_gtrends_data", "01_scrape_gtrends_global_timeseries.R"))
   
   # Scrape Google Trends Data Across Terms in US -------------------------------
-  scrape_gtrends_us <- file.path(datawork_dir, "04_scrape_gtrends_us_data_across_terms")
-  
-  #source(file.path(scrape_gtrends_us, "01_scrape_clean.R"))
-  
-  source(file.path(scrape_gtrends_us, "01_scrape_clean_relative_ivermectin.R"))
-  source(file.path(scrape_gtrends_us, "02_append_usa_refivermectin.R"))
+  # scrape_gtrends_us <- file.path(datawork_dir, "04_scrape_gtrends_us_data_across_terms")
+  # 
+  # #source(file.path(scrape_gtrends_us, "01_scrape_clean.R"))
+  # 
+  # source(file.path(scrape_gtrends_us, "01_scrape_clean_relative_ivermectin.R"))
+  # source(file.path(scrape_gtrends_us, "02_append_usa_refivermectin.R"))
   
   # Clean Google Trends: Regional Data -----------------------------------------
-  source(file.path(datawork_dir, "05_clean_regions", "01_append_regional.R"))
-  source(file.path(datawork_dir, "05_clean_regions", "02_add_variables.R"))
+  # source(file.path(datawork_dir, "05_clean_regions", "01_append_regional.R"))
+  # source(file.path(datawork_dir, "05_clean_regions", "02_add_variables.R"))
   
   # Clean Google Trends: Global Timeseries Data --------------------------------
   # These scripts are memory intensive; before running each script, only keep
@@ -225,19 +225,19 @@ if(RUN_CODE){
   
   TO_DELETE <- ls()[!(ls() %in% ORIGINAL_VARIABLES)]
   rm(TO_DELETE); gc(); gc()
-  source(file.path(datawork_dir, "05_clean_timeseries", "01_append_clean.R"))
+  source(file.path(datawork_dir, "05_clean_gtrends", "01_append_clean.R"))
   
   TO_DELETE <- ls()[!(ls() %in% ORIGINAL_VARIABLES)]
   rm(TO_DELETE); gc(); gc()
-  source(file.path(datawork_dir, "05_clean_timeseries", "02_merge_other_data.R"))
+  source(file.path(datawork_dir, "05_clean_gtrends", "02_merge_other_data.R"))
   
   TO_DELETE <- ls()[!(ls() %in% ORIGINAL_VARIABLES)]
   rm(TO_DELETE); gc(); gc()
-  source(file.path(datawork_dir, "05_clean_timeseries", "03_variable_construction.R"))
+  source(file.path(datawork_dir, "05_clean_gtrends", "03_variable_construction.R"))
   
   TO_DELETE <- ls()[!(ls() %in% ORIGINAL_VARIABLES)]
   rm(TO_DELETE); gc(); gc()
-  source(file.path(datawork_dir, "05_clean_timeseries", "04_correlations.R"))
+  source(file.path(datawork_dir, "05_clean_gtrends", "04_correlations.R"))
   
   TO_DELETE <- ls()[!(ls() %in% ORIGINAL_VARIABLES)]
   rm(TO_DELETE); gc(); gc()
@@ -302,16 +302,16 @@ if(RUN_CODE){
   
   # Analysis: Vaccines ---------------------------------------------------------
   
-  # Global analysis of vaccines
-  # OUTPUT:
-  # -- vax_cor.png
-  source(file.path(datawork_dir, "06_analysis", "main_vaccines", "vaccine_global.R"))
-  
-  # USA analysis of vaccines
-  # OUTPUT:
-  # -- vaccine_panels_[BEGIN_DATE]_[END_DATE].png
-  source(file.path(datawork_dir, "06_analysis", "main_vaccines", "vaccine_usa.R"))
-  
+  # # Global analysis of vaccines
+  # # OUTPUT:
+  # # -- vax_cor.png
+  # source(file.path(datawork_dir, "06_analysis", "main_vaccines", "vaccine_global.R"))
+  # 
+  # # USA analysis of vaccines
+  # # OUTPUT:
+  # # -- vaccine_panels_[BEGIN_DATE]_[END_DATE].png
+  # source(file.path(datawork_dir, "06_analysis", "main_vaccines", "vaccine_usa.R"))
+  # 
   # Analysis: SI ---------------------------------------------------------------
   source(file.path(datawork_dir, "06_analysis", "si", "consistent_timeseries_example.R"))
   source(file.path(datawork_dir, "06_analysis", "si", "language_used_for_gtrends.R"))

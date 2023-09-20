@@ -24,10 +24,12 @@ ox_clean_df <- ox_df %>%
                 #"C8_International travel controls",
                 # ContainmentHealthIndex
                 `H2_Testing policy`,
-                StringencyIndex, 
-                GovernmentResponseIndex, 
+                StringencyIndex_Average, 
+                GovernmentResponseIndex_Average, 
                 EconomicSupportIndex) %>%
-  dplyr::rename(h2_testing_policy = `H2_Testing policy`)
+  dplyr::rename(h2_testing_policy = `H2_Testing policy`,
+                StringencyIndex = StringencyIndex_Average,
+                GovernmentResponseIndex = GovernmentResponseIndex_Average)
 
 # Export data ------------------------------------------------------------------
 saveRDS(ox_clean_df, 

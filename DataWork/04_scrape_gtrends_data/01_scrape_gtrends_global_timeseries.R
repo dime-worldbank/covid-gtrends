@@ -30,15 +30,13 @@ GTRENDS_TO_SCRAPE <- c("timeseries_2018-09-01_2019-05-28",
                        "timeseries_2021-01-04_2021-09-30",
                        "timeseries_2021-04-06_2021-12-31",
                        "timeseries_2021-10-01_2022-06-27", 
-                       "timeseries_2022-04-06_2022-12-31",
-                       "timeseries_regions_2020-12-01_2021-12-31") %>%
+                       "timeseries_2022-04-06_2022-12-31") %>%
   rev()
 
 ## Which countries to use when scraping [timeseries_region]
 regions_countries_vec <- c("US")
 
-## Which keywords to scrape for [timeseries]. For [timeseries_region], uses
-# vaccine and missinformation related keywords
+## Which keywords to scrape for [timeseries]. 
 keywords_en_timeseries <- KEYWORDS_TIMESERIES_ALL
 
 # Function to Scrape Google Data -----------------------------------------------

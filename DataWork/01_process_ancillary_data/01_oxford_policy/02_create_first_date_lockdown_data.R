@@ -20,35 +20,35 @@ min_ignore_0_and_na <- function(x){
 
 ox_clean_df <- ox_df %>%
   dplyr::select(geo, date, 
-                "C1_School closing",
-                "C2_Workplace closing",
-                "C3_Cancel public events",
-                "C4_Restrictions on gatherings",
-                "C5_Close public transport",
-                "C6_Stay at home requirements",
-                "C7_Restrictions on internal movement",
-                "C8_International travel controls") %>%
+                "C1M_School closing",
+                "C2M_Workplace closing",
+                "C3M_Cancel public events",
+                "C4M_Restrictions on gatherings",
+                "C5M_Close public transport",
+                "C6M_Stay at home requirements",
+                "C7M_Restrictions on internal movement",
+                "C8EV_International travel controls") %>%
   dplyr::mutate(C_policy = 
-                  `C1_School closing` +
-                  `C2_Workplace closing` +
-                  `C3_Cancel public events` +
-                  `C4_Restrictions on gatherings` +
-                  `C5_Close public transport` +
-                  `C6_Stay at home requirements` +
-                  `C7_Restrictions on internal movement` +
-                  `C8_International travel controls`) %>%
+                  `C1M_School closing` +
+                  `C2M_Workplace closing` +
+                  `C3M_Cancel public events` +
+                  `C4M_Restrictions on gatherings` +
+                  `C5M_Close public transport` +
+                  `C6M_Stay at home requirements` +
+                  `C7M_Restrictions on internal movement` +
+                  `C8EV_International travel controls`) %>%
   dplyr::mutate(date = date %>% 
                   as.character() %>% 
                   str_replace_all("-", "") %>%
                   as.numeric()) %>%
-  dplyr::mutate_at(vars(c("C1_School closing",
-                          "C2_Workplace closing",
-                          "C3_Cancel public events",
-                          "C4_Restrictions on gatherings",
-                          "C5_Close public transport",
-                          "C6_Stay at home requirements",
-                          "C7_Restrictions on internal movement",
-                          "C8_International travel controls",
+  dplyr::mutate_at(vars(c("C1M_School closing",
+                          "C2M_Workplace closing",
+                          "C3M_Cancel public events",
+                          "C4M_Restrictions on gatherings",
+                          "C5M_Close public transport",
+                          "C6M_Stay at home requirements",
+                          "C7M_Restrictions on internal movement",
+                          "C8EV_International travel controls",
                           "C_policy")), 
                    ~is_greater_zero(.) * date) %>%
   dplyr::select(-date) %>%
@@ -63,7 +63,20 @@ names(ox_clean_df) <- names(ox_clean_df) %>%
 ox_clean_df <- ox_clean_df %>% 
   rename_at(vars(-geo), ~ paste0(., '_first_date'))
 
+names(ox_clean_df) <- names(ox_clean_df) %>%
+  str_replace_all("c1m", "c1") %>%
+  str_replace_all("c2m", "c2") %>%
+  str_replace_all("c3m", "c3") %>%
+  str_replace_all("c4m", "c4") %>%
+  str_replace_all("c5m", "c5") %>%
+  str_replace_all("c6m", "c6") %>%
+  str_replace_all("c7m", "c7") %>%
+  str_replace_all("c8ev", "c8")
+
 # Export data ------------------------------------------------------------------
 saveRDS(ox_clean_df, 
         file.path(oxpol_dir, "FinalData", "OxCGRT_earliest_measure.Rds"))
+
+
+
 
