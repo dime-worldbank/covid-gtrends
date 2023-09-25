@@ -10,12 +10,7 @@ cor_1_df <- bind_rows(readRDS(file.path(dropbox_file_path, "Data", "google_trend
                       readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
                                         "gtrends_full_timeseries",
                                         "correlation_datasets",
-                                        "correlations_gtrends_since2020-01-01_until2020-12-31_contain.Rds")),
-                      readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
-                                        "gtrends_full_timeseries",
-                                        "correlation_datasets",
-                                        "correlations_gtrends_since2020-01-01_until2020-12-31_vaccine.Rds"))
-) %>%
+                                        "correlations_gtrends_since2020-01-01_until2020-12-31_contain.Rds"))) %>%
   dplyr::mutate(date_since = "2020")
 
 cor_2_df <- bind_rows(readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
@@ -25,11 +20,7 @@ cor_2_df <- bind_rows(readRDS(file.path(dropbox_file_path, "Data", "google_trend
                       readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
                                         "gtrends_full_timeseries",
                                         "correlation_datasets",
-                                        "correlations_gtrends_since2021-01-01_until2021-12-31_contain.Rds")),
-                      readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
-                                        "gtrends_full_timeseries",
-                                        "correlation_datasets",
-                                        "correlations_gtrends_since2021-01-01_until2021-12-31_vaccine.Rds"))
+                                        "correlations_gtrends_since2021-01-01_until2021-12-31_contain.Rds"))
 ) %>% 
   dplyr::mutate(date_since = "2021")
 
@@ -41,27 +32,8 @@ cor_3_df <- bind_rows(readRDS(file.path(dropbox_file_path, "Data", "google_trend
                                         "gtrends_full_timeseries",
                                         "correlation_datasets",
                                         "correlations_gtrends_since2022-01-01_until2022-12-31_contain.Rds")),
-                      readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
-                                        "gtrends_full_timeseries",
-                                        "correlation_datasets",
-                                        "correlations_gtrends_since2022-01-01_until2022-12-31_vaccine.Rds"))
 ) %>% 
   dplyr::mutate(date_since = "2022")
-
-# cor_3_df <- bind_rows(readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
-#                                         "gtrends_full_timeseries",
-#                                         "correlation_datasets",
-#                                         "correlations_gtrends_since2020-01-01_until2021-12-31_symptoms.Rds")),
-#                       readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
-#                                         "gtrends_full_timeseries",
-#                                         "correlation_datasets",
-#                                         "correlations_gtrends_since2020-01-01_until2021-12-31_contain.Rds")),
-#                       readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
-#                                         "gtrends_full_timeseries",
-#                                         "correlation_datasets",
-#                                         "correlations_gtrends_since2020-01-01_until2021-12-31_vaccine.Rds"))
-# ) %>% 
-#   dplyr::mutate(date_since = "2020_2021")
 
 # Prep Data --------------------------------------------------------------------
 cor_df <- bind_rows(cor_1_df,
