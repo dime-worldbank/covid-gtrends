@@ -1,0 +1,180 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{natbib}
+\usepackage{lineno}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{adjustbox}
+\usepackage{dcolumn}
+\usepackage{amsmath}
+\usepackage{setspace}
+\usepackage{authblk}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}  
+\usepackage[dvipsnames]{xcolor}
+
+\usepackage[font=footnotesize, labelfont=bf]{caption}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+% --------------------------
+\thispagestyle{empty}
+\begin{center}
+~~ \\ 
+\bigskip 
+\bigskip 
+\bigskip 
+\bigskip 
+\bigskip 
+\bigskip 
+\bigskip 
+\bigskip 
+\bigskip 
+\bigskip 
+\bigskip 
+\bigskip 
+\bigskip 
+\bigskip 
+    \Huge The Evolution of the COVID-19 Pandemic Through the Lens of Google Searches \\
+    \bigskip
+    \bigskip
+    \bigskip
+    \Huge Main Text: Figures and Tables
+\end{center}
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+
+\newpage
+
+\begin{figure*}[t]
+    \includegraphics[width=1\textwidth]{figures/cor_lag_fig.png}
+    \caption{Search interest correlating with and anticipating COVID-19 cases. Panel A shows the correlation between search interest and \textcolor{black}{reported} COVID-19 cases. Panel B shows the lead/lad value of COVID-19 cases that produced the highest correlation with search interest. \textcolor{black}{`N' indicates the number of countries with available data.} The boxplots include: center line, median; box limits, upper and lower quartiles; whiskers, 1.5x interquartile range; points beyond whiskers, outliers.}
+    \label{fig:corlag_figure}
+\end{figure*}
+
+\begin{figure*}[t]
+    \includegraphics[width=1\textwidth]{figures/cases_vs_loss_of_smell_covid_symptoms_trends_topcountries.png}
+    \caption{Trends between \textcolor{black}{reported} COVID-19 cases and search interest in (1) ``Loss of Smell'' (top) and (2) ``COVID Symptoms'' for countries with the top correlations between cases and search interest. \textcolor{black}{To more clearly show trends, the seven-day moving averages of search interest and cases are shown.}}
+    \label{fig:cor_trends_figure}
+\end{figure*}
+
+\setlength{\tabcolsep}{4pt}
+\begin{table*}[t!]
+\centering
+\caption{Explaining correlation between search interest in loss of smell and COVID-19 cases, using data from 2020 and 2021}
+\input{tables/lm_cor_daily_loss_of_smell.tex} \\
+\flushleft $^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01
+\label{tab:cor_reg_table}
+\end{table*}
+
+\setlength{\tabcolsep}{4pt}
+\begin{table*}[t!]
+\centering
+\caption{Explaining the lead/lag value that produced the highest correlation between search interest in loss of smell and COVID-19 cases, using data from 2020 and 2021}
+\input{tables/lm_lag_daily_loss_of_smell.tex} \\
+\flushleft $^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01
+\label{tab:lag_reg_table}
+\end{table*}
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/contain_long_trends.png}
+    \caption{\textcolor{black}{Trends in search interest in social, economic, and mental health keywords from 2019 to 2022. To show trends more clearly, the seven-day moving average of search interest is shown. `N' indicates the number of countries with available data.}}
+    \label{fig:contain_trends_long}
+\end{figure*}
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/did_overall_90.png}
+    \caption{\textcolor{black}{Association of COVID-19 policies and} search interest: results pooling all countries. Point estimates and 95\% confidence intervals are shown. \textcolor{black}{To show trends more clearly, the seven-day moving average of search interest is shown in panel A. `N' indicates the number of countries with available data.}}
+    \label{fig:did_overall_90}
+\end{figure*}
+
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/did_interact_map_90.png}
+    \caption{\textcolor{black}{Association of COVID-19 policies with search interest: difference-in-differences results that explore heterogeneity of results} across containment policy restrictiveness, economic support, and GDP per capita. Each coefficient comes from a separate regression. The stringency index comes from the University of Oxford COVID-19 Government Response tracker, a composite measure of the restrictiveness of policy measures. Mobility reduction comes from Google COVID-19 Community Mobility Reports, which measure the percent change in mobility relative to pre-pandemic levels. Per capita GDP comes from the World Bank's World Development Indicators; we use log per capita GDP. The Economic Support index from the Oxford COVID-19 Government Response tracker, which measures the extent of economic support across metrics such as income support and debt relief. We standardize all variables into z-scores---having a mean of zero and standard deviation of one. \textcolor{black}{`N' indicates the number of countries with available data. Maps produced using R, version 4.2.2 (\url{https://www.r-project.org/}); data for country boundaries come from Natural Earth (\url{https://www.naturalearthdata.com/}).}}    
+    \label{fig:did_interact_map_90}
+\end{figure*}
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/did_income_90.png}
+    \caption{\textcolor{black}{Association of COVID-19 policies and} search interest: difference-in-difference results pooling countries by income level. Point estimates and 95\% confidence intervals are shown. \textcolor{black}{`N' indicates the number of countries with available data.}}
+    \label{fig:did_income_90}
+\end{figure*}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

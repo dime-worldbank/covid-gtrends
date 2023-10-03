@@ -1,0 +1,519 @@
+
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[hidelinks]{hyperref}
+\usepackage{adjustbox}
+\usepackage{dcolumn}
+\usepackage{amsmath}
+%\usepackage{xr}
+\usepackage{longtable}
+
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry} 
+\usepackage[font=footnotesize, labelfont=bf]{caption}
+
+\usepackage{tocloft}
+
+\usepackage[dvipsnames]{xcolor}
+
+\setlength{\cftsecnumwidth}{3em}
+\setlength{\cftsubsecnumwidth}{3em}
+\setlength{\cftsubsubsecnumwidth}{4em}
+
+\setcounter{page}{0}
+
+\begin{document}
+
+\renewcommand{\thepage}{S\arabic{page}} 
+\renewcommand{\thesection}{S\arabic{section}}  
+\renewcommand{\thetable}{S\arabic{table}}  
+\renewcommand{\thefigure}{S\arabic{figure}}
+
+% --------------------------
+\thispagestyle{empty}
+\begin{center}
+~~ \\ 
+\bigskip 
+\bigskip 
+\bigskip 
+\bigskip 
+\bigskip 
+\bigskip 
+\bigskip 
+\bigskip 
+\bigskip 
+\bigskip 
+\bigskip 
+\bigskip 
+\bigskip 
+\bigskip 
+    \Huge The Evolution of the COVID-19 Pandemic Through the Lens of Google Searches \\
+    \bigskip
+    \bigskip
+    \bigskip
+    \Huge Supplementary Information: Figures and Tables
+\end{center}
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+
+\newpage
+\tableofcontents
+
+% --------------------------
+\newpage
+\section{Search terms queried for analysis}
+\label{si:search_terms}
+
+\begin{table}[H]
+\caption{Symptoms Search Terms: Number of countries with available Google search interest data for each search term}
+\label{tab:terms_queried_n_symptoms}
+\centering
+\input{tables/terms_queried_n_symptoms.tex}
+\end{table}
+
+\begin{table}[H]
+\caption{Containment Policy Analysis Search Terms: Number of countries with available Google search interest data for each search term}
+\label{tab:terms_queried_n_contain}
+\centering
+\input{tables/terms_queried_n_contain.tex}
+\end{table}
+
+% --------------------------
+\newpage
+\section{Determining language with most Google search activity in each country}
+\label{si:determine_language}
+
+\begin{table}[H]
+\caption{Illustrative example of determining most common language for Google searches}
+\label{tab:ill_ex}
+\begin{tabular}{l ccc | ccc | ccc}
+\hline
+ & \multicolumn{3}{c|}{Fever} & \multicolumn{3}{c|}{Doctor} & \multicolumn{3}{c}{Hospital} \\
+ & English & French & Spanish & English & French & Spanish & English & French & Spanish \\
+\hline
+   & Fever & fièvre & fiebre & doctor & médecin & doctor & hospital & hôpital & hospital \\
+\hline
+\multicolumn{10}{l}{{\bf Step 1:} Query weekly search interest for each translated search term} \\
+Week 1    & 10    & 50     & 5      & 20     & 80      & 20     & 100      & 90      & 100      \\    
+Week 2    & 50    & 100    & 10     & 10     & 75      & 10     & 60       & 70      & 60       \\    
+Week 3    & 30    & 60     & 15     & 15     & 100     & 15     & 50       & 20      & 50       \\  
+\hline
+\multicolumn{10}{l}{{\bf Step 2:} Take average values across time series} \\
+Avg & 30    & 70     & 10      & 15     & 85      & 15     & 70      & 60       & 70 \\
+\hline
+\multicolumn{10}{l}{{\bf Step 3:} Standardize values within translated search terms so maximum value is 100} \\
+    & 42.85 & 100    & 14.28   & 17.64  & 100     & 17.64  & 100     & 85.71    & 100 \\  
+\hline
+
+\multicolumn{10}{l}{{\bf Step 4:} Average value across languages; French is used as it has the highest value below.} \\
+
+\multicolumn{10}{l}{    $ \bullet $  English: (42.85 + 17.64 + 100)/3 = 53.49} \\
+\multicolumn{10}{l}{   $ \bullet $   French: (100 + 100 + 85.71)/3 = 95.23} \\
+\multicolumn{10}{l}{ $ \bullet $     Spanish: (14.28 + 17.64 + 100)/ = 43.97} \\
+\hline
+\end{tabular} 
+\end{table}
+
+\scriptsize
+\input{tables/language_most_sa.tex}
+\normalsize
+
+% --------------------------
+\newpage
+\section{Create consistent time-series of Google search interest}
+\label{si:create_const_timeseries}
+
+\begin{figure}[H]
+\centering
+    \includegraphics[width=1\textwidth]{figures/const_timeseries_ex.png}
+    \caption{Creating a consistent time series of google search interest for search interest in ``fever" for the United States. {\bf Panel A} shows the raw search interest values across queries for search interest across different date ranges. Each query is scaled so its maximum value is 100. {\bf Panel B} shows a consistent time series, creating from scaling values}
+    \label{fig:const_timeseries_ex}
+\end{figure}
+
+% --------------------------
+\newpage
+\section{Correlation and lag between search interest and COVID-19 cases}
+\label{si:cor_lag_add_results}
+
+\begin{table}[H]
+\caption{Correlation between search interest and COVID-19 cases using data in 2020}
+\label{tab:cor_table_2020}
+\centering
+\begin{adjustbox}{width=0.8\textwidth}
+\input{tables/cor_lag_table_2020.tex}
+\end{adjustbox}
+\end{table}
+
+\begin{table}[H]
+\caption{Correlation between search interest and COVID-19 cases using data in 2021}
+\label{tab:cor_table_2021}
+\centering
+\begin{adjustbox}{width=0.8\textwidth}
+\input{tables/cor_lag_table_2021.tex}
+\end{adjustbox}
+\end{table}
+
+\begin{table}[H]
+\caption{Correlation between search interest and COVID-19 cases using data in 2022}
+\label{tab:cor_table_2022}
+\centering
+\begin{adjustbox}{width=0.8\textwidth}
+\input{tables/cor_lag_table_2022.tex}
+\end{adjustbox}
+\end{table}
+
+\begin{figure}[H]
+    \includegraphics[width=1\textwidth]{figures/cor_corbest_fig.png}
+    \caption{Distribution of correlation between search interest and COVID-19 cases using the original correlation and the correlation when using the lagged value of COVID-19 cases that produced the highest correlation. `N' indicates the number of countries with available data. The boxplots include: center line, median; box limits, upper and lower quartiles; whiskers, 1.5x interquartile range; points beyond whiskers, outliers.}
+    \label{fig:cor_best}
+\end{figure}
+
+% --------------------------
+\newpage
+\section{Map of correlations of search interest in ``Loss of Smell'' and ``Fever'' with COVID-19 cases}
+\label{si:cor_map}
+
+% trim={<left> <lower> <right> <upper>}
+\begin{figure}[H]
+    \includegraphics[width=1\textwidth]{figures/cor_map.png} % trim={0 1m 0 0},clip]
+    \caption{Correlation between reported COVID-19 cases and search interest in ``Loss of Smell'' and ``Fever.'' Maps produced using R, version 4.2.2 (\url{https://www.r-project.org/}); data for country boundaries come from Natural Earth (\url{https://www.naturalearthdata.com/}).}
+    \label{fig:cor_world_map}
+\end{figure}
+
+% --------------------------
+\newpage
+\section{Trends in search interest for ``Loss of Smell'' and COVID-19 cases for all countries with available data}
+\label{si:lossofsmell_covid_allcountries}
+
+\begin{figure}[H]
+    \includegraphics[width=1\textwidth]{figures/cases_vs_loss_of_smell_trends_allcountries.png}
+    \caption{Trends between search interest in ``Loss of Smell'' and COVID-19 cases for all countries with available data. To show trends more clearly, the seven-day moving average of search interest is shown.}
+    \label{fig:cases_vs_loss_of_smell_trends_allcountries}
+\end{figure}
+
+% --------------------------
+\newpage
+\section{Trends in search interest for ``COVID Symptoms'' and COVID-19 cases for all countries with available data}
+\label{si:covidsymptoms_covid_allcountries}
+
+\begin{figure}[H]
+    \includegraphics[width=1\textwidth]{figures/cases_vs_covid_symptoms_trends_allcountries.png}
+    \caption{Trends between search interest in ``COVID Symptoms'' and COVID-19 cases for all countries with available data}
+    \label{fig:cases_vs_covid_symptoms_trends_allcountries}
+\end{figure}
+
+% --------------------------
+\newpage
+\section{Trends in search interest for ``Coronavirus'' and COVID-19 cases for all countries with available data}
+\label{si:coronavirus_covid_allcountries}
+
+\begin{figure}[H]
+    \includegraphics[width=1\textwidth]{figures/cases_vs_coronavirus_trends_allcountries.png}
+    \caption{\textcolor{black}{Trends between search interest in ``COVID Symptoms'' and COVID-19 cases for all countries with available data}}
+    \label{fig:cases_vs_coronavirus_trends_allcountries}
+\end{figure}
+
+
+
+% --------------------------
+\newpage
+\section{Correlation between search interest and reported COVID-19 cases by six months increments}
+\label{si:boxplot_halfyears}
+
+\begin{figure}[H]
+    \includegraphics[width=1\textwidth]{figures/cor_halfyear_lag_fig.png}
+    \caption{Search interest correlating with and anticipating COVID-19 cases. Panel A shows the correlation between search interest and COVID-19 cases. Panel B shows the lead/lad value of COVID-19 cases that produced the highest correlation with search interest. `N' indicates the number of countries with available data. The boxplots include: center line, median; box limits, upper and lower quartiles; whiskers, 1.5x interquartile range; points beyond whiskers, outliers.}
+    \label{fig:cor_halfyear_lag_fig}
+\end{figure}
+
+% --------------------------
+\newpage
+\section{Explaining correlation between search interest and COVID-19 cases: additional results}
+\label{si:lm_cor_searchinterest}
+
+\newpage
+\setlength{\tabcolsep}{4pt}
+\begin{table}[H]
+\centering
+\caption{Explaining correlation between search interest in ``loss of taste'' and COVID-19 cases, using data from 2020 and 2021}
+\input{tables/lm_cor_daily_loss_of_taste.tex} \\
+%\flushleft \addtabletext{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01.}
+\flushleft $^{*}$p$<$0.1; $^{**}$p$<$0.05; 
+$^{***}$p$<$0.01\label{tab:cor_reg_table_loss_of_taste}
+\label{tab:cor_reg_table_taste}
+\end{table}
+
+\setlength{\tabcolsep}{4pt}
+\begin{table}[H]
+\centering
+\caption{Explaining the lead/lag value that produced the highest correlation between search interest in ``loss of taste'' and COVID-19 cases, using data from 2020 and 2021}
+\input{tables/lm_lag_daily_loss_of_taste.tex} \\
+%\flushleft \addtabletext{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01.}
+\flushleft $^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01
+\label{tab:lag_reg_table_loss_of_taste}
+\end{table}
+
+%%%% COVID Symptoms
+\setlength{\tabcolsep}{4pt}
+\begin{table}[H]
+\centering
+\caption{Explaining correlation between search interest in ``COVID symptoms'' and COVID-19 cases, using data from 2020 and 2021}
+\input{tables/lm_cor_daily_covid_symptoms.tex} \\
+%\flushleft \addtabletext{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01.}
+\flushleft $^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01
+\label{tab:cor_reg_table_covidsymptoms}
+\end{table}
+
+\setlength{\tabcolsep}{4pt}
+\begin{table}[H]
+\centering
+\caption{Explaining the lead/lag value that produced the highest correlation between search interest in ``COVID symptoms'' and COVID-19 cases, using data from 2020 and 2021}
+\input{tables/lm_lag_daily_covid_symptoms.tex} \\
+%\flushleft \addtabletext{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01.}
+\flushleft $^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01\label{tab:lm_lag_daily_covid_symptoms}
+\end{table}
+
+%% Figures
+\begin{figure}[H]
+    \includegraphics[width=1\textwidth]{figures/cor_casestotal_scatter.png}
+    \caption{Scatterplots showing association between (1) correlation of search interest and COVID-19 cases and (2) total COVID-19 cases as of December 31, 2021, for search interest in ``COVID Symptoms'', ``Loss of Smell'', and ``Loss of Taste.''}
+    \label{fig:cor_casestotal_scatter}
+\end{figure}
+
+\begin{figure}[H]
+    \includegraphics[width=1\textwidth]{figures/cor_internet_scatter.png}
+    \caption{Scatterplots showing association between (1) correlation of search interest and COVID-19 cases and (2) percent of the population using internet, for search interest in ``COVID Symptoms'', ``Loss of Smell'', and ``Loss of Taste.''}
+    \label{fig:cor_internet_scatter}
+\end{figure}
+
+\begin{figure}[H]
+    \includegraphics[width=1\textwidth]{figures/cor_mobilecell_scatter.png}
+    \caption{Scatterplots showing association between (1) correlation of search interest and COVID-19 cases and (2) mobile cell phone subscribers per 100, logged, for search interest in ``COVID Symptoms'', ``Loss of Smell'', and ``Loss of Taste.''}
+    \label{fig:cor_mobilecell_scatter}
+\end{figure}
+
+\begin{figure}[H]
+    \includegraphics[width=1\textwidth]{figures/cor_gdp_scatter.png}
+    \caption{Scatterplots showing association between (1) correlation of search interest and COVID-19 cases and (2) GDP per capita, logged, for search interest in ``COVID Symptoms'', ``Loss of Smell'', and ``Loss of Taste.''}
+    \label{fig:cor_gdp_scatter}
+\end{figure}
+
+% --------------------------
+\newpage
+\section{Comparing correlation results using reported COVID-19 cases vs excess mortality}
+\label{si:cor_cases_vs_excess}
+
+%%%% Correlation betweetn two measures
+\begin{figure}[H]
+    \includegraphics[width=1\textwidth]{figures/cor_cases_excess.png}
+    \caption{\textcolor{black}{Distribution of within-country correlation between reported COVID-19 cases and excess mortality. Monthly data used from 2020-2021.}}
+    \label{fig:cor_cases_excess}
+\end{figure}
+
+%%%% Boxplot Figures
+\begin{figure}[H]
+    \includegraphics[width=1\textwidth]{figures/cases_excess_boxplot.png}
+    \caption{Search interest correlating search interest across search terms and indicators of COVID (COVID cases and excess mortality). Panel A shows the correlation using 2020 data and panel B shows data using 2021 data. The boxplots include: center line, median; box limits, upper and lower quartiles; whiskers, 1.5x interquartile range; points beyond whiskers, outliers.}
+    \label{fig:cases_excess_boxplot}
+\end{figure}
+
+\begin{figure}[H]
+    \includegraphics[width=1\textwidth]{figures/cases_excess_boxplot_income.png}
+    \caption{\textcolor{black}{Search interest correlating search interest across search terms and indicators of COVID (COVID cases and excess mortality), by income level and using top Google search interest keywords.}}
+    \label{fig:cases_excess_boxplot_income}
+\end{figure}
+
+
+
+%%%% Loss of Smell
+\begin{table}[H]
+\caption{Explaining correlation between COVID cases and search interest in Loss of Smell}
+\label{tab:lm_cor_cases_monthly_loss_of_smell}
+\centering
+\input{tables/lm_cor_cases_monthly_loss_of_smell.tex}
+\end{table}
+
+\begin{table}[H]
+\caption{Explaining correlation between excess mortality and search interest in Loss of Smell}
+\label{tab:lm_cor_excess_monthly_loss_of_smell}
+\centering
+\input{tables/lm_cor_excess_monthly_loss_of_smell.tex}
+\end{table}
+
+%%%% Loss of Taste
+\begin{table}[H]
+\caption{Explaining correlation between COVID cases and search interest in Loss of Taste}
+\label{tab:lm_cor_cases_monthly_loss_of_taste}
+\centering
+\input{tables/lm_cor_cases_monthly_loss_of_taste.tex}
+\end{table}
+
+\begin{table}[H]
+\caption{Explaining correlation between excess mortality and search interest in Loss of Taste}
+\label{tab:lm_cor_excess_monthly_loss_of_taste}
+\centering
+\input{tables/lm_cor_excess_monthly_loss_of_taste.tex}
+\end{table}
+
+%%%% COVID Cases
+\begin{table}[H]
+\caption{Explaining correlation between COVID cases and search interest in Loss of Taste}
+\label{tab:lm_cor_cases_monthly_covid_symptoms}
+\centering
+\input{tables/lm_cor_cases_monthly_covid_symptoms.tex}
+\end{table}
+
+\begin{table}[H]
+\caption{Explaining correlation between excess mortality and search interest in Loss of Taste}
+\label{tab:lm_cor_excess_monthly_covid_symptoms}
+\centering
+\input{tables/lm_cor_excess_monthly_covid_symptoms.tex}
+\end{table}
+
+% --------------------------
+\newpage
+\section{Association of containment policies with search interest: event study results}
+\label{si:contain_es}
+
+\begin{figure}[H]
+    \includegraphics[width=1\textwidth]{figures/es_global_90days.png}
+    \caption{Event study examining the association of containment policies with search interest. 95\% confidence intervals shown for each coefficient.}
+    \label{fig:contain_es}
+\end{figure}
+
+% --------------------------
+\newpage
+\section{Association of Containment Policies with Search Interest: Sensitivity Analysis Across Different Day Thresholds}
+\label{si:lockdown_impact_diffdays}
+
+% --------------------------
+%\newpage
+\subsection{30 day threshold}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/did_overall_30.png}
+    \caption{Association of COVID-19 policies with search interest: results pooling all countries. Point estimates and 95\% confidence intervals are shown. To more clearly show trends, the seven day moving average of search interest is shown in panel A. `N' indicates the number of countries with available data.}
+    \label{fig:lockdown_impact_30}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/did_interact_map_30.png}
+    \caption{Association of COVID-19 policies on search interest: difference-in-differences results that explore heterogeneity of results across containment policy restrictiveness, economic support, and GDP per capita. Each coefficient comes from a separate regression. The stringency index comes from the University of Oxford COVID-19 Government Response tracker, a composite measure of the restrictiveness of policy measures. Mobility reduction comes from Google COVID-19 Community Mobility Reports, which measure the percent change in mobility relative to pre-pandemic levels. Per capita GDP comes from the World Bank's World Development Indicators; we use log per capita GDP. The Economic Support index from the Oxford COVID-19 Government Response tracker, which measures the extent of economic support across metrics such as income support and debt relief. We standardize all variables into z-scores---having a mean of zero and standard deviation of one. `N' indicates the number of countries with available data. Maps produced using R, version 4.2.2 (\url{https://www.r-project.org/}); data for country boundaries come from Natural Earth (\url{https://www.naturalearthdata.com/}).}
+    \label{fig:did_interact_map_30}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/did_income_30.png}
+    \caption{Association of COVID-19 policies with search interest: difference-in-difference results pooling countries by income level. Point estimates and 95\% confidence intervals are shown. `N' indicates the number of countries with available data.}
+    \label{fig:did_income_30}
+\end{figure}
+
+% --------------------------
+\newpage
+\subsection{60 day threshold}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/did_overall_60.png}
+    \caption{Association of COVID-19 policies with search interest: results pooling all countries. Point estimates and 95\% confidence intervals are shown. To more clearly show trends, the seven day moving average of search interest is shown in panel A. `N' indicates the number of countries with available data.}
+    \label{fig:lockdown_impact_60}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/did_interact_map_60.png}
+    \caption{Association of COVID-19 policies with search interest: difference-in-differences results that explore heterogeneity of results across containment policy restrictiveness, economic support, and GDP per capita. Each coefficient comes from a separate regression. The stringency index comes from the University of Oxford COVID-19 Government Response tracker, a composite measure of the restrictiveness of policy measures. Mobility reduction comes from Google COVID-19 Community Mobility Reports, which measure the percent change in mobility relative to pre-pandemic levels. Per capita GDP comes from the World Bank's World Development Indicators; we use log per capita GDP. The Economic Support index from the Oxford COVID-19 Government Response tracker, which measures the extent of economic support across metrics such as income support and debt relief. We standardize all variables into z-scores---having a mean of zero and standard deviation of one. `N' indicates the number of countries with available data. Maps produced using R, version 4.2.2 (\url{https://www.r-project.org/}); data for country boundaries come from Natural Earth (\url{https://www.naturalearthdata.com/}).}
+    \label{fig:did_interact_map_60}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/did_income_60.png}
+    \caption{Association of COVID-19 policies with search interest: difference-in-difference results pooling countries by income level. Point estimates and 95\% confidence intervals are shown. `N' indicates the number of countries with available data.}
+    \label{fig:did_income_60}
+\end{figure}
+
+% --------------------------
+\newpage
+\subsection{120 day threshold}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/did_overall_120.png}
+    \caption{Association of COVID-19 policies with search interest: results pooling all countries. Point estimates and 95\% confidence intervals are shown. To more clearly show trends, the seven day moving average of search interest is shown in panel A. `N' indicates the number of countries with available data.}
+    \label{fig:lockdown_impact_120}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/did_interact_map_120.png}
+    \caption{Association of COVID-19 policies with search interest: difference-in-differences results that explore heterogeneity of results across containment policy restrictiveness, economic support, and GDP per capita. Each coefficient comes from a separate regression. The stringency index comes from the University of Oxford COVID-19 Government Response tracker, a composite measure of the restrictiveness of policy measures. Mobility reduction comes from Google COVID-19 Community Mobility Reports, which measure the percent change in mobility relative to pre-pandemic levels. Per capita GDP comes from the World Bank's World Development Indicators; we use log per capita GDP. The Economic Support index from the Oxford COVID-19 Government Response tracker, which measures the extent of economic support across metrics such as income support and debt relief. We standardize all variables into z-scores---having a mean of zero and standard deviation of one. `N' indicates the number of countries with available data. Maps produced using R, version 4.2.2 (\url{https://www.r-project.org/}); data for country boundaries come from Natural Earth (\url{https://www.naturalearthdata.com/}).}
+    \label{fig:did_interact_map_120}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/did_income_120.png}
+    \caption{Association of COVID-19 policies with search interest: difference-in-difference results pooling countries by income level. Point estimates and 95\% confidence intervals are shown. `N' indicates the number of countries with available data.}
+    \label{fig:did_income_120}
+\end{figure}
+
+% --------------------------
+\newpage
+\subsection{180 day threshold}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/did_overall_180.png}
+    \caption{\textcolor{black}{Association of COVID-19 policies with search interest: results pooling all countries. Point estimates and 95\% confidence intervals are shown. To more clearly show trends, the seven day moving average of search interest is shown in panel A. `N' indicates the number of countries with available data.}}
+    \label{fig:lockdown_impact_180}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/did_interact_map_180.png}
+    \caption{\textcolor{black}{Association of COVID-19 policies with search interest: difference-in-differences results that explore heterogeneity of results across containment policy restrictiveness, economic support, and GDP per capita. Each coefficient comes from a separate regression. The stringency index comes from the University of Oxford COVID-19 Government Response tracker, a composite measure of the restrictiveness of policy measures. Mobility reduction comes from Google COVID-19 Community Mobility Reports, which measure the percent change in mobility relative to pre-pandemic levels. Per capita GDP comes from the World Bank's World Development Indicators; we use log per capita GDP. The Economic Support index from the Oxford COVID-19 Government Response tracker, which measures the extent of economic support across metrics such as income support and debt relief. We standardize all variables into z-scores---having a mean of zero and standard deviation of one. `N' indicates the number of countries with available data. Maps produced using R, version 4.2.2 (\url{https://www.r-project.org/}); data for country boundaries come from Natural Earth (\url{https://www.naturalearthdata.com/}).}}
+    \label{fig:did_interact_map_180}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/did_income_180.png}
+    \caption{\textcolor{black}{Association of COVID-19 policies with search interest: difference-in-difference results pooling countries by income level. Point estimates and 95\% confidence intervals are shown. `N' indicates the number of countries with available data.}}
+    \label{fig:did_income_180}
+\end{figure}
+
+% --------------------------
+\newpage
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}
+
+
+

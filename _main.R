@@ -2,15 +2,21 @@
 # Main Script
 
 # Parameters -------------------------------------------------------------------
-RUN_CODE <- F
-RUN_ANALYSIS_CODE <- F
+RUN_CLEANING_CODE <- F
+RUN_ANALYSIS_CODE <- T
 
 # Whether to translate google keywords; requires a Google API key
 TRANSLATE_GOOGLE_KEYWORDS <- F
 
 # Whether to run code in a "fresh state"; that is deleting all (1) outputs (i.e.,
-# figures and tables) and (2) final data (i.e., data transformed by code). Raw 
-# data, or data manually downloaded, will not be deleted.
+# figures and tables) and (2) final data (i.e., data transformed by code). 
+# * Raw data, or data manually downloaded, will not be deleted.
+# * Data queried from Google Trends will not be deleted; the querying code
+#   takes a nontrivial (ie, weeks) amount of time to run.
+# * Code produces a dataset from the World Development Indicatoes (WDI); however,
+#   this code is not re-run. WDI can be periodically updated over time (eg, data)
+#   for more countries added). Consequently, the data file downloaded represents
+#   the version of WDI downloaded for the paper.
 DELETE_OUTPUT    <- F
 DELETE_FINALDATA <- F
 
@@ -24,8 +30,11 @@ START_TIME <- Sys.time()
 if(Sys.info()[["user"]] == "robmarty"){ 
   dropbox_file_path <- "~/Dropbox/World Bank/Replication Packages/COVID Google Trends"
   github_file_path  <- "~/Documents/Github/covid-gtrends"
-  paper_tables      <- "~/Dropbox/Apps/Overleaf/COVID-19 and Google Trends Paper/tables"
-  paper_figures     <- "~/Dropbox/Apps/Overleaf/COVID-19 and Google Trends Paper/figures"
+  
+  #paper_tables      <- "~/Dropbox/Apps/Overleaf/COVID-19 and Google Trends Paper/tables"
+  #paper_figures     <- "~/Dropbox/Apps/Overleaf/COVID-19 and Google Trends Paper/figures"
+  paper_tables      <- file.path(github_file_path, "Paper Figures and Tables", "tables")
+  paper_figures     <- file.path(github_file_path, "Paper Figures and Tables", "figures")
 }
 
 #### Paths from root
@@ -177,7 +186,7 @@ if(DELETE_FINALDATA){
 ORIGINAL_VARIABLES <- NA
 ORIGINAL_VARIABLES <- ls()
 
-if(RUN_CODE){
+if(RUN_CLEANING_CODE){
   
   # Process ancillary data -----------------------------------------------------
   process_anc_dir <- file.path(datawork_dir, "01_process_ancillary_data")
@@ -235,96 +244,90 @@ if(RUN_CODE){
   TO_DELETE <- ls()[!(ls() %in% ORIGINAL_VARIABLES)]
   rm(TO_DELETE); gc(); gc()
   source(file.path(datawork_dir, "05_clean_gtrends", "06_monthly_correlations.R"))
+}
+
+# Analysis: Correlation with cases -------------------------------------------
+if(RUN_ANALYSIS_CODE){
   
-  # Analysis: Correlation with cases -------------------------------------------
-  if(RUN_ANALYSIS_CODE){
-    
-    # Boxplots showing distribution of correlations and best lags, using annual data
-    # OUTPUTS:
-    # -- cor_lag_fig.png
-    # -- cor_corbest_fig.png
-    source(file.path(datawork_dir, "06_analysis", "main_correlations", "correlation_boxplots.R"))
-    
-    # Boxplots showing distribution of correlations and best lags, using half years data
-    # OUTPUTS:
-    # -- cor_halfyear_lag_fig.png
-    # -- cor_halfyear_corbest_fig.png
-    source(file.path(datawork_dir, "06_analysis", "main_correlations", "correlation_boxplots_halfyears.R"))
-    
-    # Boxplots showing distribution of correlations uses excess mortality
-    # OUTPUTS:
-    # -- cor_cases_excess.png
-    source(file.path(datawork_dir, "06_analysis", "main_correlations", "correlation_boxplots_monthly.R"))
-    
-    # Distribution of within contry correlation of COVID-19 cases and excess mortality
-    # OUTPUTS:
-    # -- cor_cases_excess.png
-    source(file.path(datawork_dir, "06_analysis", "main_correlations", "excess_deaths_vs_cases.R"))
-    
-    # Correlations of Select Keywors with COVID Cases and Excess Mortality, by Income
-    # OUTPUTS:
-    # -- cor_cases_excess.png
-    source(file.path(datawork_dir, "06_analysis", "main_correlations", "correlations_boxplot_monthly_income.R"))
-    
-    # Figures showing trends in search interest & cases
-    # OUTPUTS:
-    # -- cases_vs_loss_of_smell_trends_topcountries.png
-    # -- cases_vs_loss_of_smell_trends_allcountries.png
-    source(file.path(datawork_dir, "06_analysis", "main_correlations", "cases_searchinterest_trends.R"))
-    
-    # Figures showing trends in search interest & cases for select countries
-    # with recent surges in cases
-    # OUTPUTS:
-    # -- cases_vs_loss_of_smell_trends_omicron.png
-    source(file.path(datawork_dir, "06_analysis", "main_correlations", "cases_searchinterest_trends_omicron.R"))
-    
-    # Map showing correlations across countries
-    # OUTPUT:
-    # -- cor_map.png
-    source(file.path(datawork_dir, "06_analysis", "main_correlations", "map.R"))
-    
-    # Table of correlations and lags (for SI)
-    # OUTPUT:
-    # -- cor_lag_table.tex
-    source(file.path(datawork_dir, "06_analysis", "main_correlations", "correlation_table.R"))
-    
-    # Regression explaining variation in correlation
-    # OUTPUT:
-    # -- lm_cor_[loss_of_smell/loss_of_taste/covid_symptoms].tex
-    source(file.path(datawork_dir, "06_analysis", "main_correlations", "reg_explain_correlation.R"))
-    
-    # Scatterplots of covariates with correlations
-    # OUTPUT:
-    # -- cor_gdp_scatter.png
-    # -- cor_internet_scatter.png
-    # -- cor_mobilecell_scatter.png
-    # -- cor_casestotal_scatter.png
-    source(file.path(datawork_dir, "06_analysis", "main_correlations", "cor_covariate_scatterplot.R"))
-    
-    # Analysis: Impact of containment policies -----------------------------------
-    
-    # Contaiment policy analysis: Difference-in-Differences
-    # OUTPUT:
-    # -- did_pooled.png
-    source(file.path(datawork_dir, "06_analysis", "main_lockdowns", "01_lockdown_did_pooled_prep_data.R"))
-    source(file.path(datawork_dir, "06_analysis", "main_lockdowns", "02_lockdown_did_pooled_regressions.R"))
-    source(file.path(datawork_dir, "06_analysis", "main_lockdowns", "03_lockdown_did_pooled_figures.R"))
-    
-    # Contaiment policy analysis: Event Study
-    # OUTPUT:
-    # -- did_pooled.png
-    source(file.path(datawork_dir, "06_analysis", "main_lockdowns", "04_lockdown_eventstudy_global.R"))
-    
-    # Contaiment policy analysis: Long Term Trends
-    # OUTPUT:
-    # -- contain_long_trends.png
-    source(file.path(datawork_dir, "06_analysis", "main_lockdowns", "05_long_term_trends.R"))
-    
-    # Analysis: SI ---------------------------------------------------------------
-    source(file.path(datawork_dir, "06_analysis", "si", "consistent_timeseries_example.R"))
-    source(file.path(datawork_dir, "06_analysis", "si", "language_used_for_gtrends.R"))
-    source(file.path(datawork_dir, "06_analysis", "si", "terms_queried_summary.R"))
-  }
+  # Boxplots showing distribution of correlations and best lags, using annual data
+  # OUTPUTS:
+  # -- cor_lag_fig.png
+  # -- cor_corbest_fig.png
+  source(file.path(datawork_dir, "06_analysis", "main_correlations", "correlation_boxplots.R"))
+  
+  # Boxplots showing distribution of correlations and best lags, using half years data
+  # OUTPUTS:
+  # -- cor_halfyear_lag_fig.png
+  # -- cor_halfyear_corbest_fig.png
+  source(file.path(datawork_dir, "06_analysis", "main_correlations", "correlation_boxplots_halfyears.R"))
+  
+  # Boxplots showing distribution of correlations uses excess mortality
+  # OUTPUTS:
+  # -- cor_cases_excess.png
+  source(file.path(datawork_dir, "06_analysis", "main_correlations", "correlation_boxplots_monthly.R"))
+  
+  # Distribution of within contry correlation of COVID-19 cases and excess mortality
+  # OUTPUTS:
+  # -- cor_cases_excess.png
+  source(file.path(datawork_dir, "06_analysis", "main_correlations", "excess_deaths_vs_cases.R"))
+  
+  # Correlations of Select Keywors with COVID Cases and Excess Mortality, by Income
+  # OUTPUTS:
+  # -- cor_cases_excess.png
+  source(file.path(datawork_dir, "06_analysis", "main_correlations", "correlations_boxplot_monthly_income.R"))
+  
+  # Figures showing trends in search interest & cases
+  # OUTPUTS:
+  # -- cases_vs_loss_of_smell_trends_topcountries.png
+  # -- cases_vs_loss_of_smell_trends_allcountries.png
+  source(file.path(datawork_dir, "06_analysis", "main_correlations", "cases_searchinterest_trends.R"))
+  
+  # Map showing correlations across countries
+  # OUTPUT:
+  # -- cor_map.png
+  source(file.path(datawork_dir, "06_analysis", "main_correlations", "map.R"))
+  
+  # Table of correlations and lags (for SI)
+  # OUTPUT:
+  # -- cor_lag_table.tex
+  source(file.path(datawork_dir, "06_analysis", "main_correlations", "correlation_table.R"))
+  
+  # Regression explaining variation in correlation
+  # OUTPUT:
+  # -- lm_cor_[loss_of_smell/loss_of_taste/covid_symptoms].tex
+  source(file.path(datawork_dir, "06_analysis", "main_correlations", "reg_explain_correlation.R"))
+  
+  # Scatterplots of covariates with correlations
+  # OUTPUT:
+  # -- cor_gdp_scatter.png
+  # -- cor_internet_scatter.png
+  # -- cor_mobilecell_scatter.png
+  # -- cor_casestotal_scatter.png
+  source(file.path(datawork_dir, "06_analysis", "main_correlations", "cor_covariate_scatterplot.R"))
+  
+  # Analysis: Impact of containment policies -----------------------------------
+  
+  # Contaiment policy analysis: Difference-in-Differences
+  # OUTPUT:
+  # -- did_pooled.png
+  source(file.path(datawork_dir, "06_analysis", "main_lockdowns", "01_lockdown_did_pooled_prep_data.R"))
+  source(file.path(datawork_dir, "06_analysis", "main_lockdowns", "02_lockdown_did_pooled_regressions.R"))
+  source(file.path(datawork_dir, "06_analysis", "main_lockdowns", "03_lockdown_did_pooled_figures.R"))
+  
+  # Contaiment policy analysis: Event Study
+  # OUTPUT:
+  # -- did_pooled.png
+  source(file.path(datawork_dir, "06_analysis", "main_lockdowns", "04_lockdown_eventstudy_global.R"))
+  
+  # Contaiment policy analysis: Long Term Trends
+  # OUTPUT:
+  # -- contain_long_trends.png
+  source(file.path(datawork_dir, "06_analysis", "main_lockdowns", "05_long_term_trends.R"))
+  
+  # Analysis: SI ---------------------------------------------------------------
+  source(file.path(datawork_dir, "06_analysis", "si", "consistent_timeseries_example.R"))
+  source(file.path(datawork_dir, "06_analysis", "si", "language_used_for_gtrends.R"))
+  source(file.path(datawork_dir, "06_analysis", "si", "terms_queried_summary.R"))
 }
 
 #### Export: info on last code run
@@ -343,11 +346,11 @@ if(EXPORT_TXT_REPORT_CODE_DURATION){
       " minutes \n", sep = "")
   cat("\n")
   cat("PARAMETERS\n")
-  cat("RUN_CODE: ", RUN_CODE, "\n", sep = "")
+  cat("RUN_CLEANING_CODE: ", RUN_CLEANING_CODE, "\n", sep = "")
+  cat("RUN_ANALYSIS_CODE: ", RUN_ANALYSIS_CODE, "\n", sep = "")
   cat("TRANSLATE_GOOGLE_KEYWORDS: ", TRANSLATE_GOOGLE_KEYWORDS, "\n", sep = "")
   cat("DELETE_OUTPUT: ", DELETE_OUTPUT, "\n", sep = "")
   cat("DELETE_FINALDATA: ", DELETE_FINALDATA, "\n", sep = "")
   
   sink()
 }
-
