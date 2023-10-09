@@ -9,5 +9,3 @@ source(file.path(CODE_PATH, "01_prepare_data_for_dashboard.R"))
 source(file.path(CODE_PATH, "02_stylized_example_gif.R"))
 source(file.path(CODE_PATH, "03_data_to_github.R"))
 
-
-

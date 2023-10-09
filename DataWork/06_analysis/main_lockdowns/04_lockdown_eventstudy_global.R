@@ -15,7 +15,7 @@ lm_post_confint_tidy <- function(lm){
 }
 
 # 1. Load / Prep Data ----------------------------------------------------------
-gtrends_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+gtrends_df <- readRDS(file.path(data_dir, "google_trends", "FinalData",
                                 "gtrends_full_timeseries", "gtrends_otherdata_varclean_complete_contain.Rds"))
 
 #### Adjust Variables

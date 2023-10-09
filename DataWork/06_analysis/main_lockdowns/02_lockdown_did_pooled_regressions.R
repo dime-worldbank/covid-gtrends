@@ -16,7 +16,7 @@ for(days_thresh in c(30, 60, 90, 120, 180)){
   print(paste(days_thresh, "================================================="))
   
   # Load Data --------------------------------------------------------------------
-  df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData", "results", 
+  df <- readRDS(file.path(data_dir, "google_trends", "FinalData", "results", 
                           "did_pooled_data.Rds"))
   
   ## Further restrict dates
@@ -384,11 +384,11 @@ for(days_thresh in c(30, 60, 90, 120, 180)){
   
   # Export -----------------------------------------------------------------------
   saveRDS(coef_df,
-          file.path(dropbox_file_path, "Data", "google_trends", "FinalData", "results", 
+          file.path(data_dir, "google_trends", "FinalData", "results", 
                     paste0("did_pooled_results_",days_thresh,".Rds")))
   
   saveRDS(df,
-          file.path(dropbox_file_path, "Data", "google_trends", "FinalData", "results", 
+          file.path(data_dir, "google_trends", "FinalData", "results", 
                     paste0("did_pooled_data_",days_thresh,".Rds")))
   
 }

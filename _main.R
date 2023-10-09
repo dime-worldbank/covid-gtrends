@@ -1,9 +1,18 @@
 # The Evolution of the COVID-19 Pandemic Through the Lens of Google Searches
 # Main Script
 
+# Outline
+# 1. Parameters
+# 2. Filepaths
+# 3. Set Google API Key
+# 4. Packages
+# 5. Define Keywords
+# 6. Delete code outputs
+# 7. Run scripts
+
 # Parameters -------------------------------------------------------------------
 RUN_CLEANING_CODE <- F
-RUN_ANALYSIS_CODE <- T
+RUN_ANALYSIS_CODE <- F
 
 # Whether to translate google keywords; requires a Google API key
 TRANSLATE_GOOGLE_KEYWORDS <- F
@@ -17,8 +26,8 @@ TRANSLATE_GOOGLE_KEYWORDS <- F
 #   this code is not re-run. WDI can be periodically updated over time (eg, data)
 #   for more countries added). Consequently, the data file downloaded represents
 #   the version of WDI downloaded for the paper.
-DELETE_OUTPUT    <- F
-DELETE_FINALDATA <- F
+DELETE_OUTPUT    <- T
+DELETE_FINALDATA <- T
 
 # Whether to produce a .txt file that indicates how long it took the code to run.
 EXPORT_TXT_REPORT_CODE_DURATION <- T
@@ -160,7 +169,7 @@ if(DELETE_OUTPUT){
 
 if(DELETE_FINALDATA){
   
-  FINALDATA_FILES <- list.files(dropbox_file_path, 
+  FINALDATA_FILES <- list.files(data_dir, 
                                 pattern = "*.Rds", 
                                 full.names = T,
                                 recursive = T) %>%
@@ -214,7 +223,7 @@ if(RUN_CLEANING_CODE){
   source(file.path(datawork_dir, "03_determine_most_common_language", "01_scrape_gtrends_mult_languages_per_country.R"))
   source(file.path(datawork_dir, "03_determine_most_common_language", "02_append_data.R"))
   
-  # Scrape Google Trends Timeseries & US Data ----------------------------------
+  # Scrape Google Trends Timeseries --------------------------------------------
   source(file.path(datawork_dir, "04_scrape_gtrends_data", "01_scrape_gtrends_global_timeseries.R"))
   
   # Clean Google Trends: Global Timeseries Data --------------------------------
@@ -239,11 +248,15 @@ if(RUN_CLEANING_CODE){
   
   TO_DELETE <- ls()[!(ls() %in% ORIGINAL_VARIABLES)]
   rm(TO_DELETE); gc(); gc()
-  source(file.path(datawork_dir, "05_clean_gtrends", "05_monthly_dataset_with_excess_mortality.R"))
+  source(file.path(datawork_dir, "05_clean_gtrends", "05_append_correlations.R"))
   
   TO_DELETE <- ls()[!(ls() %in% ORIGINAL_VARIABLES)]
   rm(TO_DELETE); gc(); gc()
-  source(file.path(datawork_dir, "05_clean_gtrends", "06_monthly_correlations.R"))
+  source(file.path(datawork_dir, "05_clean_gtrends", "06_monthly_dataset_with_excess_mortality.R"))
+  
+  TO_DELETE <- ls()[!(ls() %in% ORIGINAL_VARIABLES)]
+  rm(TO_DELETE); gc(); gc()
+  source(file.path(datawork_dir, "05_clean_gtrends", "07_monthly_correlations.R"))
 }
 
 # Analysis: Correlation with cases -------------------------------------------
@@ -266,7 +279,7 @@ if(RUN_ANALYSIS_CODE){
   # -- cor_cases_excess.png
   source(file.path(datawork_dir, "06_analysis", "main_correlations", "correlation_boxplots_monthly.R"))
   
-  # Distribution of within contry correlation of COVID-19 cases and excess mortality
+  # Distribution of within country correlation of COVID-19 cases and excess mortality
   # OUTPUTS:
   # -- cor_cases_excess.png
   source(file.path(datawork_dir, "06_analysis", "main_correlations", "excess_deaths_vs_cases.R"))
@@ -328,13 +341,16 @@ if(RUN_ANALYSIS_CODE){
   source(file.path(datawork_dir, "06_analysis", "si", "consistent_timeseries_example.R"))
   source(file.path(datawork_dir, "06_analysis", "si", "language_used_for_gtrends.R"))
   source(file.path(datawork_dir, "06_analysis", "si", "terms_queried_summary.R"))
+  
+  # Analysis: Paper Stats ------------------------------------------------------
+  source(file.path(datawork_dir, "06_analysis", "paper_stats", "paper_stats.R"))
 }
 
 #### Export: info on last code run
 if(EXPORT_TXT_REPORT_CODE_DURATION){
   END_TIME <- Sys.time()
   
-  sink(file.path(dropbox_file_path, "last_code_run_time.txt"))
+  sink(file.path(github_file_path, "last_code_run_time.txt"))
   cat("Details from latest time script was run \n")
   cat("\n")
   cat("START TIME: ", as.character(START_TIME), "\n", sep = "")

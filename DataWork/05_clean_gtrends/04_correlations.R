@@ -26,36 +26,94 @@ end_day <- c("2020-06-30",
              "2022-06-30",
              "2022-12-31")
 
+dates_df_1 <- data.frame(
+  begin_day = c("2020-01-01","2020-07-01", "2021-01-01","2021-07-01", "2022-01-01","2022-07-01"),
+  end_day   = c("2020-06-30","2020-12-31", "2021-06-30","2021-12-31", "2022-06-30","2022-12-31")
+)
+
+dates_df_2 <- data.frame(
+  begin_day = c("2020-01-01","2021-01-01","2022-01-01",  "2020-01-01","2020-01-01",  "2021-01-01"),
+  end_day   = c("2020-12-31","2021-12-31","2022-12-31",  "2021-12-31","2022-12-31",  "2022-12-31")
+)
+
+dates_df <- bind_rows(
+  dates_df_1,
+  dates_df_2
+)
+
+dates_df <- dates_df[nrow(dates_df):1,]
+
 OVERWRITE_DATA <- F
 
 keyword_type = "contain"
 begin_day_i = "2020-01-01"
 end_day_i = "2022-12-31"
 
-for(begin_day_i in begin_day){
-  for(end_day_i in rev(end_day)){
-    for(keyword_type in c("contain", "symptoms")){
-      
-      if(end_day_i < begin_day_i) next
+#OG_VARS <- ls()
+
+for(keyword_type in c("contain", "symptoms")){
+  
+  gtrends_full_df <- readRDS(file.path(data_dir, "google_trends", "FinalData",
+                                       "gtrends_full_timeseries", 
+                                       paste0("gtrends_otherdata_varclean_complete_",keyword_type, ".Rds"))) 
+  
+  for(i in 1:nrow(dates_df)){
+    
+    begin_day_i = dates_df$begin_day[i]
+    end_day_i = dates_df$end_day[i]
+    
+    #for(begin_day_i in begin_day){
+    #  for(end_day_i in rev(end_day)){
+    
+    # gtrends_full_df <- gtrends_full_df %>%
+    #   dplyr::select(-contains(".y")) %>%
+    #   dplyr::select(-contains(".x")) %>%
+    #   dplyr::select(-contains("hits_tm")) %>%
+    #   dplyr::select(-contains("hits_tp")) %>%
+    #   dplyr::select(-contains("hits_t0")) %>%
+    #   dplyr::select(-contains("gmobility")) %>%
+    #   dplyr::select(-contains("days_since_")) %>%
+    #   dplyr::select(-c(lastupdated, business_ease_index, status, h2_testing_policy,
+    #                    pandemic_time, lending, StringencyIndex,
+    #                    GovernmentResponseIndex, EconomicSupportIndex,
+    #                    c8_international_travel_controls_first_date,
+    #                    c_policy_2019, c_policy_2020, c_policy_first_date,
+    #                    working_age_pop, mm_dd, population, urban_pop,
+    #                    un_regionsub_name, year, cases, death))
+    
+    if(end_day_i < begin_day_i) next
+    
+    if(keyword_type == "contain"){
+      keywords <- KEYWORDS_CONTAIN_USE
+    }
+    
+    if(keyword_type == "symptoms"){
+      keywords <- KEYWORDS_SYMTPOMS
+    }
+    
+    for(keyword_i in keywords){
       
       #### Check if processed
-      OUT_PATH_1 <- file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
-                              "gtrends_full_timeseries",
-                              "correlation_datasets",
-                              paste0("gtrends_since",begin_day_i,"_until",end_day_i,"_",keyword_type,".Rds"))
+      OUT_PATH_PANEL <- file.path(data_dir, "google_trends", "FinalData",
+                                  "gtrends_full_timeseries",
+                                  "correlation_datasets",
+                                  "panel_with_correlation_individual_keywords",
+                                  paste0("gtrends_since",begin_day_i,"_until",end_day_i,"_",keyword_type,"_",keyword_i,".Rds"))
       
-      if(!file.exists(OUT_PATH_1) | OVERWRITE_DATA){
+      OUT_PATH_COR <- file.path(data_dir, "google_trends", "FinalData",
+                                "gtrends_full_timeseries",
+                                "correlation_datasets",
+                                "correlation_individual_keywords",
+                                paste0("correlations_gtrends_since",begin_day_i,"_until",end_day_i,"_",keyword_type,"_",keyword_i,".Rds"))
+      
+      if(!file.exists(OUT_PATH_PANEL) | !file.exists(OUT_PATH_COR) | OVERWRITE_DATA){
         
         if(end_day_i < begin_day_i) next
         
-        print(paste(keyword_type, begin_day_i, end_day_i, "===================="))
+        print(paste(keyword_i, keyword_type, begin_day_i, end_day_i, "===================="))
         
-        # Load Data --------------------------------------------------------------------
-        gtrends_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
-                                        "gtrends_full_timeseries", 
-                                        paste0("gtrends_otherdata_varclean_complete_",keyword_type,".Rds")))
-        
-        gtrends_df <- gtrends_df %>%
+        # Load Data ----------------------------------------------------------
+        gtrends_df <- gtrends_full_df[gtrends_full_df$keyword_en %in% keyword_i,] %>%
           dplyr::filter(date >= as.Date(begin_day_i),
                         date <= as.Date(end_day_i)) %>%
           
@@ -73,8 +131,6 @@ for(begin_day_i in begin_day){
                         hits_ma7, hits,
                         cases_new, death_new) %>%
           dplyr::arrange(date)
-        
-        gc(); gc(); gc();
         
         # Correlations across different leads/lags -----------------------------------
         compute_cor <- function(leadlag, gtrends_df){
@@ -248,31 +304,15 @@ for(begin_day_i in begin_day){
           dplyr::select(geo, keyword_en, cor, cor_nolag, lag, zscore, zscore_nolag, type) 
         
         # Merge Correlations with main data --------------------------------------------
-        gtrends_full_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
-                                             "gtrends_full_timeseries", 
-                                             paste0("gtrends_otherdata_varclean_complete_",keyword_type,".Rds")))
-        
-        gtrends_full_df <- gtrends_full_df %>%
-          dplyr::select(-contains(".y")) %>%
-          dplyr::select(-contains(".x")) %>%
-          dplyr::select(-contains("hits_tm")) %>%
-          dplyr::select(-contains("hits_tp")) %>%
-          dplyr::select(-contains("hits_t0")) %>%
-          dplyr::select(-contains("gmobility")) %>%
-          dplyr::select(-contains("days_since_")) %>%
-          dplyr::select(-c(lastupdated, business_ease_index, status, h2_testing_policy,
-                           pandemic_time, lending, StringencyIndex,
-                           GovernmentResponseIndex, EconomicSupportIndex,
-                           c8_international_travel_controls_first_date,
-                           c_policy_2019, c_policy_2020, c_policy_first_date,
-                           working_age_pop, mm_dd, population, urban_pop,
-                           un_regionsub_name, year, cases, death)) %>%
+        gtrends_panel_df <- gtrends_full_df[gtrends_full_df$keyword_en %in% keyword_i,] %>%
           dplyr::filter(date >= as.Date(begin_day_i),
-                        date <= as.Date(end_day_i))
+                        date <= as.Date(end_day_i)) %>%
+          left_join(gtrends_cor_df, by = c("geo", "keyword_en"))
         
-        gc(); gc(); gc();
+        #gc(); gc(); gc();
         
-        gtrends_panel_df <- merge(gtrends_full_df, gtrends_cor_df, by = c("geo", "keyword_en"), all.x=T, all.y=F)
+        # gtrends_panel_df <- gtrends_full_lim_df %>%
+        #   left_join(gtrends_cor_df, by = c("geo", "keyword_en"))
         
         # Merge "other day" with correlation data ------------------------------------
         # Merge non google trends data (eg, wdi) with correlations data
@@ -298,22 +338,29 @@ for(begin_day_i in begin_day){
         #left_join(gtrends_otherdata_sum, by = "geo")
         
         # Export ---------------------------------------------------------------------
-        saveRDS(gtrends_panel_df, file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
-                                            "gtrends_full_timeseries",
-                                            "correlation_datasets",
-                                            paste0("gtrends_since",begin_day_i,"_until",end_day_i,"_",keyword_type,".Rds")))
+        saveRDS(gtrends_panel_df, OUT_PATH_PANEL)
         
-        saveRDS(cor_max_df, file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
-                                      "gtrends_full_timeseries",
-                                      "correlation_datasets",
-                                      paste0("correlations_gtrends_since",begin_day_i,"_until",end_day_i,"_",keyword_type,".Rds")))
+        saveRDS(cor_max_df, OUT_PATH_COR)
         
+        Sys.sleep(1)
+        rm(gtrends_df)
         rm(gtrends_panel_df)
         rm(cor_max_df)
-        rm(gtrends_full_df)
-        gc(); gc(); gc();
+        Sys.sleep(1)
+        gc()
+        gc()
+        gc(reset = TRUE)   
+        Sys.sleep(1)
+        
+        #TO_DELETE <- ls()[!(ls() %in% OG_VARS)]
+        #rm(TO_DELETE); gc(); gc(); gc()
         
       }
     }
   }
 }
+#  }
+#}
+
+
+

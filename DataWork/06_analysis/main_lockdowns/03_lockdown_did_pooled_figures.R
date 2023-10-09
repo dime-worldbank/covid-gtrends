@@ -109,7 +109,7 @@ prep_keywords <- function(df){
 for(days_thresh in c(30, 60, 90, 120, 180)){
   
   # N Countries per keyword
-  n_country_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData", "results", 
+  n_country_df <- readRDS(file.path(data_dir, "google_trends", "FinalData", "results", 
                                     "did_pooled_data.Rds")) %>%
     dplyr::filter(abs(days_since_c_policy_yearcurrent) <= days_thresh) %>%
     distinct(keyword_en, geo) %>%
@@ -119,7 +119,7 @@ for(days_thresh in c(30, 60, 90, 120, 180)){
     prep_keywords() %>%
     dplyr::select(keyword_en, n_country)
   
-  df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData", "results", 
+  df <- readRDS(file.path(data_dir, "google_trends", "FinalData", "results", 
                           "did_pooled_data.Rds")) %>%
     
     # Restrict to dates threshold
@@ -148,7 +148,7 @@ for(days_thresh in c(30, 60, 90, 120, 180)){
     mutate(keyword_en_newline = paste0(keyword_en_newline, "\n[N = ", n_country, "]"))
   
   # Load/Prep Regression Results -------------------------------------------------
-  coef_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData", "results", 
+  coef_df <- readRDS(file.path(data_dir, "google_trends", "FinalData", "results", 
                                paste0("did_pooled_results_",days_thresh,".Rds"))) %>%
     
     ## Prep keywords
@@ -363,7 +363,7 @@ for(days_thresh in c(30, 60, 90, 120, 180)){
   world_sp$geo <- world_sp$geo %>% as.character()
   
   #### Merge in Data
-  df_map <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData", "results", 
+  df_map <- readRDS(file.path(data_dir, "google_trends", "FinalData", "results", 
                               paste0("did_pooled_data_",days_thresh,".Rds")))
   
   df_map <- df_map %>%

@@ -25,17 +25,9 @@ prep_keywords <- function(df){
                         "unemployment insurance",
                         "unemployment office") ~ "Economic",
       
-      keyword_en %in% c("abortion",
-                        "break up",
-                        "condom",
-                        "dating app",
-                        "divorce",
+      keyword_en %in% c("divorce",
                         "emergency pill",
-                        "plan child",
-                        "plan other children",
                         "pregnancy test",
-                        "relationship",
-                        "tinder",
                         "wedding") ~ "Relationships\n&Family Planning",
       
       keyword_en %in% c("social distance",
@@ -70,11 +62,11 @@ prep_keywords <- function(df){
 
 # Load data --------------------------------------------------------------------
 # Timeseries data
-gtrends_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+gtrends_df <- readRDS(file.path(data_dir, "google_trends", "FinalData",
                                 "gtrends_full_timeseries", "gtrends_otherdata_varclean_complete_contain.Rds"))
 
 # So use same sample as is in did sample
-did_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData", "results", 
+did_df <- readRDS(file.path(data_dir, "google_trends", "FinalData", "results", 
                                   "did_pooled_data.Rds"))
 
 # Restrict sample --------------------------------------------------------------

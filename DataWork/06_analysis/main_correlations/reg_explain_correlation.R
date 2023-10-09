@@ -1,7 +1,7 @@
 # Example Trends
 
 # Daily ------------------------------------------------------------------------
-gtrends_daily_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+gtrends_daily_df <- readRDS(file.path(data_dir, "google_trends", "FinalData",
                                       "gtrends_full_timeseries",
                                       "correlation_datasets",
                                       "correlations_gtrends_since2020-01-01_until2021-12-31_symptoms.Rds")) 
@@ -132,7 +132,7 @@ for(keyword_en_i in c("loss of smell", "loss of taste", "covid symptoms")){
 }
 
 # Monthly ----------------------------------------------------------------------
-gtrends_monthly_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+gtrends_monthly_df <- readRDS(file.path(data_dir, "google_trends", "FinalData",
                                         "gtrends_full_timeseries", "correlation_datasets",
                                         "gtrends_monthly_correlations.Rds"))
 

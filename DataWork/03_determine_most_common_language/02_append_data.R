@@ -8,15 +8,11 @@ df <- file.path(prim_lang_dir,
              full.names = T) %>%
   map_df(readRDS)
 
-## -----
-# Can delete this after re-run 01_scrape_gtrends_mult_language....
-languages_df <- readRDS(file.path(dropbox_file_path, "Data", 
+languages_df <- readRDS(file.path(data_dir, 
                                   "country_primary_language", "FinalData",
                                   "countries_modified_clean.Rds"))
 
 df <- df[df$geo %in% languages_df$geo,]
-df$geo %>% unique() %>% length()
-# ----
 
 # General Cleaning -------------------------------------------------------------
 df$hits[df$hits %in% "<1"] <- "0.5"
@@ -157,7 +153,4 @@ df_best <- df_best %>%
 saveRDS(df_best, file.path(prim_lang_dir, 
                            "FinalData",
                            "country_language.Rds"))
-
-# No search interest for any keywords
-df$geo[!(df$geo %in% df_best$geo)] %>% unique()
 

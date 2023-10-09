@@ -34,7 +34,7 @@ for(begin_day_i in begin_day){
     print(begin_day_i)
     
     # Load data ----------------------------------------------------------------
-    df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+    df <- readRDS(file.path(data_dir, "google_trends", "FinalData",
                             "gtrends_full_timeseries", 
                             "gtrends_otherdata_complete_monthly.Rds"))
     
@@ -64,7 +64,7 @@ for(begin_day_i in begin_day){
 }
 
 saveRDS(df_append,
-        file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+        file.path(data_dir, "google_trends", "FinalData",
                   "gtrends_full_timeseries", "correlation_datasets",
                   "gtrends_monthly_correlations.Rds"))
 

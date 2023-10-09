@@ -32,55 +32,55 @@ for(keyword_type in c("symptoms", "contain")){
   if(keyword_type == "contain")  keyword_type_vec <- tolower(KEYWORDS_CONTAIN_USE)
   if(keyword_type == "vaccine")  keyword_type_vec <- tolower(VACCINE_KEYWORDS)
   
-  gtrends_m3_df <- file.path(dropbox_file_path, "Data", "google_trends", "RawData", "timeseries") %>%
+  gtrends_m3_df <- file.path(data_dir, "google_trends", "RawData", "timeseries") %>%
     list.files(pattern = "gtrends_date2018-09-01 2019-05-28*", full.names = T) %>%
     map_df(readRDS) %>%
     clean_google_data(keyword_type_vec = keyword_type_vec) %>%
     dplyr::rename(hits_tm3 = hits) 
   
-  gtrends_m2_df <- file.path(dropbox_file_path, "Data", "google_trends", "RawData", "timeseries") %>%
+  gtrends_m2_df <- file.path(data_dir, "google_trends", "RawData", "timeseries") %>%
     list.files(pattern = "gtrends_date2019-01-01 2019-09-27*", full.names = T) %>%
     map_df(readRDS) %>%
     clean_google_data(keyword_type_vec = keyword_type_vec) %>%
     dplyr::rename(hits_tm2 = hits) 
   
-  gtrends_m1_df <- file.path(dropbox_file_path, "Data", "google_trends", "RawData", "timeseries") %>%
+  gtrends_m1_df <- file.path(data_dir, "google_trends", "RawData", "timeseries") %>%
     list.files(pattern = "gtrends_date2019-07-01 2020-03-26*", full.names = T) %>%
     map_df(readRDS) %>%
     clean_google_data(keyword_type_vec = keyword_type_vec) %>%
     dplyr::rename(hits_tm1 = hits)
   
-  gtrends_0_df <- file.path(dropbox_file_path, "Data", "google_trends", "RawData", "timeseries") %>%
+  gtrends_0_df <- file.path(data_dir, "google_trends", "RawData", "timeseries") %>%
     list.files(pattern = "gtrends_date2020-01-01 2020-09-26*", full.names = T) %>%
     map_df(readRDS) %>%
     clean_google_data(keyword_type_vec = keyword_type_vec) %>%
     dplyr::rename(hits_t0 = hits) 
   
-  gtrends_p1_df <- file.path(dropbox_file_path, "Data", "google_trends", "RawData", "timeseries") %>%
+  gtrends_p1_df <- file.path(data_dir, "google_trends", "RawData", "timeseries") %>%
     list.files(pattern = "gtrends_date2020-07-05 2021-03-31*", full.names = T) %>%
     map_df(readRDS) %>%
     clean_google_data(keyword_type_vec = keyword_type_vec) %>%
     dplyr::rename(hits_tp1 = hits) 
   
-  gtrends_p2_df <- file.path(dropbox_file_path, "Data", "google_trends", "RawData", "timeseries") %>%
+  gtrends_p2_df <- file.path(data_dir, "google_trends", "RawData", "timeseries") %>%
     list.files(pattern = "gtrends_date2021-01-04 2021-09-30*", full.names = T) %>%
     map_df(readRDS) %>%
     clean_google_data(keyword_type_vec = keyword_type_vec) %>%
     dplyr::rename(hits_tp2 = hits) 
   
-  gtrends_p3_df <- file.path(dropbox_file_path, "Data", "google_trends", "RawData", "timeseries") %>%
+  gtrends_p3_df <- file.path(data_dir, "google_trends", "RawData", "timeseries") %>%
     list.files(pattern = "gtrends_date2021-04-06 2021-12-31*", full.names = T) %>%
     map_df(readRDS) %>%
     clean_google_data(keyword_type_vec = keyword_type_vec) %>%
     dplyr::rename(hits_tp3 = hits) 
   
-  gtrends_p4_df <- file.path(dropbox_file_path, "Data", "google_trends", "RawData", "timeseries") %>%
+  gtrends_p4_df <- file.path(data_dir, "google_trends", "RawData", "timeseries") %>%
     list.files(pattern = "gtrends_date2021-10-01 2022-06-27*", full.names = T) %>%
     map_df(readRDS) %>%
     clean_google_data(keyword_type_vec = keyword_type_vec) %>%
     dplyr::rename(hits_tp4 = hits) 
   
-  gtrends_p5_df <- file.path(dropbox_file_path, "Data", "google_trends", "RawData", "timeseries") %>%
+  gtrends_p5_df <- file.path(data_dir, "google_trends", "RawData", "timeseries") %>%
     list.files(pattern = "gtrends_date2022-04-06 2022-12-31*", full.names = T) %>%
     map_df(readRDS) %>%
     clean_google_data(keyword_type_vec = keyword_type_vec) %>%

@@ -5,7 +5,7 @@ for(keyword_type in c("symptoms", "contain")){
   print(paste(keyword_type, "================================================"))
   
   # Load Data --------------------------------------------------------------------
-  gtrends_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+  gtrends_df <- readRDS(file.path(data_dir, "google_trends", "FinalData",
                                   "gtrends_full_timeseries", 
                                   paste0("gtrends_otherdata_complete_",keyword_type,".Rds")))
   
@@ -52,18 +52,28 @@ for(keyword_type in c("symptoms", "contain")){
   gtrends_df <- gtrends_df %>%
     dplyr::mutate(mm_dd = date %>% substring(6,10))
   
-  # Add Categories -------------------------------------------------------------
-  if(keyword_type %in% "vaccine"){
-    
-    gtrends_df <- gtrends_df %>%
-      make_vax_cat() %>%
-      dplyr::filter(!is.na(keyword_cat))
-    
-  }
+  # Remove unneeded variables --------------------------------------------------
+  gtrends_df <- gtrends_df %>%
+    dplyr::select(-contains(".y")) %>%
+    dplyr::select(-contains(".x")) %>%
+    dplyr::select(-contains("hits_tm")) %>%
+    dplyr::select(-contains("hits_tp")) %>%
+    dplyr::select(-contains("hits_t0")) %>%
+    #dplyr::select(-contains("gmobility")) %>%
+    #dplyr::select(-contains("days_since_")) %>%
+    dplyr::select(-c(lastupdated, business_ease_index, status, h2_testing_policy,
+                     lending, 
+                     #StringencyIndex,
+                     #GovernmentResponseIndex, 
+                     #EconomicSupportIndex,
+                     c8_international_travel_controls_first_date,
+                     c_policy_2019, c_policy_2020, c_policy_first_date,
+                     working_age_pop, mm_dd, population, urban_pop,
+                     un_regionsub_name, year, cases, death))
   
   # Export =======================================================================
   saveRDS(gtrends_df,
-          file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+          file.path(data_dir, "google_trends", "FinalData",
                     "gtrends_full_timeseries", 
                     paste0("gtrends_otherdata_varclean_complete_",keyword_type,".Rds")))
   

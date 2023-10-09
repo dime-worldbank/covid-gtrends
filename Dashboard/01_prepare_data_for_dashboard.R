@@ -21,14 +21,9 @@ cor2_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalD
                              "gtrends_full_timeseries",
                              "correlation_datasets",
                              paste0("correlations_gtrends_since","2020-01-01","_until2022-12-31_contain.Rds")))
-cor3_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
-                             "gtrends_full_timeseries",
-                             "correlation_datasets",
-                             paste0("correlations_gtrends_since","2020-01-01","_until2022-12-31_vaccine.Rds")))
 
 cor_df <- bind_rows(cor1_df,
-                    cor2_df,
-                    cor3_df)
+                    cor2_df)
 
 keywords <- tolower(KEYWORDS_TIMESERIES_ALL)
 
@@ -55,19 +50,6 @@ keywords_df <- keywords_df %>%
     keyword_en == "social distance" ~ "social distancing",
     keyword_en == "social isolation" ~ "mental health",
     keyword_en == "covid symptoms" ~ "symptoms",
-    keyword_en == "vaccine" ~ "COVID vaccine",
-    keyword_en == "vaccine allergy" ~ "COVID vaccine",
-    keyword_en == "covid vaccine dangerous" ~ "COVID vaccine",
-    keyword_en == "covid vaccine blood clots" ~ "COVID vaccine",
-    keyword_en == "does covid vaccine change dna" ~ "COVID vaccine misinformation",
-    keyword_en == "covid vaccine change dna" ~ "COVID vaccine misinformation",
-    keyword_en == "is the covid vaccine the mark of the beast" ~ "COVID vaccine misinformation",
-    keyword_en == "covid vaccine cause infertility" ~ "COVID vaccine misinformation",
-    keyword_en == "covid vaccine infertility" ~ "COVID vaccine misinformation",
-    keyword_en == "covid microchip" ~ "COVID vaccine misinformation",
-    keyword_en == "covid vaccine microchip" ~ "COVID vaccine misinformation",
-    keyword_en == "covid vaccine mercury" ~ "COVID vaccine misinformation",
-    keyword_en == "ivermectin" ~ "COVID vaccine misinformation",
     TRUE ~ category
   ))
 
@@ -130,14 +112,8 @@ for(begin_day_i in begin_day){
                                  "correlation_datasets",
                                  paste0("correlations_gtrends_since",begin_day_i,"_until",end_day_i,"_contain.Rds")))
     
-    cor3_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
-                                 "gtrends_full_timeseries",
-                                 "correlation_datasets",
-                                 paste0("correlations_gtrends_since",begin_day_i,"_until",end_day_i,"_vaccine.Rds")))
-    
     cor_df <- bind_rows(cor1_df,
-                        cor2_df,
-                        cor3_df)
+                        cor2_df)
     
     cor_df <- cor_df[tolower(cor_df$keyword_en) %in% keywords,]
     
@@ -147,11 +123,6 @@ for(begin_day_i in begin_day){
     saveRDS(cor_df, file.path(DASHBOARD_PATH, paste0("correlations_since_",begin_day_i,"_",end_day_i,".Rds")))
     
     # gTrends ----------------------------------------------------------------------
-    # gtrends_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
-    #                               "gtrends_full_timeseries",
-    #                               "correlation_datasets",
-    #                               paste0("gtrends_otherdata_varclean_since",begin_day_i,"_until2021-09-30.Rds")))
-    # 
     gtrends1_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
                                      "gtrends_full_timeseries",
                                      "correlation_datasets",

@@ -32,7 +32,7 @@ for(keyword_type in c("symptoms", "contain")){
   wdi_df <- readRDS(file.path(wdi_dir, "FinalData", "wdi_data.Rds"))
   
   ## Google Mobility
-  gmobility_df <- read.csv(file.path(dropbox_file_path, "Data", "google_mobility", "RawData",
+  gmobility_df <- read.csv(file.path(data_dir, "google_mobility", "RawData",
                                      "Global_Mobility_Report.csv"),
                            stringsAsFactors = F)
   
@@ -177,7 +177,7 @@ for(keyword_type in c("symptoms", "contain")){
   
   # Export -----------------------------------------------------------------------
   saveRDS(gtrends_df,
-          file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+          file.path(data_dir, "google_trends", "FinalData",
                     "gtrends_full_timeseries", 
                     paste0("gtrends_otherdata_complete_",keyword_type,".Rds")))
 }

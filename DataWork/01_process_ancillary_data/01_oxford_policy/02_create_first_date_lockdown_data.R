@@ -16,8 +16,6 @@ min_ignore_0_and_na <- function(x){
 }
 
 # Clean data -------------------------------------------------------------------
-#ymd(ox_df$date[1])*1
-
 ox_clean_df <- ox_df %>%
   dplyr::select(geo, date, 
                 "C1M_School closing",

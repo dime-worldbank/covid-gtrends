@@ -1,7 +1,7 @@
 # Excess Deaths vs Reported Cases
 
 # Load data --------------------------------------------------------------------
-df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+df <- readRDS(file.path(data_dir, "google_trends", "FinalData",
                         "gtrends_full_timeseries", 
                         "gtrends_otherdata_complete_monthly.Rds"))
 

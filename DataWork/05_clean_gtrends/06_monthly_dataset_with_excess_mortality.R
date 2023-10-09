@@ -16,7 +16,7 @@ df_append <- map_df(c("symptoms", "contain"), function(keyword_type){
   print(paste(keyword_type, "================================================"))
   
   #### Load data
-  df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+  df <- readRDS(file.path(data_dir, "google_trends", "FinalData",
                           "gtrends_full_timeseries", 
                           paste0("gtrends_otherdata_complete_",keyword_type,".Rds")))
   
@@ -53,7 +53,7 @@ df_append <- map_df(c("symptoms", "contain"), function(keyword_type){
 
 #### Export
 saveRDS(df_append,
-        file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+        file.path(data_dir, "google_trends", "FinalData",
                   "gtrends_full_timeseries", 
                   "gtrends_otherdata_complete_monthly.Rds"))
 
