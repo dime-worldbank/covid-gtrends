@@ -26,8 +26,8 @@ TRANSLATE_GOOGLE_KEYWORDS <- F
 #   this code is not re-run. WDI can be periodically updated over time (eg, data)
 #   for more countries added). Consequently, the data file downloaded represents
 #   the version of WDI downloaded for the paper.
-DELETE_OUTPUT    <- F
-DELETE_FINALDATA <- F
+DELETE_OUTPUT    <- T
+DELETE_FINALDATA <- T
 
 # Whether to produce a .txt file that indicates how long it took the code to run.
 EXPORT_TXT_REPORT_CODE_DURATION <- T
@@ -257,6 +257,7 @@ if(RUN_CLEANING_CODE){
   TO_DELETE <- ls()[!(ls() %in% ORIGINAL_VARIABLES)]
   rm(TO_DELETE); gc(); gc()
   source(file.path(datawork_dir, "05_clean_gtrends", "05_append_correlations.R"))
+<<<<<<< HEAD
   
   TO_DELETE <- ls()[!(ls() %in% ORIGINAL_VARIABLES)]
   rm(TO_DELETE); gc(); gc()
@@ -264,6 +265,15 @@ if(RUN_CLEANING_CODE){
   
   TO_DELETE <- ls()[!(ls() %in% ORIGINAL_VARIABLES)]
   rm(TO_DELETE); gc(); gc()
+=======
+  
+  TO_DELETE <- ls()[!(ls() %in% ORIGINAL_VARIABLES)]
+  rm(TO_DELETE); gc(); gc()
+  source(file.path(datawork_dir, "05_clean_gtrends", "06_monthly_dataset_with_excess_mortality.R"))
+  
+  TO_DELETE <- ls()[!(ls() %in% ORIGINAL_VARIABLES)]
+  rm(TO_DELETE); gc(); gc()
+>>>>>>> 1446a336866bbb90c14b3c4dd25b11c91e1fc5d7
   source(file.path(datawork_dir, "05_clean_gtrends", "07_monthly_correlations.R"))
 }
 
