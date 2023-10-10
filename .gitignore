@@ -95,6 +95,7 @@
 
 !/**/*.csv
 !/**/*.Rds
+!/**/*.txt
 
 #######################
 # Include some additional file formats in any output folder. You might have
