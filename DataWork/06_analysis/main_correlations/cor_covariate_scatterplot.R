@@ -1,7 +1,7 @@
 # Scatterplot Between Select Gtrends + COVID Correlations & GDP Per Capital
 
 # Load data --------------------------------------------------------------------
-gtrends_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+gtrends_df <- readRDS(file.path(data_dir, "google_trends", "FinalData",
                                 "gtrends_full_timeseries",
                                 "correlation_datasets",
                                 "correlations_gtrends_since2020-01-01_until2021-12-31_symptoms.Rds")) 

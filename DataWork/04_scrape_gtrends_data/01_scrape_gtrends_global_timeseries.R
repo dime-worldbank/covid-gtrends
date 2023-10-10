@@ -187,7 +187,7 @@ for(GTRENDS_TO_SCRAPE_i in GTRENDS_TO_SCRAPE){
     str_replace_all(str_replace_all(start_end_date, " ", "_"),"") %>%
     str_replace_all("_$", "")
   
-  dir.create(file.path(dropbox_file_path, "Data", "google_trends", "RawData", OUT_FOLDER))
+  dir.create(file.path(data_dir, "google_trends", "RawData", OUT_FOLDER))
   
   if(grepl("timeseriesALL_", GTRENDS_TO_SCRAPE_i)) language_codes_all <- "en"
   
@@ -226,7 +226,7 @@ for(GTRENDS_TO_SCRAPE_i in GTRENDS_TO_SCRAPE){
         term_i <- keywords_sub_df_i$term_to_scrape[term_id_i]
         term_en_i <- keywords_sub_df_i$keyword_en[term_id_i]
         
-        out_path <- file.path(dropbox_file_path, "Data", "google_trends", "RawData",
+        out_path <- file.path(data_dir, "google_trends", "RawData",
                               OUT_FOLDER,
                               paste0("gtrends_date",
                                      start_end_date,

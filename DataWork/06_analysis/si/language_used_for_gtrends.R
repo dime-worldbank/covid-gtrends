@@ -2,13 +2,12 @@
 # NOTE: Run with R version 3.6; issues in text encoding with R version 4.
 
 # Load data --------------------------------------------------------------------
-df_best <- readRDS(file.path(dropbox_file_path, 
-                             "Data", 
+df_best <- readRDS(file.path(data_dir, 
                              "country_primary_language", 
                              "FinalData",
                              "country_language.Rds"))
 
-gcodes_df <- read_csv(file.path(dropbox_file_path, "Data", 
+gcodes_df <- read_csv(file.path(data_dir, 
                                 "country_primary_language", "RawData",
                                 "google_language_code.csv"))
 

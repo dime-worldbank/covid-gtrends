@@ -1,7 +1,7 @@
 # Lockdown Difference-in-Difference Analysis
 
 # Load Data --------------------------------------------------------------------
-gtrends_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+gtrends_df <- readRDS(file.path(data_dir, "google_trends", "FinalData",
                                 "gtrends_full_timeseries", "gtrends_otherdata_varclean_complete_contain.Rds"))
 
 # Add variables ----------------------------------------------------------------
@@ -55,7 +55,7 @@ gtrends_df <- gtrends_df %>%
 
 # Export Results ---------------------------------------------------------------
 saveRDS(gtrends_df,
-        file.path(dropbox_file_path, "Data", "google_trends", "FinalData", "results", 
+        file.path(data_dir, "google_trends", "FinalData", "results", 
                   "did_pooled_data.Rds"))
 
 

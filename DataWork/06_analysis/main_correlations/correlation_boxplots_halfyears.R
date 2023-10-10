@@ -5,37 +5,37 @@ keywords_en_use <- KEYWORDS_SYMTPOMS
 # BOXPLOT FIGURE ===============================================================
 
 # ** Load Data -------------
-cor_1_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+cor_1_df <- readRDS(file.path(data_dir, "google_trends", "FinalData",
                               "gtrends_full_timeseries",
                               "correlation_datasets",
                               "correlations_gtrends_since2020-01-01_until2020-06-30_symptoms.Rds")) %>%
   dplyr::mutate(timespan = "2020-01-01 to 2020-06-30")
 
-cor_2_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+cor_2_df <- readRDS(file.path(data_dir, "google_trends", "FinalData",
                               "gtrends_full_timeseries",
                               "correlation_datasets",
                               "correlations_gtrends_since2020-07-01_until2020-12-31_symptoms.Rds")) %>%
   dplyr::mutate(timespan = "2020-07-01 to 2020-12-31")
 
-cor_3_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+cor_3_df <- readRDS(file.path(data_dir, "google_trends", "FinalData",
                               "gtrends_full_timeseries",
                               "correlation_datasets",
                               "correlations_gtrends_since2021-01-01_until2021-06-30_symptoms.Rds")) %>%
   dplyr::mutate(timespan = "2021-01-01 to 2021-06-30")
 
-cor_4_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+cor_4_df <- readRDS(file.path(data_dir, "google_trends", "FinalData",
                               "gtrends_full_timeseries",
                               "correlation_datasets",
                               "correlations_gtrends_since2021-07-01_until2021-12-31_symptoms.Rds")) %>%
   dplyr::mutate(timespan = "2021-07-01 to 2021-12-31")
 
-cor_5_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+cor_5_df <- readRDS(file.path(data_dir, "google_trends", "FinalData",
                               "gtrends_full_timeseries",
                               "correlation_datasets",
                               "correlations_gtrends_since2022-01-01_until2022-06-30_symptoms.Rds")) %>%
   dplyr::mutate(timespan = "2022-01-01 to 2022-06-30")
 
-cor_6_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+cor_6_df <- readRDS(file.path(data_dir, "google_trends", "FinalData",
                               "gtrends_full_timeseries",
                               "correlation_datasets",
                               "correlations_gtrends_since2022-07-01_until2022-12-31_symptoms.Rds")) %>%
@@ -159,22 +159,4 @@ p <- cor_long_df %>%
 
 ggsave(p, filename = file.path(paper_figures, "cor_halfyear_lag_fig.png"),
        height = 10, width = 11)
-
-# SI ---------------------------------------------------------------------------
-# p <- cor_long_df %>%
-#   dplyr::filter(name %in% c("cor_nolag", "cor")) %>%
-#   dplyr::mutate(name_full = case_when(
-#     name == "cor_nolag" ~ "Correlation",
-#     name == "cor" ~ "Correlation using\nbest lag"
-#   )) %>%
-#   dplyr::mutate(timespan = case_when(
-#     timespan == "2020" ~ "A. Using Data in 2020",
-#     timespan == "2021" ~ "B. Using Data in 2021",
-#     timespan == "2022" ~ "B. Using Data in 2022")) %>%
-#   make_boxplot(fill_var = "name_full",
-#                facet_var = "timespan") +
-#   ggplot2::xlim(c(-1, 1))
-# 
-# ggsave(p, filename = file.path(paper_figures, "cor_corbest_fig.png"),
-#        height = 6.5, width = 11)
 

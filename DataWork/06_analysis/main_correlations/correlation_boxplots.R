@@ -5,19 +5,19 @@ keywords_en_use <- KEYWORDS_SYMTPOMS
 # BOXPLOT FIGURE ===============================================================
 
 # ** Load Data -------------
-cor_1_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+cor_1_df <- readRDS(file.path(data_dir, "google_trends", "FinalData",
                               "gtrends_full_timeseries",
                               "correlation_datasets",
                               "correlations_gtrends_since2020-01-01_until2020-12-31_symptoms.Rds")) %>%
   dplyr::mutate(timespan = "2020")
 
-cor_2_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+cor_2_df <- readRDS(file.path(data_dir, "google_trends", "FinalData",
                               "gtrends_full_timeseries",
                               "correlation_datasets",
                               "correlations_gtrends_since2021-01-01_until2021-12-31_symptoms.Rds")) %>%
   dplyr::mutate(timespan = "2021")
 
-cor_3_df <- readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+cor_3_df <- readRDS(file.path(data_dir, "google_trends", "FinalData",
                               "gtrends_full_timeseries",
                               "correlation_datasets",
                               "correlations_gtrends_since2022-01-01_until2022-12-31_symptoms.Rds")) %>%

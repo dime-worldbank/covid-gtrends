@@ -1,11 +1,11 @@
 
 gtrends_df <- bind_rows(
-  readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+  readRDS(file.path(data_dir, "google_trends", "FinalData",
                     "gtrends_full_timeseries",
                     "correlation_datasets",
                     "correlations_gtrends_since2020-01-01_until2021-12-31_symptoms.Rds")) %>%
     dplyr::mutate(category = "symptoms"),
-  readRDS(file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+  readRDS(file.path(data_dir, "google_trends", "FinalData",
                     "gtrends_full_timeseries",
                     "correlation_datasets",
                     "correlations_gtrends_since2020-01-01_until2021-12-31_contain.Rds")) %>%

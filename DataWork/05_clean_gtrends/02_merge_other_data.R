@@ -1,11 +1,5 @@
 # Merge Google Trends Data with Other Data Sources
 
-# gtrends_df %>%
-#   dplyr::filter(geo == "GB",
-#                 keyword_en == "loss of smell") %>%
-#   ggplot() +
-#   geom_line(aes(x = date, y = hits))
-
 for(keyword_type in c("symptoms", "contain")){
   print(paste(keyword_type, "================================================"))
   
@@ -23,18 +17,12 @@ for(keyword_type in c("symptoms", "contain")){
   
   ox_nat_timeseries_df <- readRDS(file.path(oxpol_dir, "FinalData", "OxCGRT_national_timeseries.Rds"))
   
-  ## Oxford Policy - Vaccine
-  #vac_earliest_df <- readRDS(file.path(oxpol_dir, "FinalData", "OxCGRT_earliest_vaccine_dates.Rds"))
-  
-  #vac_timeseries_df <- readRDS(file.path(oxpol_dir, "FinalData", "OxCGRT_vaccine_national_timeseries.Rds"))
-  
   ## WDI
   wdi_df <- readRDS(file.path(wdi_dir, "FinalData", "wdi_data.Rds"))
   
   ## Google Mobility
-  gmobility_df <- read.csv(file.path(dropbox_file_path, "Data", "google_mobility", "RawData",
-                                     "Global_Mobility_Report.csv"),
-                           stringsAsFactors = F)
+  gmobility_df <- readRDS(file.path(data_dir, "google_mobility", "FinalData",
+                                    "Global_Mobility_Report.Rds"))
   
   # Merge Cases ------------------------------------------------------------------
   cases_df <- cases_df %>%
@@ -48,7 +36,7 @@ for(keyword_type in c("symptoms", "contain")){
   #gtrends_df$death_new[gtrends_df$date %in% as.Date(c("2020-01-01", "2020-01-02"))] <- 0
   #gtrends_df$cases[gtrends_df$date %in% as.Date(c("2020-01-01", "2020-01-02"))] <- 0
   #gtrends_df$death[gtrends_df$date %in% as.Date(c("2020-01-01", "2020-01-02"))] <- 0
-
+  
   # Global Vaccine Dosage Data ---------------------------------------------------
   # gvac_df <- read.csv(file.path(dropbox_file_path, "Data", "global_vaccine", "RawData", 
   #                               "covid-vaccination-doses-per-capita.csv"),
@@ -177,7 +165,7 @@ for(keyword_type in c("symptoms", "contain")){
   
   # Export -----------------------------------------------------------------------
   saveRDS(gtrends_df,
-          file.path(dropbox_file_path, "Data", "google_trends", "FinalData",
+          file.path(data_dir, "google_trends", "FinalData",
                     "gtrends_full_timeseries", 
                     paste0("gtrends_otherdata_complete_",keyword_type,".Rds")))
 }
