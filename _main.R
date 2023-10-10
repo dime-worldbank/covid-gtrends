@@ -40,10 +40,10 @@ if(Sys.info()[["user"]] == "robmarty"){
   dropbox_file_path <- "~/Dropbox/World Bank/Replication Packages/COVID Google Trends"
   github_file_path  <- "~/Documents/Github/covid-gtrends"
   
-  #paper_tables      <- "~/Dropbox/Apps/Overleaf/COVID-19 and Google Trends Paper/tables"
-  #paper_figures     <- "~/Dropbox/Apps/Overleaf/COVID-19 and Google Trends Paper/figures"
-  paper_tables      <- file.path(github_file_path, "Paper Figures and Tables", "tables")
-  paper_figures     <- file.path(github_file_path, "Paper Figures and Tables", "figures")
+  paper_tables      <- "~/Dropbox/Apps/Overleaf/COVID-19 and Google Trends Paper/tables"
+  paper_figures     <- "~/Dropbox/Apps/Overleaf/COVID-19 and Google Trends Paper/figures"
+  #paper_tables      <- file.path(github_file_path, "Paper Figures and Tables", "tables")
+  #paper_figures     <- file.path(github_file_path, "Paper Figures and Tables", "figures")
 }
 
 #### Paths from root
