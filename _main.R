@@ -36,18 +36,18 @@ START_TIME <- Sys.time()
 
 # Filepaths --------------------------------------------------------------------
 #### Root Paths
-dropbox_file_path <- "~/Dropbox/World Bank/Replication Packages/COVID Google Trends"
 github_file_path  <- "~/Documents/Github/covid-gtrends"
-  
+#dropbox_file_path <- "~/Dropbox/World Bank/Replication Packages/COVID Google Trends"
+
 #### Paths from root
 ## Tables/Figures
-paper_tables      <- "~/Dropbox/Apps/Overleaf/COVID-19 and Google Trends Paper/tables"
-paper_figures     <- "~/Dropbox/Apps/Overleaf/COVID-19 and Google Trends Paper/figures"
-#paper_tables      <- file.path(github_file_path, "Paper Figures and Tables", "tables")
-#paper_figures     <- file.path(github_file_path, "Paper Figures and Tables", "figures")
+#paper_tables      <- "~/Dropbox/Apps/Overleaf/COVID-19 and Google Trends Paper/tables"
+#paper_figures     <- "~/Dropbox/Apps/Overleaf/COVID-19 and Google Trends Paper/figures"
+paper_tables      <- file.path(github_file_path, "Paper Figures and Tables", "tables")
+paper_figures     <- file.path(github_file_path, "Paper Figures and Tables", "figures")
   
 ## Data
-data_dir      <- file.path(dropbox_file_path, "Data")
+data_dir      <- file.path(github_file_path, "Data")
 who_covid_dir <- file.path(data_dir, "who_covid")
 gtrends_dir   <- file.path(data_dir, "google_trends")
 gmobility_dir <- file.path(data_dir, "google_mobility")
@@ -257,23 +257,13 @@ if(RUN_CLEANING_CODE){
   TO_DELETE <- ls()[!(ls() %in% ORIGINAL_VARIABLES)]
   rm(TO_DELETE); gc(); gc()
   source(file.path(datawork_dir, "05_clean_gtrends", "05_append_correlations.R"))
-<<<<<<< HEAD
-  
+
   TO_DELETE <- ls()[!(ls() %in% ORIGINAL_VARIABLES)]
   rm(TO_DELETE); gc(); gc()
   source(file.path(datawork_dir, "05_clean_gtrends", "06_monthly_dataset_with_excess_mortality.R"))
   
   TO_DELETE <- ls()[!(ls() %in% ORIGINAL_VARIABLES)]
   rm(TO_DELETE); gc(); gc()
-=======
-  
-  TO_DELETE <- ls()[!(ls() %in% ORIGINAL_VARIABLES)]
-  rm(TO_DELETE); gc(); gc()
-  source(file.path(datawork_dir, "05_clean_gtrends", "06_monthly_dataset_with_excess_mortality.R"))
-  
-  TO_DELETE <- ls()[!(ls() %in% ORIGINAL_VARIABLES)]
-  rm(TO_DELETE); gc(); gc()
->>>>>>> 1446a336866bbb90c14b3c4dd25b11c91e1fc5d7
   source(file.path(datawork_dir, "05_clean_gtrends", "07_monthly_correlations.R"))
 }
 
