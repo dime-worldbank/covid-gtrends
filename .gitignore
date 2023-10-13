@@ -125,3 +125,11 @@ token.*
 tokens.*
 token/
 tokens/
+
+#######################
+# Ignore dashboard data
+
+!/**/Dashboard/**/*.Rds
+
+
+

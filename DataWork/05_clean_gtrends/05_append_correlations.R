@@ -34,7 +34,7 @@ dates_df <- bind_rows(
 #for(begin_day_i in begin_day){
 #  for(end_day_i in end_day){
 for(i in 1:nrow(dates_df)){
-    for(keyword_type_i in c("contain", "symptoms")){
+    for(keyword_type_i in c("contain", "symptoms")){ 
       for(dataset_type in c("cor", "panel")){
         begin_day_i = dates_df$begin_day[i]
         end_day_i = dates_df$end_day[i]

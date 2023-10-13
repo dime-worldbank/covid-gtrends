@@ -46,16 +46,23 @@ dates_df <- dates_df[nrow(dates_df):1,]
 OVERWRITE_DATA <- F
 
 keyword_type = "contain"
-begin_day_i = "2020-01-01"
+begin_day_i = "2022-01-01"
 end_day_i = "2022-12-31"
 
 #OG_VARS <- ls()
 
-for(keyword_type in c("contain", "symptoms")){
+for(keyword_type in c("contain", "symptoms")){ 
   
   gtrends_full_df <- readRDS(file.path(data_dir, "google_trends", "FinalData",
                                        "gtrends_full_timeseries", 
                                        paste0("gtrends_otherdata_varclean_complete_",keyword_type, ".Rds"))) 
+  
+  gtrends_full_df <- gtrends_full_df %>%
+    dplyr::select(-contains("days_since")) %>%
+    dplyr::select(-contains("gmobility_")) %>%
+    dplyr::select(-c(pandemic_time, StringencyIndex, GovernmentResponseIndex, EconomicSupportIndex))
+  
+  gc()
   
   for(i in 1:nrow(dates_df)){
     
@@ -192,60 +199,6 @@ for(keyword_type in c("contain", "symptoms")){
         
         gtrends_cor_long_df <- map_df(-21:21, compute_cor, gtrends_df)
         
-        # gtrends_cor_long_df <- map_df(-21:21, function(leadlag){
-        #   
-        #   print(leadlag)
-        #   
-        #   ## Prep lead/lag hits variable
-        #   leadlag_abs <- abs(leadlag)
-        #   
-        #   if(leadlag < 0){
-        #     
-        #     gtrends_df <- gtrends_df %>%
-        #       dplyr::arrange(date) %>%
-        #       dplyr::group_by(geo, keyword_en) %>%
-        #       dplyr::mutate(hits_leadlag = dplyr::lag(hits, leadlag_abs),
-        #                     hits_ma7_leadlag = dplyr::lag(hits_ma7, leadlag_abs)) %>%
-        #       dplyr::ungroup()
-        #     
-        #   } else if(leadlag > 0){
-        #     
-        #     gtrends_df <- gtrends_df %>%
-        #       dplyr::arrange(date) %>%
-        #       dplyr::group_by(geo, keyword_en) %>%
-        #       dplyr::mutate(hits_leadlag = dplyr::lead(hits, leadlag_abs),
-        #                     hits_ma7_leadlag = dplyr::lead(hits_ma7, leadlag_abs)) %>%
-        #       dplyr::ungroup()
-        #     
-        #   } else if(leadlag == 0){
-        #     
-        #     gtrends_df <- gtrends_df %>%
-        #       dplyr::arrange(date) %>%
-        #       dplyr::group_by(geo, keyword_en) %>%
-        #       dplyr::mutate(hits_leadlag = hits,
-        #                     hits_ma7_leadlag = hits_ma7) %>%
-        #       dplyr::ungroup()
-        #     
-        #   }
-        #   
-        #   gtrends_cor_df_i <- gtrends_df %>%
-        #     dplyr::arrange(date) %>%
-        #     dplyr::filter(!is.na(hits_leadlag),
-        #                   !is.na(hits_ma7_leadlag),
-        #                   !is.na(cases_new_ma7),
-        #                   !is.na(cases_new),
-        #                   !is.na(death_new)) %>%
-        #     group_by(geo, keyword_en) %>%
-        #     dplyr::summarise(cor_cases_hits = cor(cases_new, hits_leadlag),
-        #                      cor_death_hits = cor(death_new, hits_leadlag),
-        #                      cor_casesMA7_hitsMA7 = cor(cases_new_ma7, hits_ma7_leadlag),
-        #                      cor_deathMA7_hitsMA7 = cor(death_new_ma7, hits_ma7_leadlag)) %>%
-        #     ungroup() %>%
-        #     dplyr::mutate(leadlag = leadlag)
-        #   
-        #   return(gtrends_cor_df_i)
-        # })
-        
         # Summarize to geo/keyword level ---------------------------------------------
         
         #### Summarize to geo/keyword level
@@ -288,20 +241,27 @@ for(keyword_type in c("contain", "symptoms")){
         #### Stack Cases/Deaths together
         cor_max_df <- bind_rows(gtrends_cor_df %>%
                                   dplyr::rename(cor_nolag = cor_cases_hits_nolag,
+                                                cor_nolagMA7 = cor_casesMA7_hitsMA7_nolag,
                                                 cor = cor_cases_hits_max,
+                                                corMA7 = cor_casesMA7_hitsMA7_max,
                                                 lag = cor_cases_hits_lag,
+                                                lagMA7 = cor_casesMA7_hitsMA7_lag,
                                                 zscore = cor_cases_hits_zscore,
                                                 zscore_nolag = cor_cases_hits_nolag_zscore) %>%
                                   mutate(type = "Cases"),
                                 
                                 gtrends_cor_df %>%
                                   dplyr::rename(cor_nolag = cor_death_hits_nolag,
+                                                cor_nolagMA7 = cor_deathMA7_hitsMA7_nolag,
                                                 cor = cor_death_hits_max,
+                                                corMA7 = cor_deathMA7_hitsMA7_max,
                                                 lag = cor_death_hits_lag,
+                                                lagMA7 = cor_deathMA7_hitsMA7_lag,
                                                 zscore = cor_death_hits_zscore,
                                                 zscore_nolag = cor_death_hits_nolag_zscore) %>%
                                   mutate(type = "Deaths")) %>%
-          dplyr::select(geo, keyword_en, cor, cor_nolag, lag, zscore, zscore_nolag, type) 
+          dplyr::select(geo, keyword_en, 
+                        cor, corMA7, cor_nolag, cor_nolagMA7, lag, lagMA7, zscore, zscore_nolag, type) 
         
         # Merge Correlations with main data --------------------------------------------
         gtrends_panel_df <- gtrends_full_df[gtrends_full_df$keyword_en %in% keyword_i,] %>%
@@ -325,17 +285,10 @@ for(keyword_type in c("contain", "symptoms")){
           dplyr::select(-c(keyword, keyword_en, date)) %>% # cases, death
           distinct(geo, .keep_all = T)
         
-        # gtrends_otherdata_sum <- gtrends_full_df %>%
-        #   group_by(geo) %>%
-        #   dplyr::summarise(h2_testing_policy_max = max(h2_testing_policy, na.rm=T),
-        #                    h2_testing_policy_median = median(h2_testing_policy, na.rm=T)) %>%
-        #   ungroup()
-        # gtrends_otherdata_sum$h2_testing_policy_max[gtrends_otherdata_sum$h2_testing_policy_max %in% -Inf] <- NA
-        # gtrends_otherdata_sum$h2_testing_policy_median[gtrends_otherdata_sum$h2_testing_policy_median %in% -Inf] <- NA
-        # 
         cor_max_df <- cor_max_df %>%
-          left_join(gtrends_otherdata, by = "geo") #%>%
-        #left_join(gtrends_otherdata_sum, by = "geo")
+          left_join(gtrends_otherdata, by = "geo") 
+        
+        # Remove unneeded variables from panel ---------------------------------
         
         # Export ---------------------------------------------------------------------
         saveRDS(gtrends_panel_df, OUT_PATH_PANEL)

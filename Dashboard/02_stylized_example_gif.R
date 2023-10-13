@@ -114,8 +114,7 @@ for(shift_i in c(0:-18, 1:18)){
   fig_all <- ggarrange(fig_line, fig_col, widths = c(0.6, 0.4)) %>%
     annotate_figure(top = text_grob(title, color = "black", face = "bold", size = 14))
   
-  ggsave(fig_all, filename = file.path(dropbox_file_path, "Data", "google_trends", "Outputs", 
-                                       "cor_gif", "images", 
+  ggsave(fig_all, filename = file.path(github_file_path, "Dashboard", "gif_images", 
                                        paste0("image_", name_i, ".png")),
          height = 4, width = 12)
   
@@ -217,8 +216,7 @@ fig_all <- ggarrange(fig_line, fig_col, widths = c(0.6, 0.4)) %>%
   annotate_figure(top = text_grob(title, color = "black", face = "bold", size = 14))
 
 for(shift_i in rep(-10, 20)){
-  ggsave(fig_all, filename = file.path(dropbox_file_path, "Data", "google_trends", "Outputs", 
-                                       "cor_gif", "images", 
+  ggsave(fig_all, filename = file.path(github_file_path, "Dashboard", "gif_images",
                                        paste0("image_", name_i, ".png")),
          height = 4, width = 12)
   
@@ -228,14 +226,12 @@ for(shift_i in rep(-10, 20)){
 
 
 if(T){
-  file.path(dropbox_file_path, "Data", "google_trends", "Outputs", 
-            "cor_gif", "images") %>% 
+  file.path(github_file_path, "Dashboard", "gif_images") %>% 
     list.files(pattern = '*.png', full.names = TRUE) %>%
     sort() %>%
     image_read() %>% # reads each path file
     image_join() %>% # joins image
     image_animate(fps=2) %>% # animates, can opt for number of loops
-    image_write(file.path(dropbox_file_path, "Data", "google_trends", "Outputs", 
-                          "cor_gif", "cor.gif")) 
+    image_write(file.path(github_file_path, "Dashboard", "www", "cor.gif")) 
   
 }

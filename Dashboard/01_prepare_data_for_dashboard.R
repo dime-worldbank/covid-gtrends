@@ -1,7 +1,7 @@
 # Prepare Data for Dashboard
 
 #### PARAMETERS
-DASHBOARD_PATH <- file.path(dropbox_file_path, "DashboardData")
+DASHBOARD_PATH <- file.path(github_file_path, "Dashboard", "data")
 
 begin_day <- c("2020-01-01",
                "2021-01-01",
@@ -140,15 +140,14 @@ for(begin_day_i in begin_day){
     
     gtrends_df$keyword_en <- gtrends_df$keyword_en %>% tools::toTitleCase() %>% str_replace_all("\\bi\\b", "I")
     
-    #gtrends_df <- gtrends_df[gtrends_df$date >= "2020-02-01",]
     gtrends_df <- merge(gtrends_df, 
                         world_df %>% dplyr::select(-continent), 
                         by = "geo")
     
     gtrends_df <- gtrends_df %>%
       dplyr::select(keyword_en, keyword, date, hits, hits_ma7, name, geo, continent, cases_new, death_new,
-                    cor_casesMA7_hitsMA7_max, cor_casesMA7_hitsMA7_nolag, cor_casesMA7_hitsMA7_lag,
-                    cor_deathMA7_hitsMA7_max, cor_deathMA7_hitsMA7_nolag, cor_deathMA7_hitsMA7_lag,
+                    cor_cases_hits_nolag, cor_cases_hits_max, cor_cases_hits_lag, cor_casesMA7_hitsMA7_max, cor_casesMA7_hitsMA7_nolag, cor_casesMA7_hitsMA7_lag,
+                    cor_death_hits_nolag, cor_death_hits_max, cor_death_hits_lag, cor_deathMA7_hitsMA7_max, cor_deathMA7_hitsMA7_nolag, cor_deathMA7_hitsMA7_lag,
                     cases_total, death_total)
     
     saveRDS(gtrends_df, file.path(DASHBOARD_PATH, paste0("gtrends_since_",begin_day_i,"_",end_day_i,".Rds")))
@@ -220,13 +219,19 @@ for(begin_day_i in begin_day){
         dplyr::group_by(group, name, keyword_en, keyword, continent, geo) %>%
         dplyr::summarise(cases_total = max(cases_total, na.rm=T),
                          death_total = max(death_total, na.rm=T),
+                         cor_cases_hits_nolag        = cor_cases_hits_nolag[1],
                          cor_casesMA7_hitsMA7_nolag  = cor_casesMA7_hitsMA7_nolag[1],
                          cor_casesMA7_hitsMA7_lag    = cor_casesMA7_hitsMA7_lag[1],
+                         cor_cases_hits_lag          = cor_cases_hits_lag[1],
                          cor_casesMA7_hitsMA7_max    = cor_casesMA7_hitsMA7_max[1],
+                         cor_cases_hits_max          = cor_cases_hits_max[1],
                          
+                         cor_death_hits_nolag        = cor_death_hits_nolag[1],
                          cor_deathMA7_hitsMA7_nolag  = cor_deathMA7_hitsMA7_nolag[1],
                          cor_deathMA7_hitsMA7_lag    = cor_deathMA7_hitsMA7_lag[1],
-                         cor_deathMA7_hitsMA7_max    = cor_deathMA7_hitsMA7_max[1]) %>%
+                         cor_death_hits_lag          = cor_death_hits_lag[1],
+                         cor_deathMA7_hitsMA7_max    = cor_deathMA7_hitsMA7_max[1],
+                         cor_death_hits_max          = cor_death_hits_max[1]) %>%
         ungroup()
       
       gtrends_spark_df <- gtrends_spark_df %>%
@@ -240,5 +245,31 @@ for(begin_day_i in begin_day){
   }
 }
 
+# Prep country languages data --------------------------------------------------
+languages <- readRDS(file.path(github_file_path, 
+                               "Data", 
+                               "country_primary_language", 
+                               "FinalData",
+                               "country_language.Rds"))
+
+## Language code to name
+data("ISO_639_2")
+ISO_639_2 <- ISO_639_2 %>%
+  dplyr::filter(!is.na(Alpha_2)) %>%
+  dplyr::rename(language_best = Alpha_2,
+                Language = Name)
+
+languages <- languages %>%
+  dplyr::mutate(Country = geo %>% countrycode(origin = "iso2c",
+                                              destination = "country.name")) %>%
+  left_join(ISO_639_2, by = "language_best") %>%
+  dplyr::mutate(Language = Language %>% 
+                  str_replace_all(";.*", "") %>% 
+                  str_replace_all(",.*", "") %>%
+                  str_squish()) %>%
+  dplyr::select(Country, Language, language_best, geo) %>%
+  arrange(Country)
+
+saveRDS(languages, file.path(github_file_path, "Dashboard", "data", "countries_lang.Rds"))
 
 

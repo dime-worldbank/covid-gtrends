@@ -31,50 +31,6 @@ for(keyword_type in c("symptoms", "contain")){
   gtrends_df <- gtrends_df %>%
     left_join(cases_df, by = c("geo", "date"))
   
-  # No covid data for Jan 1 and 2
-  #gtrends_df$cases_new[gtrends_df$date %in% as.Date(c("2020-01-01", "2020-01-02"))] <- 0
-  #gtrends_df$death_new[gtrends_df$date %in% as.Date(c("2020-01-01", "2020-01-02"))] <- 0
-  #gtrends_df$cases[gtrends_df$date %in% as.Date(c("2020-01-01", "2020-01-02"))] <- 0
-  #gtrends_df$death[gtrends_df$date %in% as.Date(c("2020-01-01", "2020-01-02"))] <- 0
-  
-  # Global Vaccine Dosage Data ---------------------------------------------------
-  # gvac_df <- read.csv(file.path(dropbox_file_path, "Data", "global_vaccine", "RawData", 
-  #                               "covid-vaccination-doses-per-capita.csv"),
-  #                     stringsAsFactors = F)
-  # 
-  # ## Add vaccination rate
-  # gvac_df <- gvac_df %>%
-  #   dplyr::filter(!is.na(Code),
-  #                 Code != "") %>%
-  #   dplyr::mutate(geo = countrycode(Code, origin = "iso3c", destination = "iso2c")) %>%
-  #   dplyr::mutate(geo = case_when(
-  #     Entity %in% "Kosovo" ~ "XK",
-  #     TRUE ~ geo
-  #   )) %>%
-  #   dplyr::filter(!is.na(geo)) %>%
-  #   dplyr::rename(date = Day) %>%
-  #   dplyr::select(date, geo, total_vaccinations_per_hundred) %>%
-  #   dplyr::mutate(date = ymd(date))
-  # 
-  # ## First date of vaccinations
-  # gvac_first_df <- gvac_df %>%
-  #   dplyr::filter(total_vaccinations_per_hundred > 0) %>%
-  #   arrange(date) %>%
-  #   distinct(geo, .keep_all = T) %>%
-  #   dplyr::select(date, geo) %>%
-  #   dplyr::rename(date_first_vaccine_given = date) 
-  # 
-  # ## Merge
-  # gtrends_df <- gtrends_df %>%
-  #   left_join(gvac_df, by = c("geo", "date"))
-  # 
-  # gtrends_df <- gtrends_df %>%
-  #   left_join(gvac_first_df, by = "geo")
-  # 
-  # ## Days since first vaccine given
-  # gtrends_df <- gtrends_df %>%
-  #   mutate(days_since_first_vaccine_given = date - date_first_vaccine_given)
-  # 
   # Merge WDI --------------------------------------------------------------------
   gtrends_df <- gtrends_df %>%
     left_join(wdi_df, by = "geo")
@@ -83,26 +39,6 @@ for(keyword_type in c("symptoms", "contain")){
   gtrends_df <- gtrends_df %>%
     left_join(ox_nat_timeseries_df, by = c("geo", "date"))
   
-  # Merge Oxford Vaccine Timeseries ----------------------------------------------
-  # gtrends_df <- gtrends_df %>%
-  #   left_join(vac_timeseries_df, by = c("geo", "date"))
-  # 
-  # Days Since Vaccines ----------------------------------------------------------
-  # gtrends_df <- gtrends_df %>%
-  #   left_join(vac_earliest_df, by = "geo")
-  
-  # gtrends_df <- gtrends_df %>%
-  #   mutate(days_since_v1_vaccine_1 = date - v1_vaccine_1_first_date,
-  #          days_since_v1_vaccine_2 = date - v1_vaccine_2_first_date,
-  #          days_since_v2_vaccine_1 = date - v2_vaccine_1_first_date,
-  #          days_since_v2_vaccine_2 = date - v2_vaccine_2_first_date,
-  #          days_since_v2_vaccine_3 = date - v2_vaccine_3_first_date,) %>%
-  #   dplyr::select(-c(v1_vaccine_1_first_date,
-  #                    v1_vaccine_2_first_date,
-  #                    v2_vaccine_1_first_date,
-  #                    v2_vaccine_2_first_date,
-  #                    v2_vaccine_3_first_date))
-  # 
   # Days Since Oxford Policies ---------------------------------------------------
   gtrends_df <- gtrends_df %>%
     left_join(ox_earliest_measure_df, by = "geo")
@@ -138,9 +74,13 @@ for(keyword_type in c("symptoms", "contain")){
   
   # Google Mobility --------------------------------------------------------------
   gmobility_df <- gmobility_df %>%
-    dplyr::filter(sub_region_1 %in% "",
-                  sub_region_2 %in% "",
-                  metro_area %in% "",
+    # dplyr::filter(sub_region_1 %in% "",
+    #               sub_region_2 %in% "",
+    #               metro_area %in% "",
+    #               !is.na(country_region_code)) %>%
+    dplyr::filter(is.na(sub_region_1),
+                  is.na(sub_region_2),
+                  is.na(metro_area),
                   !is.na(country_region_code)) %>%
     dplyr::select(country_region_code, date,
                   retail_and_recreation_percent_change_from_baseline,

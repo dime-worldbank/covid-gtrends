@@ -26,11 +26,11 @@ TRANSLATE_GOOGLE_KEYWORDS <- F
 #   this code is not re-run. WDI can be periodically updated over time (eg, data)
 #   for more countries added). Consequently, the data file downloaded represents
 #   the version of WDI downloaded for the paper.
-DELETE_OUTPUT    <- T
-DELETE_FINALDATA <- T
+DELETE_OUTPUT    <- F
+DELETE_FINALDATA <- F
 
 # Whether to produce a .txt file that indicates how long it took the code to run.
-EXPORT_TXT_REPORT_CODE_DURATION <- T
+EXPORT_TXT_REPORT_CODE_DURATION <- F
 
 START_TIME <- Sys.time()
 
@@ -74,14 +74,13 @@ if (!require("pacman")) install.packages("pacman")
 pacman::p_load(gtrendsR, countrycode, parallel, pbmcapply, ggplot2, jsonlite,
                stringr, raster, scales, rmapshaper, sparkline, magick, magrittr,
                htmltools, data.table, plotly, ISOcodes, stringi, lubridate,
-               purrr, tidytext, quanteda, qdap, SentimentAnalysis, sentimentr,
-               tm, tokenizers, wordcloud, ggwordcloud, ggpubr, dplyr, sf,
+               purrr, tidytext, tm, tokenizers, ggpubr, dplyr, sf,
                geofacet, readstata13, strucchange, forcats, ISOcodes, hrbrthemes,
                lexiconPT, textdata, tidyr, rgeos, tidylog, TTR, sparkline,
                shinydashboard, RColorBrewer, shinythemes, DT, rmarkdown, shiny,
                wesanderson, shinyWidgets, zoo, bcrypt, shinyjs, ngram, rtweet,
                stringdist, stringr, rgdal, rgeos, geosphere, htmlwidgets,
-               tidyverse, sf, raster, leaflet, leaflet.extras, plotly,
+               tidyverse, sf, raster, plotly,
                geosphere, data.table, formattable, tidyr, viridis, data.table,
                WDI, scales, rnaturalearth, sp, utf8, ggtext, stargazer, lfe,
                ggrepel, Rfast, tikzDevice, ISOcodes, ggthemes, gghalves,
@@ -337,7 +336,7 @@ if(RUN_ANALYSIS_CODE){
   
   # Contaiment policy analysis: Event Study
   # OUTPUT:
-  # -- did_pooled.png
+  # -- es_global_[threshold]_days.png
   source(file.path(datawork_dir, "06_analysis", "main_lockdowns", "04_lockdown_eventstudy_global.R"))
   
   # Contaiment policy analysis: Long Term Trends
