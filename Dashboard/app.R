@@ -17,7 +17,6 @@ library(sparkline)
 library(shinydashboard)
 library(RColorBrewer)
 library(shinythemes)
-library(DT)
 library(dplyr)
 library(rmarkdown)
 library(lubridate)
@@ -25,33 +24,32 @@ library(shiny)
 library(ggplot2)
 library(tidyr)
 library(shinyWidgets)
-library(bcrypt)
 library(shinyjs)
-library(ngram)
-library(stringdist)
 library(stringr)
-library(rgdal)
-library(rgeos)
-library(geosphere)
 library(htmlwidgets)
 library(tidyverse)
-library(sf)
-library(tidyverse)
-library(raster)
 library(leaflet)
 library(leaflet.extras)
 library(plotly)
 library(formattable)
 library(tidyr)
-library(viridis)
-library(data.table)
-library(raster)
 library(htmltools)
 library(scales)
 library(lubridate)
-library(geosphere)
 library(hrbrthemes)
 library(cachem)
+library(data.table)
+#library(viridis)
+#library(DT)
+#library(bcrypt)
+#library(geosphere)
+#library(sf)
+#library(raster)
+#library(rgdal)
+#library(rgeos)
+#library(geosphere)
+#library(ngram)
+#library(stringdist)
 
 shinyOptions(cache = cachem::cache_disk("./cache"))
 
@@ -800,6 +798,8 @@ server = (function(input, output, session) {
                                world_data$l_covid_hits)
     
     # https://stackoverflow.com/questions/61175878/r-leaflet-highcharter-tooltip-label
+    world_data$cor_covidMA7_hitsMA7_max[world_data$cor_covidMA7_hitsMA7_max %in% c(-Inf, Inf)] <- NA
+    
     pal <- colorNumeric(
       palette = "RdYlGn",
       domain = c(world_data$cor_covidMA7_hitsMA7_max[!is.na(world_data$cor_covidMA7_hitsMA7_max)], -1, 1))
@@ -1078,7 +1078,7 @@ server = (function(input, output, session) {
       cor_df$cor <- cor_df$cor
     }
     
-    
+    cor_df$cor[cor_df$cor %in% c(-Inf, Inf)] <- NA
     
     if(input$select_search_category != "All"){
       kwords <- keywords_df$keyword_en[keywords_df$category %in% input$select_search_category ]
@@ -1106,6 +1106,7 @@ server = (function(input, output, session) {
     colors <- brewer.pal(n = 9, 
                          name = "RdYlGn")
     
+
     p1 <- cor_df %>%
       plot_ly() %>% 
       add_markers(y = ~jitter(as.numeric(keyword_en)), 
@@ -1120,15 +1121,9 @@ server = (function(input, output, session) {
                                 cmax = 1,
                                 reversescale =F,
                                 opacity = 1),
-                  #hoverinfo = "text",
-                  # text = ~paste0(keyword_en,"<br>",
-                  #               "<h4>",  name, "</h4>",
-                  #                "<br>",cor %>% round(2)),
                   hovertemplate = ~paste('<b>',name,'</b><br>', 
                                          'Correlation: %{x:.2f}<extra></extra>'),
-                  # hovertemplate = paste('<i>Price</i>: $%{cor:.2f}',
-                  #                       '<br><b>X</b>: %{x}<br>',
-                  #                       '<b>%{text}</b>'),
+
                   showlegend = F) %>% 
       layout(
         xaxis = list(title = "",
@@ -1206,7 +1201,7 @@ server = (function(input, output, session) {
       cor_df$cor <- cor_df$cor
     }
     
-    
+    cor_df$cor[cor_df$cor %in% c(-Inf, Inf)] <- NA
     
     if(input$select_continent != "All"){
       cor_df <- cor_df %>%
@@ -1256,7 +1251,7 @@ server = (function(input, output, session) {
       cor_df$cor <- cor_df$cor
     }
     
-    
+    cor_df$cor[cor_df$cor %in% c(-Inf, Inf)] <- NA
     
     
     if(input$select_continent != "All"){
@@ -1350,7 +1345,7 @@ server = (function(input, output, session) {
       cor_df$cor <- cor_df$cor
     }
     
-    
+    cor_df$cor[cor_df$cor %in% c(-Inf, Inf)] <- NA
     
     if(input$select_continent != "All"){
       cor_df <- cor_df %>%
@@ -1608,6 +1603,8 @@ server = (function(input, output, session) {
     if( (input$select_cor_type_country %in% "Best Lead/Lag") & (input$select_cor_raw_MA_country %in% "Raw Value") ){
       cor_df$cor <- cor_df$cor
     }
+    
+    cor_df$cor[cor_df$cor %in% c(-Inf, Inf)] <- NA
     
     cor <- cor_df %>%
       filter(name %in% input$select_country) %>%

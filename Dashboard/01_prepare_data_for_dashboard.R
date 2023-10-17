@@ -61,7 +61,6 @@ keywords_cat_df <- keywords_df %>%
 # Save Keywords/Categories and Date (for selecting) ----------------------------
 saveRDS(begin_day, file.path(DASHBOARD_PATH, "begin_date_cor.Rds"))
 saveRDS(end_day,   file.path(DASHBOARD_PATH, "end_date_cor.Rds"))
-#saveRDS(keywords_cat_df, file.path(DASHBOARD_PATH, "keywords_categories.Rds"))
 saveRDS(keywords_df, file.path(DASHBOARD_PATH, "keywords.Rds"))
 
 # World Shapefile --------------------------------------------------------------
@@ -114,6 +113,7 @@ for(begin_day_i in begin_day){
     cor_df <- cor_df[tolower(cor_df$keyword_en) %in% keywords,]
     
     cor_df$keyword_en <- cor_df$keyword_en %>% tools::toTitleCase() %>% str_replace_all("\\bi\\b", "I")
+    cor_df$continent <- NULL
     cor_df <- merge(cor_df, world_df, by = "geo")
     
     saveRDS(cor_df, file.path(DASHBOARD_PATH, paste0("correlations_since_",begin_day_i,"_",end_day_i,".Rds")))
@@ -140,8 +140,8 @@ for(begin_day_i in begin_day){
     
     gtrends_df$keyword_en <- gtrends_df$keyword_en %>% tools::toTitleCase() %>% str_replace_all("\\bi\\b", "I")
     
-    gtrends_df <- merge(gtrends_df, 
-                        world_df %>% dplyr::select(-continent), 
+    gtrends_df <- merge(gtrends_df %>% dplyr::select(-continent), 
+                        world_df, 
                         by = "geo")
     
     gtrends_df <- gtrends_df %>%
