@@ -32,7 +32,7 @@ To prepare data for the dashboard, the [`/Dashboard/_dash_main.R`](https://githu
 
 ## Data
 
-Data can be found in the `/Data` folder [here](https://github.com/dime-worldbank/covid-gtrends/tree/main/Dashboard). 
+Data can be found in the `/Data` folder [here](https://github.com/dime-worldbank/covid-gtrends/tree/main/Data). 
 Within `/Data`, there is a folder for each dataset. Each dataset folder generally contains a `/RawData` and `/FinalData` folder, where `/RawData` contains data downloaded from its source and `FinalData` contains data processed from code. Each folder within `/Data` includes a readme that documents the source of the data.
 
 
