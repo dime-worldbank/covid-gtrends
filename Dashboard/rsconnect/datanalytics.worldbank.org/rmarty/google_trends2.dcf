@@ -1,0 +1,13 @@
+name: google_trends2
+title:
+username: rmarty
+account: rmarty
+server: datanalytics.worldbank.org
+hostUrl: https://datanalytics.worldbank.org/__api__
+appId: 649
+bundleId:
+url: http://datanalytics.worldbank.org/covid_gtrends/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: _dash_main.R|01_prepare_data_for_dashboard.R|02_stylized_example_gif.R|tests/shinytest.R

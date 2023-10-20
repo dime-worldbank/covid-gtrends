@@ -37,12 +37,9 @@ START_TIME <- Sys.time()
 # Filepaths --------------------------------------------------------------------
 #### Root Paths
 github_file_path  <- "~/Documents/Github/covid-gtrends"
-#dropbox_file_path <- "~/Dropbox/World Bank/Replication Packages/COVID Google Trends"
 
 #### Paths from root
 ## Tables/Figures
-#paper_tables      <- "~/Dropbox/Apps/Overleaf/COVID-19 and Google Trends Paper/tables"
-#paper_figures     <- "~/Dropbox/Apps/Overleaf/COVID-19 and Google Trends Paper/figures"
 paper_tables      <- file.path(github_file_path, "Paper Figures and Tables", "tables")
 paper_figures     <- file.path(github_file_path, "Paper Figures and Tables", "figures")
   
