@@ -12,46 +12,59 @@ if (Sys.info()[["user"]] == "robmarty") {
   setwd("~/Documents/Github/covid-gtrends/Dashboard")
 }
 
-#### Pacakges
-library(sparkline)
-library(shinydashboard)
-library(RColorBrewer)
-library(shinythemes)
-library(dplyr)
-library(rmarkdown)
+library(shiny) 
+library(shinydashboard) 
+library(sparkline) 
+library(RColorBrewer) 
+library(shinythemes) 
+library(dplyr) 
+library(rmarkdown) 
 library(lubridate)
-library(shiny)
-library(ggplot2)
-library(tidyr)
-library(shinyWidgets)
-library(shinyjs)
-library(stringr)
-library(htmlwidgets)
-library(leaflet)
+library(ggplot2) 
+library(tidyr) 
+library(shinyWidgets) 
+library(shinyjs) 
+library(stringr) 
+library(htmlwidgets) 
+library(leaflet) 
 library(leaflet.extras)
-library(plotly)
-library(formattable)
+library(plotly) 
+library(formattable) 
 library(tidyr)
-library(htmltools)
-library(scales)
-library(lubridate)
-library(hrbrthemes)
-library(cachem)
-library(data.table)
-#library(tidyverse)
-#library(viridis)
-#library(DT)
-#library(bcrypt)
-#library(geosphere)
-#library(sf)
-#library(raster)
-#library(rgdal)
-#library(rgeos)
-#library(geosphere)
-#library(ngram)
-#library(stringdist)
+library(htmltools) 
+library(scales) 
+library(lubridate) 
+library(hrbrthemes) 
+library(data.table) 
 
-shinyOptions(cache = cachem::cache_disk("./cache"))
+# Prep Objects -----------------------------------------------------------------
+
+# Defaults
+gtrends_df       <- readRDS(file.path("data", paste0("gtrends_since_","2020-01-01","_","2022-12-31",".Rds")))
+gtrends_spark_df <- readRDS(file.path("data", paste0("gtrends_spark_since_","2020-01-01","_","2022-12-31","_large.Rds")))
+cor_df           <- readRDS(file.path("data", paste0("correlations_since_","2020-01-01","_","2022-12-31",".Rds")))
+world            <- readRDS(file.path("data", "world.Rds"))
+
+# Needed for keyword_cor
+cor_neg1_pos1_df <- seq(from=-1, to=1, by=.1) %>%
+  as.data.frame() %>%
+  dplyr::rename(cor = ".") %>%
+  mutate(cor = cor %>% as.factor())
+
+LOAD_GTRENDS_INIT <- TRUE
+
+keyword_list <- gtrends_df$keyword_en %>% unique()
+
+keywords_df <- readRDS(file.path("data", "keywords.Rds"))
+languges_df <- readRDS(file.path("data", "countries_lang.Rds"))
+
+## Prep keywords
+keywords_df <- keywords_df %>%
+  dplyr::mutate(keyword_en = keyword_en %>% 
+                  tools::toTitleCase() %>%
+                  str_replace_all("i Ca", "I Ca"),
+                category = category %>% 
+                  tools::toTitleCase())
 
 # Functions --------------------------------------------------------------------
 as.character.htmlwidget <- function(x, ...) {
@@ -72,36 +85,9 @@ add_deps <- function(dtbl, name, pkg = name) {
   )
 }
 
-# Prep Objects -----------------------------------------------------------------
-cor_after_dates <- readRDS(file.path("data", "begin_date_cor.Rds"))
-cor_end_dates <- readRDS(file.path("data", "end_date_cor.Rds"))
-
-# Defaults
-gtrends_df       <- readRDS(file.path("data", paste0("gtrends_since_",cor_after_dates[1],"_",max(cor_end_dates),".Rds")))
-gtrends_spark_df <- readRDS(file.path("data", paste0("gtrends_spark_since_",cor_after_dates[1],"_",max(cor_end_dates),"_large.Rds")))
-cor_df           <- readRDS(file.path("data", paste0("correlations_since_",cor_after_dates[1],"_",max(cor_end_dates),".Rds")))
-world            <- readRDS(file.path("data", "world.Rds"))
-
-# Needed for keyword_cor
-cor_neg1_pos1_df <- seq(from=-1, to=1, by=.1) %>%
-  as.data.frame() %>%
-  dplyr::rename(cor = ".") %>%
-  mutate(cor = cor %>% as.factor())
-
-LOAD_GTRENDS_INIT <- TRUE
-
-keyword_list <- gtrends_df$keyword_en %>% unique()
-
-keywords_df <- readRDS(file.path("data", "keywords.Rds"))
-languges_df <- readRDS(file.path("data", "countries_lang.Rds"))
-
-## Prep keywords
-keywords_df$keyword_en <- keywords_df$keyword_en %>% tools::toTitleCase()
-keywords_df <- keywords_df[keywords_df$keyword_en %in% gtrends_df$keyword_en,]
-keywords_df$category <- keywords_df$category %>% tools::toTitleCase() 
 
 # FUNCTIONS ========
-gtpath <- ""
+#gtpath <- ""
 
 # https://stackoverflow.com/questions/49885176/is-it-possible-to-use-more-than-2-colors-in-the-color-tile-function
 color_tile2 <- function (...) {
@@ -174,7 +160,7 @@ ui <- fluidPage(
                  selectInput(
                    "select_begin_date_country",
                    label = strong("Correlation After"),
-                   choices = cor_after_dates,
+                   choices = c("2020-01-01", "2021-01-01", "2022-01-01"),
                    selected = "2020-02-01",
                    multiple = F
                  )
@@ -184,7 +170,12 @@ ui <- fluidPage(
                    "select_search_category_country",
                    label = strong("Search Term Categories"),
                    choices = c("All",
-                               sort(unique(keywords_df$category))),
+                               sort(c("Symptoms",
+                                      "Coronavirus General",
+                                      "Social Distancing",
+                                      "Economic/Unemployment",
+                                      "Mental Health",
+                                      "Relationships and Family Planning"))),
                    selected = "Symptoms",
                    multiple = F
                  )
@@ -308,7 +299,12 @@ ui <- fluidPage(
                    "select_continent",
                    label = strong("Continent"),
                    choices = c("All",
-                               unique(sort(cor_df$continent))),
+                               "Africa",
+                               "Asia",
+                               "Europe",
+                               "North America",
+                               "Oceania",
+                               "South America"),
                    selected = "All",
                    multiple = F
                  )
@@ -345,7 +341,7 @@ ui <- fluidPage(
                  selectInput(
                    "select_begin_date",
                    label = strong("Correlation After"),
-                   choices = cor_after_dates,
+                   choices = c("2020-01-01", "2021-01-01", "2022-01-01"),
                    selected = "2020-02-01",
                    multiple = F
                  )
@@ -355,7 +351,12 @@ ui <- fluidPage(
                    "select_search_category",
                    label = strong("Search Term Categories"),
                    choices = c("All",
-                               sort(unique(keywords_df$category))),
+                               sort(c("Symptoms",
+                                      "Coronavirus General",
+                                      "Social Distancing",
+                                      "Economic/Unemployment",
+                                      "Mental Health",
+                                      "Relationships and Family Planning"))),
                    selected = "Symptoms",
                    multiple = F
                  )
@@ -709,14 +710,14 @@ ui <- fluidPage(
 server = (function(input, output, session) {
   
   # GLOBAL FIGURES ***************** -------------------------------------------
-  
+   
   # ** Global Correlation Map --------------------------------------------------
   output$cor_map_leaflet <- renderUI({
     
     gtrends_spark_df <- readRDS(file.path("data", paste0("gtrends_spark_since_",
                                                          input$select_begin_date,
                                                          "_",
-                                                         max(cor_end_dates),
+                                                         "2022-12-31",
                                                          "_large.Rds")))
     
     if( (input$select_cor_type %in% "No Lead/Lag") & (input$select_cor_raw_MA %in% "7 Day Moving Average") ){
@@ -860,7 +861,7 @@ server = (function(input, output, session) {
     gtrends_spark_df <- readRDS(file.path("data", paste0("gtrends_spark_since_",
                                                          input$select_begin_date,
                                                          "_",
-                                                         max(cor_end_dates),
+                                                         "2022-12-31",
                                                          "_large.Rds")))
     
     # if(input$select_cor_type %in% "No Lead/Lag"){
@@ -1053,7 +1054,7 @@ server = (function(input, output, session) {
     cor_df     <- readRDS(file.path("data", paste0("correlations_since_",
                                                    input$select_begin_date,
                                                    "_",
-                                                   max(cor_end_dates),
+                                                   "2022-12-31",
                                                    ".Rds")))
     
     #if(input$select_cor_type %in% "No Lead/Lag"){
@@ -1106,7 +1107,7 @@ server = (function(input, output, session) {
     colors <- brewer.pal(n = 9, 
                          name = "RdYlGn")
     
-
+    
     p1 <- cor_df %>%
       plot_ly() %>% 
       add_markers(y = ~jitter(as.numeric(keyword_en)), 
@@ -1123,7 +1124,7 @@ server = (function(input, output, session) {
                                 opacity = 1),
                   hovertemplate = ~paste('<b>',name,'</b><br>', 
                                          'Correlation: %{x:.2f}<extra></extra>'),
-
+                  
                   showlegend = F) %>% 
       layout(
         xaxis = list(title = "",
@@ -1176,7 +1177,7 @@ server = (function(input, output, session) {
     cor_df     <- readRDS(file.path("data", paste0("correlations_since_",
                                                    input$select_begin_date,
                                                    "_",
-                                                   max(cor_end_dates),
+                                                   "2022-12-31",
                                                    ".Rds")))
     
     #if(input$select_cor_type %in% "No Lead/Lag"){
@@ -1226,7 +1227,7 @@ server = (function(input, output, session) {
     cor_df     <- readRDS(file.path("data", paste0("correlations_since_",
                                                    input$select_begin_date,
                                                    "_",
-                                                   max(cor_end_dates),
+                                                   "2022-12-31",
                                                    ".Rds")))
     
     #if(input$select_cor_type %in% "No Lead/Lag"){
@@ -1324,7 +1325,7 @@ server = (function(input, output, session) {
     cor_df     <- readRDS(file.path("data", paste0("correlations_since_",
                                                    input$select_begin_date,
                                                    "_",
-                                                   max(cor_end_dates),
+                                                   "2022-12-31",
                                                    ".Rds")))
     
     if( (input$select_cor_type %in% "No Lead/Lag") & (input$select_cor_raw_MA %in% "7 Day Moving Average") ){
@@ -1396,7 +1397,7 @@ server = (function(input, output, session) {
     gtrends_spark_df <- readRDS(file.path("data", 
                                           paste0("gtrends_spark_since_",
                                                  input$select_begin_date_country,
-                                                 "_", max(cor_end_dates),
+                                                 "_", "2022-12-31",
                                                  "_small.Rds"))) %>%
       filter(name %in% input$select_country)
     
@@ -1579,7 +1580,7 @@ server = (function(input, output, session) {
     
     cor_df <- readRDS(file.path("data", paste0("correlations_since_",
                                                input$select_begin_date_country,
-                                               "_", max(cor_end_dates),
+                                               "_", "2022-12-31",
                                                ".Rds")))
     
     #if(input$select_cor_type_country %in% "No Lead/Lag"){
@@ -2001,7 +2002,7 @@ server = (function(input, output, session) {
                                                "Historic Data Available",
                                                NA)
     
-    colors <- brewer.pal(n = length(unique(world_data$contain_historic_data)), 
+    colors <- brewer.pal(n = max(length(unique(world_data$contain_historic_data)),3), 
                          name = "Spectral")
     
     pal <- colorFactor(colors, 
@@ -2226,12 +2227,6 @@ server = (function(input, output, session) {
 })
 
 # RUN THE APP ==================================================================
-# app <- shinyApp(ui, server)
-# 
-# profvis({
-#   runApp(app, display.mode="normal")
-# })
-
 shinyApp(ui, server)
 
 

@@ -130,7 +130,7 @@ tokens/
 #######################
 # Ignore dashboard data
 
-!/**/Dashboard/**/*.Rds
+/**/Dashboard/**/*.Rds
 
 
 

@@ -5,9 +5,10 @@ account: rmarty
 server: datanalytics.worldbank.org
 hostUrl: https://datanalytics.worldbank.org/__api__
 appId: 649
-bundleId:
+bundleId: 49921
 url: http://datanalytics.worldbank.org/covid_gtrends/
-version: 1
+when: 1698325913.89288
+lastSyncTime: 1698325913.8929
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: _dash_main.R|01_prepare_data_for_dashboard.R|02_stylized_example_gif.R|tests/shinytest.R
+ignoredFiles: _dash_main.R|01_prepare_data_for_dashboard.R|02_stylized_example_gif.R|README.md|tests/.DS_Store|tests/shinytest.R|www/.DS_Store|gif_images
